@@ -10,8 +10,8 @@ jars (with shifts pressed:
     - Ok
     - Ok
 4. repeat for core and model jars.
-##How to run
+## How to run
 1. View -> Tool Windows -> Maven
 2. Lifecycle -> clean
-2. Plugins -> javafx -> javafx:compile
-3. Plugins -> javafx -> javafx:run
+3. Plugins -> javafx -> javafx:compile
+4. Plugins -> javafx -> javafx:run
