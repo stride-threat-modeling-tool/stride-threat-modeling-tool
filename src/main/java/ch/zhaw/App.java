@@ -1,67 +1,38 @@
 package ch.zhaw;
-import de.tesis.dynaware.grapheditor.Commands;
-import de.tesis.dynaware.grapheditor.GraphEditor;
-import de.tesis.dynaware.grapheditor.core.DefaultGraphEditor;
-import de.tesis.dynaware.grapheditor.model.GConnector;
-import de.tesis.dynaware.grapheditor.model.GModel;
-import de.tesis.dynaware.grapheditor.model.GNode;
-import de.tesis.dynaware.grapheditor.model.GraphFactory;
+import ch.zhaw.controller.MainController;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class App extends Application {
 
 
     @Override
     public void start(final Stage stage) throws Exception {
-
-        GraphEditor graphEditor = new DefaultGraphEditor();
-        Scene scene = new Scene(graphEditor.getView(), 800, 600);
-        //scene.getStylesheets().add(App.class.getResource("styles.css").toExternalForm());
+        final URL location = getClass().getResource("main.fxml"); //$NON-NLS-1$
+        final FXMLLoader loader = new FXMLLoader();
+        final Parent root = loader.load(location.openStream());
+        final Scene scene = new Scene(root, 830, 630);
         stage.setScene(scene);
-        GModel model = GraphFactory.eINSTANCE.createGModel();
-        graphEditor.setModel(model);
-        addNodes(model);
-
         stage.show();
+
+        final MainController controller = loader.getController();
     }
 
-    private GNode createNode()
-    {
-        GNode node = GraphFactory.eINSTANCE.createGNode();
 
-        GConnector input = GraphFactory.eINSTANCE.createGConnector();
-        GConnector output = GraphFactory.eINSTANCE.createGConnector();
-
-        input.setType("left-input");
-        output.setType("right-output");
-
-        node.getConnectors().add(input);
-        node.getConnectors().add(output);
-
-        return node;
-    }
-
-    private void addNodes(GModel model)
-    {
-        GNode firstNode = createNode();
-        GNode secondNode = createNode();
-
-        firstNode.setX(150);
-        firstNode.setY(150);
-
-        secondNode.setX(400);
-        secondNode.setY(200);
-        secondNode.setWidth(200);
-        secondNode.setHeight(150);
-
-        Commands.addNode(model, firstNode);
-        Commands.addNode(model, secondNode);
+    private static Parent loadFXML(String fxml) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        return fxmlLoader.load();
     }
 
     public static void main(String[] args) {
         launch(args);
     }
+
 
 }
