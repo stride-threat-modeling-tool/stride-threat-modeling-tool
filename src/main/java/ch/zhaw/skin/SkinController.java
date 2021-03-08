@@ -1,5 +1,10 @@
-package ch.zhaw.skins;
+package ch.zhaw.skin;
 
+import de.tesis.dynaware.grapheditor.GConnectorSkin;
+import de.tesis.dynaware.grapheditor.GNodeSkin;
+import de.tesis.dynaware.grapheditor.GTailSkin;
+import de.tesis.dynaware.grapheditor.model.GConnector;
+import de.tesis.dynaware.grapheditor.model.GNode;
 import javafx.geometry.Side;
 
 /**
@@ -42,4 +47,11 @@ public interface SkinController {
      * Handles the select-all operation.
      */
     void handleSelectAll();
+
+    GNodeSkin createNodeSkin(final GNode node);
+
+    GConnectorSkin createConnectorSkin(final GConnector connector);
+
+    GTailSkin createTailSkin(final GConnector connector);
+
 }

@@ -1,61 +1,54 @@
 package ch.zhaw.controller;
 
-import de.tesis.dynaware.grapheditor.Commands;
-import de.tesis.dynaware.grapheditor.GraphEditor;
+import ch.zhaw.skin.*;
+import de.tesis.dynaware.grapheditor.*;
 import de.tesis.dynaware.grapheditor.core.DefaultGraphEditor;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
-import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GModel;
-import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.fxml.FXML;
+import javafx.scene.control.MenuBar;
+import javafx.scene.layout.AnchorPane;
 
 public class MainController {
     private final GraphEditor graphEditor = new DefaultGraphEditor();
+    private static final String STYLE_CLASS_TITLED_SKINS = "titled-skins";
+    @FXML
     public GraphEditorContainer graphEditorContainer;
 
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private MenuBar menuBar;
 
     public void initialize() {
 
-        GModel model = GraphFactory.eINSTANCE.createGModel();
+        final GModel model = GraphFactory.eINSTANCE.createGModel();
         graphEditor.setModel(model);
-        addNodes(model);
-
         graphEditorContainer.setGraphEditor(graphEditor);
-
+        activeSkinController.set(new DataFlowDiagramSkinController(graphEditor, graphEditorContainer));
+        graphEditor.getView().getStyleClass().add(STYLE_CLASS_TITLED_SKINS);
+        graphEditor.setConnectorValidator(null);
 
     }
 
-    private GNode createNode()
+    private final ObjectProperty<SkinController> activeSkinController = new SimpleObjectProperty<>()
     {
-        GNode node = GraphFactory.eINSTANCE.createGNode();
 
-        GConnector input = GraphFactory.eINSTANCE.createGConnector();
-        GConnector output = GraphFactory.eINSTANCE.createGConnector();
+        @Override
+        protected void invalidated() {
+            super.invalidated();
+            if(get() != null) {
+                get().activate();
+            }
+        }
 
-        input.setType("left-input");
-        output.setType("right-output");
+    };
 
-        node.getConnectors().add(input);
-        node.getConnectors().add(output);
-
-        return node;
+    @FXML
+    public void fillModel() {
+        activeSkinController.get().addNode(graphEditor.getView().getLocalToSceneTransform().getMxx());
     }
-
-    private void addNodes(GModel model)
-    {
-        GNode firstNode = createNode();
-        GNode secondNode = createNode();
-
-        firstNode.setX(150);
-        firstNode.setY(150);
-
-        secondNode.setX(400);
-        secondNode.setY(200);
-        secondNode.setWidth(200);
-        secondNode.setHeight(150);
-
-        Commands.addNode(model, firstNode);
-        Commands.addNode(model, secondNode);
-    }
-
 }

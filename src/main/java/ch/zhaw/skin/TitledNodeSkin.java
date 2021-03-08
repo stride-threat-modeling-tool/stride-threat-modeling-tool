@@ -1,16 +1,12 @@
 /*
  * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
  */
-package de.tesis.dynaware.grapheditor.demo.customskins.titled;
-
-import java.util.ArrayList;
-import java.util.List;
+package ch.zhaw.skin;
 
 import de.tesis.dynaware.grapheditor.Commands;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
-import de.tesis.dynaware.grapheditor.demo.utils.AwesomeIcon;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
 import javafx.css.PseudoClass;
@@ -26,6 +22,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A grey node with a navy title-bar for the 'titled-skins' theme.
@@ -163,7 +162,7 @@ public class TitledNodeSkin extends GNodeSkin {
         contentRoot.getChildren().add(header);
         getRoot().getChildren().add(contentRoot);
 
-        closeButton.setGraphic(AwesomeIcon.TIMES.node());
+       // closeButton.setGraphic(AwesomeIcon.TIMES.node());
         closeButton.setCursor(Cursor.DEFAULT);
         closeButton.setOnAction(event -> Commands.removeNode(getGraphEditor().getModel(), getItem()));
 

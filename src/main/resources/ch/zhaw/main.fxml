@@ -5,8 +5,18 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
 <AnchorPane fx:id="root" xmlns:fx="http://javafx.com/fxml" fx:controller="ch.zhaw.controller.MainController">
     <VBox AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+        <MenuBar fx:id="menuBar">
+            <Menu text="Actions">
+                <items>
+                    <MenuItem text="Add Node" onAction="#fillModel"/>
+                </items>
+            </Menu>
+        </MenuBar>
         <GraphEditorContainer fx:id="graphEditorContainer" minWidth="0" minHeight="0" maxWidth="+Infinity" maxHeight="+Infinity" VBox.vgrow="ALWAYS"/>
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
  */
-package de.tesis.dynaware.grapheditor.demo.customskins.titled;
+package ch.zhaw.skin;
 
 import de.tesis.dynaware.grapheditor.core.skins.defaults.DefaultTailSkin;
 import de.tesis.dynaware.grapheditor.model.GConnector;

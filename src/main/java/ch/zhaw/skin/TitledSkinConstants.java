@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
  */
-package de.tesis.dynaware.grapheditor.demo.customskins.titled;
+package ch.zhaw.skin;
 
 /**
  * Some constants used by the grey skins.

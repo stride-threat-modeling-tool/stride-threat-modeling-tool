@@ -11,7 +11,9 @@ module STRIDEModel {
 
     exports ch.zhaw  to javafx.graphics, javafx.fxml;
     exports ch.zhaw.controller to javafx.graphics, javafx.fxml;
+    exports ch.zhaw.skin to javafx.graphics, javafx.fxml;
     opens ch.zhaw to javafx.fxml;
     opens ch.zhaw.controller to javafx.fxml;
+    opens ch.zhaw.skin to javafx.fxml;
 
 }
