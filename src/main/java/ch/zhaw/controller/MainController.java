@@ -31,6 +31,7 @@ public class MainController {
         activeSkinController.set(new DataFlowDiagramSkinController(graphEditor, graphEditorContainer));
         graphEditor.getView().getStyleClass().add(STYLE_CLASS_TITLED_SKINS);
         graphEditor.setConnectorValidator(null);
+        graphEditor.getProperties().setGridVisible(true);
 
     }
 
