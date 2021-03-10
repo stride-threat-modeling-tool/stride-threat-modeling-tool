@@ -1,8 +1,6 @@
-/*
- * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
- */
-package ch.zhaw.skin;
+package ch.zhaw.skin.datastore;
 
+import ch.zhaw.skin.TitledConnectorSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
@@ -28,9 +26,8 @@ public class DataStoreNodeSkin extends GNodeSkin {
     private static final String TITLE_TEXT_UPPER = "Data";
     private static final String TITLE_TEXT_LOWER = "Store";
 
-    private static final String STYLE_CLASS_BORDER = "titled-node-border";
     private static final String STYLE_CLASS_BACKGROUND = "data-store-node-background";
-    private static final String STYLE_CLASS_SELECTION_HALO = "titled-node-selection-halo";
+    private static final String STYLE_CLASS_SELECTION_HALO = "data-store-node-selection-halo";
 
     private static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
 
@@ -43,6 +40,10 @@ public class DataStoreNodeSkin extends GNodeSkin {
     private static final int HEADER_HEIGHT = 10;
 
     private final Rectangle selectionHalo = new Rectangle();
+
+    public VBox getContentRoot() {
+        return contentRoot;
+    }
 
     private final VBox contentRoot = new VBox();
 
@@ -59,7 +60,6 @@ public class DataStoreNodeSkin extends GNodeSkin {
         super(node);
 
         Rectangle border = new Rectangle();
-        border.getStyleClass().setAll(STYLE_CLASS_BORDER);
         border.widthProperty().bind(getRoot().widthProperty());
         border.heightProperty().bind(getRoot().heightProperty());
 
@@ -127,7 +127,7 @@ public class DataStoreNodeSkin extends GNodeSkin {
     /**
      * Creates the content of the node skin - header, title, close button, etc.
      */
-    private void createContent() {
+    protected void createContent() {
 
 
         contentRoot.getChildren().add(new Label(TITLE_TEXT_UPPER));

@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
- */
 package ch.zhaw.skin;
 
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
@@ -17,14 +14,14 @@ import javafx.scene.shape.Line;
  */
 public class TitledConnectorSkin extends GConnectorSkin {
 
-    private static final String STYLE_CLASS = "titled-connector"; //$NON-NLS-1$
-    private static final String STYLE_CLASS_FORBIDDEN_GRAPHIC = "titled-connector-forbidden-graphic"; //$NON-NLS-1$
+    private static final String STYLE_CLASS = "connector";
+    private static final String STYLE_CLASS_FORBIDDEN_GRAPHIC = "data-flow-forbidden-graphic";
 
     private static final double SIZE = 15;
 
-    private static final PseudoClass PSEUDO_CLASS_ALLOWED = PseudoClass.getPseudoClass("allowed"); //$NON-NLS-1$
-    private static final PseudoClass PSEUDO_CLASS_FORBIDDEN = PseudoClass.getPseudoClass("forbidden"); //$NON-NLS-1$
-    private static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected"); //$NON-NLS-1$
+    private static final PseudoClass PSEUDO_CLASS_ALLOWED = PseudoClass.getPseudoClass("allowed");
+    private static final PseudoClass PSEUDO_CLASS_FORBIDDEN = PseudoClass.getPseudoClass("forbidden");
+    private static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
 
     private final Pane root = new Pane();
 

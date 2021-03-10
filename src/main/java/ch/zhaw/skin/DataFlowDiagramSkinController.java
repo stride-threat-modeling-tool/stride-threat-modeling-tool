@@ -1,9 +1,10 @@
 package ch.zhaw.skin;
 
+import ch.zhaw.skin.datastore.DataStoreNodeSkin;
+import ch.zhaw.skin.externalentity.ExternalEntityNodeSkin;
 import de.tesis.dynaware.grapheditor.*;
 import de.tesis.dynaware.grapheditor.core.connectors.DefaultConnectorTypes;
 import de.tesis.dynaware.grapheditor.core.skins.defaults.DefaultConnectorSkin;
-import de.tesis.dynaware.grapheditor.core.skins.defaults.DefaultNodeSkin;
 import de.tesis.dynaware.grapheditor.core.skins.defaults.DefaultTailSkin;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.*;
@@ -27,8 +28,8 @@ public class DataFlowDiagramSkinController implements SkinController {
 
 
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container) {
-       this.graphEditor = graphEditor;
-       this.graphEditorContainer = container;
+        this.graphEditor = graphEditor;
+        this.graphEditorContainer = container;
     }
 
     @Override
@@ -55,6 +56,22 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
 
+    public void addDataStore(double currentZoomFactor) {
+        graphEditor.setNodeSkinFactory(this::createDataStoreSkin);
+        graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
+        graphEditor.setTailSkinFactory(this::createTailSkin);
+        addNode(currentZoomFactor);
+    }
+
+    public void addExternalEntity(double currentZoomFactor) {
+        graphEditor.setNodeSkinFactory(this::createExternalEntitySkin);
+        graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
+        graphEditor.setTailSkinFactory(this::createTailSkin);
+        addNode(currentZoomFactor);
+
+    }
+
+
     private String allocateNewId() {
 
         final List<GNode> nodes = graphEditor.getModel().getNodes();
@@ -68,11 +85,8 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     @Override
     public void activate() {
-        graphEditor.setNodeSkinFactory(this::createNodeSkin);
-        graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
-        graphEditor.setTailSkinFactory(this::createTailSkin);
-
     }
+
 
     @Override
     public void addConnector(Side position, boolean input) {
@@ -104,29 +118,24 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     private String getType(Side position, boolean input) {
-        switch (position)
-        {
+        switch (position) {
             case TOP:
-                if (input)
-                {
+                if (input) {
                     return DefaultConnectorTypes.TOP_INPUT;
                 }
                 return DefaultConnectorTypes.TOP_OUTPUT;
             case RIGHT:
-                if (input)
-                {
+                if (input) {
                     return DefaultConnectorTypes.RIGHT_INPUT;
                 }
                 return DefaultConnectorTypes.RIGHT_OUTPUT;
             case BOTTOM:
-                if (input)
-                {
+                if (input) {
                     return DefaultConnectorTypes.BOTTOM_INPUT;
                 }
                 return DefaultConnectorTypes.BOTTOM_OUTPUT;
             case LEFT:
-                if (input)
-                {
+                if (input) {
                     return DefaultConnectorTypes.LEFT_INPUT;
                 }
                 return DefaultConnectorTypes.LEFT_OUTPUT;
@@ -157,20 +166,23 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     }
 
-    @Override
-    public GNodeSkin createNodeSkin(final GNode node) {
-        return TitledSkinConstants.TITLED_NODE.equals(node.getType()) ? new DataStoreNodeSkin(node) : new DefaultNodeSkin(node);
+    private GNodeSkin createDataStoreSkin(final GNode node) {
+        return new DataStoreNodeSkin(node);
     }
 
-    @Override
-    public GConnectorSkin createConnectorSkin(final GConnector connector) {
+    private GNodeSkin createExternalEntitySkin(final GNode node) {
+        return new ExternalEntityNodeSkin(node);
+    }
+
+
+    private GConnectorSkin createConnectorSkin(final GConnector connector) {
         return TitledSkinConstants.TITLED_INPUT_CONNECTOR.equals(connector.getType()) || TitledSkinConstants.TITLED_OUTPUT_CONNECTOR.equals(connector.getType()) ?
                 new TitledConnectorSkin(connector) : new DefaultConnectorSkin(connector);
     }
 
-    @Override
-    public GTailSkin createTailSkin(final GConnector connector) {
+    private GTailSkin createTailSkin(final GConnector connector) {
         return TitledSkinConstants.TITLED_INPUT_CONNECTOR.equals(connector.getType()) || TitledSkinConstants.TITLED_INPUT_CONNECTOR.equals(connector.getType()) ?
                 new TitledTailSkin(connector) : new DefaultTailSkin(connector);
     }
+
 }

@@ -13,7 +13,8 @@
         <MenuBar fx:id="menuBar">
             <Menu text="Actions">
                 <items>
-                    <MenuItem text="Add Node" onAction="#fillModel"/>
+                    <MenuItem text="Add data store" onAction="#addDataStore"/>
+                    <MenuItem text="Add external entity" onAction="#addExternalEntity"/>
                 </items>
             </Menu>
         </MenuBar>

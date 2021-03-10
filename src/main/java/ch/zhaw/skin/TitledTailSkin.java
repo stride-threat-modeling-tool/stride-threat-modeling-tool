@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
- */
 package ch.zhaw.skin;
 
 import de.tesis.dynaware.grapheditor.core.skins.defaults.DefaultTailSkin;
