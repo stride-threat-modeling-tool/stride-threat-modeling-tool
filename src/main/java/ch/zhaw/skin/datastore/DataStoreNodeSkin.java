@@ -1,14 +1,15 @@
 package ch.zhaw.skin.datastore;
 
-import ch.zhaw.skin.TitledConnectorSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
-import de.tesis.dynaware.grapheditor.GraphEditor;
+import de.tesis.dynaware.grapheditor.core.connectors.DefaultConnectorTypes;
+import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
 import javafx.css.PseudoClass;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -34,6 +35,9 @@ public class DataStoreNodeSkin extends GNodeSkin {
     private static final double HALO_OFFSET = 5;
     private static final double HALO_CORNER_SIZE = 10;
 
+    private static final double MINOR_POSITIVE_OFFSET = 2;
+    private static final double MINOR_NEGATIVE_OFFSET = -3;
+
     private static final double MIN_WIDTH = 81;
     private static final double MIN_HEIGHT = 81;
 
@@ -41,14 +45,16 @@ public class DataStoreNodeSkin extends GNodeSkin {
 
     private final Rectangle selectionHalo = new Rectangle();
 
+    private final List<GConnectorSkin> topConnectorSkins = new ArrayList<>();
+    private final List<GConnectorSkin> rightConnectorSkins = new ArrayList<>();
+    private final List<GConnectorSkin> bottomConnectorSkins = new ArrayList<>();
+    private final List<GConnectorSkin> leftConnectorSkins = new ArrayList<>();
+
     public VBox getContentRoot() {
         return contentRoot;
     }
 
     private final VBox contentRoot = new VBox();
-
-    private final List<GConnectorSkin> inputConnectorSkins = new ArrayList<>();
-    private final List<GConnectorSkin> outputConnectorSkins = new ArrayList<>();
 
     /**
      * Creates a new {@link DataStoreNodeSkin} instance.
@@ -78,33 +84,36 @@ public class DataStoreNodeSkin extends GNodeSkin {
 
         removeAllConnectors();
 
-        inputConnectorSkins.clear();
-        outputConnectorSkins.clear();
+        topConnectorSkins.clear();
+        rightConnectorSkins.clear();
+        bottomConnectorSkins.clear();
+        leftConnectorSkins.clear();
 
         if (connectorSkins != null) {
             for (final GConnectorSkin connectorSkin : connectorSkins) {
 
-                final boolean isInput = connectorSkin.getItem().getType().contains("input"); //$NON-NLS-1$
-                final boolean isOutput = connectorSkin.getItem().getType().contains("output"); //$NON-NLS-1$
+                final String type = connectorSkin.getItem().getType();
 
-                if (isInput) {
-                    inputConnectorSkins.add(connectorSkin);
-                } else if (isOutput) {
-                    outputConnectorSkins.add(connectorSkin);
+                if (DefaultConnectorTypes.isTop(type)) {
+                    topConnectorSkins.add(connectorSkin);
+                } else if (DefaultConnectorTypes.isRight(type)) {
+                    rightConnectorSkins.add(connectorSkin);
+                } else if (DefaultConnectorTypes.isBottom(type)) {
+                    bottomConnectorSkins.add(connectorSkin);
+                } else if (DefaultConnectorTypes.isLeft(type)) {
+                    leftConnectorSkins.add(connectorSkin);
                 }
 
-                if (isInput || isOutput) {
-                    getRoot().getChildren().add(connectorSkin.getRoot());
-                }
+                getRoot().getChildren().add(connectorSkin.getRoot());
             }
         }
 
-        setConnectorsSelected();
+        layoutConnectors();
     }
 
     @Override
     public void layoutConnectors() {
-        layoutLeftAndRightConnectors();
+        layoutAllConnectors();
         layoutSelectionHalo();
     }
 
@@ -113,15 +122,25 @@ public class DataStoreNodeSkin extends GNodeSkin {
 
         final Node connectorRoot = connectorSkin.getRoot();
 
-        final double x = connectorRoot.getLayoutX() + connectorSkin.getWidth() / 2;
-        final double y = connectorRoot.getLayoutY() + connectorSkin.getHeight() / 2;
+        final Side side = DefaultConnectorTypes.getSide(connectorSkin.getItem().getType());
 
-        if (inputConnectorSkins.contains(connectorSkin)) {
-            return new Point2D(x, y);
+        // The following logic is required because the connectors are offset slightly from the node edges.
+        final double x, y;
+        if (side.equals(Side.LEFT)) {
+            x = 0;
+            y = connectorRoot.getLayoutY() + connectorSkin.getHeight() / 2;
+        } else if (side.equals(Side.RIGHT)) {
+            x = getRoot().getWidth();
+            y = connectorRoot.getLayoutY() + connectorSkin.getHeight() / 2;
+        } else if (side.equals(Side.TOP)) {
+            x = connectorRoot.getLayoutX() + connectorSkin.getWidth() / 2;
+            y = 0;
+        } else {
+            x = connectorRoot.getLayoutX() + connectorSkin.getWidth() / 2;
+            y = getRoot().getHeight();
         }
-        // ELSE:
-        // Subtract 1 to align start-of-connection correctly. Compensation for rounding errors?
-        return new Point2D(x - 1, y);
+
+        return new Point2D(x, y);
     }
 
     /**
@@ -149,38 +168,48 @@ public class DataStoreNodeSkin extends GNodeSkin {
     }
 
     /**
-     * Lays out all connectors.
+     * Lays out the node's connectors.
      */
-    private void layoutLeftAndRightConnectors() {
+    private void layoutAllConnectors() {
 
-        final int inputCount = inputConnectorSkins.size();
-        final double inputOffsetY = (getRoot().getHeight() - HEADER_HEIGHT) / (inputCount + 1);
+        layoutConnectors(topConnectorSkins, false, 0);
+        layoutConnectors(rightConnectorSkins, true, getRoot().getWidth());
+        layoutConnectors(bottomConnectorSkins, false, getRoot().getHeight());
+        layoutConnectors(leftConnectorSkins, true, 0);
+    }
 
-        for (int i = 0; i < inputCount; i++) {
+    /**
+     * Lays out the given connector skins in a horizontal or vertical direction at the given offset.
+     *
+     * @param connectorSkins the skins to lay out
+     * @param vertical {@code true} to lay out vertically, {@code false} to lay out horizontally
+     * @param offset the offset in the other dimension that the skins are layed out in
+     */
+    private void layoutConnectors(final List<GConnectorSkin> connectorSkins, final boolean vertical, final double offset) {
 
-            final GConnectorSkin inputSkin = inputConnectorSkins.get(i);
-            final Node connectorRoot = inputSkin.getRoot();
+        final int count = connectorSkins.size();
 
-            final double layoutX = GeometryUtils.moveOnPixel(0 - inputSkin.getWidth() / 2);
-            final double layoutY = GeometryUtils.moveOnPixel((i + 1) * inputOffsetY - inputSkin.getHeight() / 2);
+        for (int i = 0; i < count; i++) {
 
-            connectorRoot.setLayoutX(layoutX);
-            connectorRoot.setLayoutY(layoutY + HEADER_HEIGHT);
-        }
+            final GConnectorSkin skin = connectorSkins.get(i);
+            final Node root = skin.getRoot();
 
-        final int outputCount = outputConnectorSkins.size();
-        final double outputOffsetY = (getRoot().getHeight() - HEADER_HEIGHT) / (outputCount + 1);
+            if (vertical) {
 
-        for (int i = 0; i < outputCount; i++) {
+                final double offsetY = getRoot().getHeight() / (count + 1);
+                final double offsetX = getMinorOffsetX(skin.getItem());
 
-            final GConnectorSkin outputSkin = outputConnectorSkins.get(i);
-            final Node connectorRoot = outputSkin.getRoot();
+                root.setLayoutX(GeometryUtils.moveOnPixel(offset - skin.getWidth() / 2 + offsetX));
+                root.setLayoutY(GeometryUtils.moveOnPixel((i + 1) * offsetY - skin.getHeight() / 2));
 
-            final double layoutX = GeometryUtils.moveOnPixel(getRoot().getWidth() - outputSkin.getWidth() / 2);
-            final double layoutY = GeometryUtils.moveOnPixel((i + 1) * outputOffsetY - outputSkin.getHeight() / 2);
+            } else {
 
-            connectorRoot.setLayoutX(layoutX);
-            connectorRoot.setLayoutY(layoutY + HEADER_HEIGHT);
+                final double offsetX = getRoot().getWidth() / (count + 1);
+                final double offsetY = getMinorOffsetY(skin.getItem());
+
+                root.setLayoutX(GeometryUtils.moveOnPixel((i + 1) * offsetX - skin.getWidth() / 2));
+                root.setLayoutY(GeometryUtils.moveOnPixel(offset - skin.getHeight() / 2 + offsetY));
+            }
         }
     }
 
@@ -220,7 +249,6 @@ public class DataStoreNodeSkin extends GNodeSkin {
         }
     }
 
-
     @Override
     protected void selectionChanged(final boolean isSelected) {
         if (isSelected) {
@@ -232,44 +260,52 @@ public class DataStoreNodeSkin extends GNodeSkin {
             selectionHalo.setVisible(false);
             contentRoot.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
         }
-        setConnectorsSelected();
     }
 
     /**
-     * Removes any input and output connectors from the list of children, if they exist.
+     * Removes all connectors from the list of children.
      */
     private void removeAllConnectors() {
 
-        for (final GConnectorSkin connectorSkin : inputConnectorSkins) {
-            getRoot().getChildren().remove(connectorSkin.getRoot());
-        }
+        topConnectorSkins.stream().forEach(skin -> getRoot().getChildren().remove(skin.getRoot()));
+        rightConnectorSkins.stream().forEach(skin -> getRoot().getChildren().remove(skin.getRoot()));
+        bottomConnectorSkins.stream().forEach(skin -> getRoot().getChildren().remove(skin.getRoot()));
+        leftConnectorSkins.stream().forEach(skin -> getRoot().getChildren().remove(skin.getRoot()));
+    }
 
-        for (final GConnectorSkin connectorSkin : outputConnectorSkins) {
-            getRoot().getChildren().remove(connectorSkin.getRoot());
+    /**
+     * Gets a minor x-offset of a few pixels in order that the connector's area is distributed more evenly on either
+     * side of the node border.
+     *
+     * @param connector the connector to be positioned
+     * @return an x-offset of a few pixels
+     */
+    private double getMinorOffsetX(final GConnector connector) {
+
+        final String type = connector.getType();
+
+        if (type.equals(DefaultConnectorTypes.LEFT_INPUT) || type.equals(DefaultConnectorTypes.RIGHT_OUTPUT)) {
+            return MINOR_POSITIVE_OFFSET;
+        } else {
+            return MINOR_NEGATIVE_OFFSET;
         }
     }
 
     /**
-     * Adds or removes the 'selected' pseudo-class from all connectors belonging to this node.
+     * Gets a minor y-offset of a few pixels in order that the connector's area is distributed more evenly on either
+     * side of the node border.
+     *
+     * @param connector the connector to be positioned
+     * @return a y-offset of a few pixels
      */
-    private void setConnectorsSelected()
-    {
+    private double getMinorOffsetY(final GConnector connector) {
 
-    	final GraphEditor editor = getGraphEditor();
-    	if(editor == null) {
-    		return;
-    	}
+        final String type = connector.getType();
 
-        for (final GConnectorSkin skin : inputConnectorSkins) {
-            if (skin instanceof TitledConnectorSkin) {
-            	editor.getSelectionManager().select(skin.getItem());
-            }
-        }
-
-        for (final GConnectorSkin skin : outputConnectorSkins) {
-            if (skin instanceof TitledConnectorSkin) {
-            	editor.getSelectionManager().select(skin.getItem());
-            }
+        if (type.equals(DefaultConnectorTypes.TOP_INPUT) || type.equals(DefaultConnectorTypes.BOTTOM_OUTPUT)) {
+            return MINOR_POSITIVE_OFFSET;
+        } else {
+            return MINOR_NEGATIVE_OFFSET;
         }
     }
 
