@@ -2,25 +2,13 @@
 	-background-color: rgba(240, 235, 242, 0.9);
 	-border-color: rgba(160, 160, 160, 0.8);
 	-halo-color: rgba(80, 80, 80, 0.8);
-	-title-color:  linear-gradient(to bottom, rgb(0, 50, 60), rgb(0, 80, 80));
 }
 
-.titled-node-background {
-	-fx-background-color: -background-color;
-	-fx-background-insets: 1;
-	-fx-border-width: 0;	
-}
-
-.titled-node-background:selected {
-	-fx-background-color: derive(-background-color, -5%);
-}
-
-.titled-node-border {
-	-fx-stroke: -border-color;
-	-fx-stroke-width: 1;
-	-fx-stroke-type: inside;
-	-fx-fill: null;
-	-fx-effect: dropshadow(gaussian, rgb(150, 150, 150), 5, 0, 1, 1);
+.data-store-node-background {
+	-fx-background-color: white;
+	-fx-background-insets: 0;
+	-fx-border-color: black;
+	-fx-border-width:  1.5 0;
 }
 
 .titled-node-selection-halo {
@@ -29,19 +17,6 @@
 	-fx-stroke-type: inside;
 	-fx-stroke-line-cap: butt;
 	-fx-fill: null;
-}
-
-.titled-node-header {
-	-fx-padding: 2 5 2 5;
-	-fx-background-color: -title-color;
-	-fx-border-width: 0 0 1 0;
-	-fx-border-color: -border-color;
-	-fx-opacity: 0.9;
-}
-
-.titled-node-title {
-	-fx-font-size: 11;
-	-fx-text-fill: white;
 }
 
 .titled-node-close-button {

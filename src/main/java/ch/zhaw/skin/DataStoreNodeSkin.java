@@ -23,13 +23,13 @@ import java.util.List;
 /**
  * A grey node with a navy title-bar for the 'titled-skins' theme.
  */
-public class ExternalEntityNodeSkin extends GNodeSkin {
+public class DataStoreNodeSkin extends GNodeSkin {
 
-    private static final String TITLE_TEXT_UPPER = "External";
-    private static final String TITLE_TEXT_LOWER = "Entity";
+    private static final String TITLE_TEXT_UPPER = "Data";
+    private static final String TITLE_TEXT_LOWER = "Store";
 
     private static final String STYLE_CLASS_BORDER = "titled-node-border";
-    private static final String STYLE_CLASS_BACKGROUND = "titled-node-background";
+    private static final String STYLE_CLASS_BACKGROUND = "data-store-node-background";
     private static final String STYLE_CLASS_SELECTION_HALO = "titled-node-selection-halo";
 
     private static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
@@ -50,11 +50,11 @@ public class ExternalEntityNodeSkin extends GNodeSkin {
     private final List<GConnectorSkin> outputConnectorSkins = new ArrayList<>();
 
     /**
-     * Creates a new {@link ExternalEntityNodeSkin} instance.
+     * Creates a new {@link DataStoreNodeSkin} instance.
      *
      * @param node the {link GNode} this skin is representing
      */
-    public ExternalEntityNodeSkin(final GNode node) {
+    public DataStoreNodeSkin(final GNode node) {
 
         super(node);
 

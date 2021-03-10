@@ -8,16 +8,12 @@ import de.tesis.dynaware.grapheditor.core.skins.defaults.DefaultTailSkin;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.*;
 import javafx.geometry.Side;
-import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.edit.command.AddCommand;
-import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 
@@ -163,7 +159,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     @Override
     public GNodeSkin createNodeSkin(final GNode node) {
-        return TitledSkinConstants.TITLED_NODE.equals(node.getType()) ? new TitledNodeSkin(node) : new DefaultNodeSkin(node);
+        return TitledSkinConstants.TITLED_NODE.equals(node.getType()) ? new DataStoreNodeSkin(node) : new DefaultNodeSkin(node);
     }
 
     @Override
