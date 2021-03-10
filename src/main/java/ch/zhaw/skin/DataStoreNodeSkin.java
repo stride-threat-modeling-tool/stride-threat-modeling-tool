@@ -3,7 +3,6 @@
  */
 package ch.zhaw.skin;
 
-import de.tesis.dynaware.grapheditor.Commands;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
@@ -12,14 +11,9 @@ import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
 import javafx.css.PseudoClass;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
@@ -29,18 +23,16 @@ import java.util.List;
 /**
  * A grey node with a navy title-bar for the 'titled-skins' theme.
  */
-public class TitledNodeSkin extends GNodeSkin {
+public class ExternalEntityNodeSkin extends GNodeSkin {
 
-    private static final String TITLE_TEXT = "Node "; //$NON-NLS-1$
+    private static final String TITLE_TEXT_UPPER = "External";
+    private static final String TITLE_TEXT_LOWER = "Entity";
 
-    private static final String STYLE_CLASS_BORDER = "titled-node-border"; //$NON-NLS-1$
-    private static final String STYLE_CLASS_BACKGROUND = "titled-node-background"; //$NON-NLS-1$
-    private static final String STYLE_CLASS_SELECTION_HALO = "titled-node-selection-halo"; //$NON-NLS-1$
-    private static final String STYLE_CLASS_HEADER = "titled-node-header"; //$NON-NLS-1$
-    private static final String STYLE_CLASS_TITLE = "titled-node-title"; //$NON-NLS-1$
-    private static final String STYLE_CLASS_BUTTON = "titled-node-close-button"; //$NON-NLS-1$
+    private static final String STYLE_CLASS_BORDER = "titled-node-border";
+    private static final String STYLE_CLASS_BACKGROUND = "titled-node-background";
+    private static final String STYLE_CLASS_SELECTION_HALO = "titled-node-selection-halo";
 
-    private static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected"); //$NON-NLS-1$
+    private static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
 
     private static final double HALO_OFFSET = 5;
     private static final double HALO_CORNER_SIZE = 10;
@@ -48,29 +40,25 @@ public class TitledNodeSkin extends GNodeSkin {
     private static final double MIN_WIDTH = 81;
     private static final double MIN_HEIGHT = 81;
 
-    private static final int BORDER_WIDTH = 1;
-    private static final int HEADER_HEIGHT = 20;
+    private static final int HEADER_HEIGHT = 10;
 
     private final Rectangle selectionHalo = new Rectangle();
 
-    private VBox contentRoot = new VBox();
-    private HBox header = new HBox();
-    private Label title = new Label();
+    private final VBox contentRoot = new VBox();
 
     private final List<GConnectorSkin> inputConnectorSkins = new ArrayList<>();
     private final List<GConnectorSkin> outputConnectorSkins = new ArrayList<>();
 
-    private final Rectangle border = new Rectangle();
-
     /**
-     * Creates a new {@link TitledNodeSkin} instance.
+     * Creates a new {@link ExternalEntityNodeSkin} instance.
      *
      * @param node the {link GNode} this skin is representing
      */
-    public TitledNodeSkin(final GNode node) {
+    public ExternalEntityNodeSkin(final GNode node) {
 
         super(node);
 
+        Rectangle border = new Rectangle();
         border.getStyleClass().setAll(STYLE_CLASS_BORDER);
         border.widthProperty().bind(getRoot().widthProperty());
         border.heightProperty().bind(getRoot().heightProperty());
@@ -83,12 +71,6 @@ public class TitledNodeSkin extends GNodeSkin {
         createContent();
 
         contentRoot.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::filterMouseDragged);
-    }
-
-    @Override
-    public void initialize() {
-        super.initialize();
-        title.setText(TITLE_TEXT + getItem().getId());
     }
 
     @Override
@@ -147,34 +129,21 @@ public class TitledNodeSkin extends GNodeSkin {
      */
     private void createContent() {
 
-        header.getStyleClass().setAll(STYLE_CLASS_HEADER);
-        header.setAlignment(Pos.CENTER);
 
-        title.getStyleClass().setAll(STYLE_CLASS_TITLE);
-
-        final Region filler = new Region();
-        HBox.setHgrow(filler, Priority.ALWAYS);
-
-        final Button closeButton = new Button();
-        closeButton.getStyleClass().setAll(STYLE_CLASS_BUTTON);
-
-        header.getChildren().addAll(title, filler, closeButton);
-        contentRoot.getChildren().add(header);
+        contentRoot.getChildren().add(new Label(TITLE_TEXT_UPPER));
+        contentRoot.getChildren().add(new Label(TITLE_TEXT_LOWER));
         getRoot().getChildren().add(contentRoot);
 
-       // closeButton.setGraphic(AwesomeIcon.TIMES.node());
-        closeButton.setCursor(Cursor.DEFAULT);
-        closeButton.setOnAction(event -> Commands.removeNode(getGraphEditor().getModel(), getItem()));
+        contentRoot.setAlignment(Pos.CENTER);
 
+        /*
+        Does not seem to do anything?
         contentRoot.minWidthProperty().bind(getRoot().widthProperty());
         contentRoot.prefWidthProperty().bind(getRoot().widthProperty());
         contentRoot.maxWidthProperty().bind(getRoot().widthProperty());
         contentRoot.minHeightProperty().bind(getRoot().heightProperty());
         contentRoot.prefHeightProperty().bind(getRoot().heightProperty());
-        contentRoot.maxHeightProperty().bind(getRoot().heightProperty());
-
-        contentRoot.setLayoutX(BORDER_WIDTH);
-        contentRoot.setLayoutY(BORDER_WIDTH);
+        contentRoot.maxHeightProperty().bind(getRoot().heightProperty());*/
 
         contentRoot.getStyleClass().setAll(STYLE_CLASS_BACKGROUND);
     }
