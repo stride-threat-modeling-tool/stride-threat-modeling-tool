@@ -7,12 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class ExternalEntityNodeSkin extends DataStoreNodeSkin {
-    private static final String TITLE_TEXT_UPPER = "External";
-    private static final String TITLE_TEXT_LOWER = "Entity";
+    private static final String TITLE_TEXT = "External\nEntity";
     private static final String STYLE_CLASS_BACKGROUND = "external-entity-node-background";
 
     /**
-     * Creates a new {@link DataStoreNodeSkin} instance.
+     * Creates a new {@link ExternalEntityNodeSkin} instance.
      *
      * @param node the {link GNode} this skin is representing
      */
@@ -23,8 +22,7 @@ public class ExternalEntityNodeSkin extends DataStoreNodeSkin {
     @Override
     protected void createContent() {
         VBox contentRoot = super.getContentRoot();
-        contentRoot.getChildren().add(new Label(TITLE_TEXT_UPPER));
-        contentRoot.getChildren().add(new Label(TITLE_TEXT_LOWER));
+        contentRoot.getChildren().add(new Label(TITLE_TEXT));
         getRoot().getChildren().add(contentRoot);
 
         contentRoot.setAlignment(Pos.CENTER);
