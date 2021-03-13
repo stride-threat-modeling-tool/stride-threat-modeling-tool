@@ -6,7 +6,7 @@ module STRIDEModel {
     requires org.eclipse.emf.common;
     requires org.eclipse.emf.ecore.xmi;
     requires org.eclipse.emf.edit;
-    requires org.slf4j;
+    requires java.logging;
 
 
     exports ch.zhaw  to javafx.graphics, javafx.fxml;

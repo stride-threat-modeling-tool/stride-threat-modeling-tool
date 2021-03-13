@@ -30,6 +30,9 @@ public class DataFlowDiagramSkinController implements SkinController {
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container) {
         this.graphEditor = graphEditor;
         this.graphEditorContainer = container;
+        graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
+        graphEditor.setTailSkinFactory(this::createTailSkin);
+        graphEditor.setJointSkinFactory(this::createJointSkin);
     }
 
     @Override
@@ -67,15 +70,11 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void addDataStore(double currentZoomFactor) {
         graphEditor.setNodeSkinFactory(this::createDataStoreSkin);
-        graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
-        graphEditor.setTailSkinFactory(this::createTailSkin);
         addNode(currentZoomFactor);
     }
 
     public void addExternalEntity(double currentZoomFactor) {
         graphEditor.setNodeSkinFactory(this::createExternalEntitySkin);
-        graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
-        graphEditor.setTailSkinFactory(this::createTailSkin);
         addNode(currentZoomFactor);
 
     }
@@ -183,21 +182,17 @@ public class DataFlowDiagramSkinController implements SkinController {
         return new ExternalEntityNodeSkin(node);
     }
 
+    private GJointSkin createJointSkin(final GJoint joint){
+        return new DataFlowJointSkin(joint);
+    }
+
 
     private GConnectorSkin createConnectorSkin(final GConnector connector) {
-        return TitledSkinConstants.TITLED_LEFT_INPUT_CONNECTOR.equals(connector.getType()) ||
-                TitledSkinConstants.TITLED_TOP_INPUT_CONNECTOR.equals(connector.getType()) ||
-                TitledSkinConstants.TITLED_RIGHT_OUTPUT_CONNECTOR.equals(connector.getType()) ||
-                TitledSkinConstants.TITLED_BOTTOM_OUTPUT_CONNECTOR.equals(connector.getType()) ?
-                new TitledConnectorSkin(connector) : new DefaultConnectorSkin(connector);
+        return new TitledConnectorSkin(connector);
     }
 
     private GTailSkin createTailSkin(final GConnector connector) {
-        return TitledSkinConstants.TITLED_LEFT_INPUT_CONNECTOR.equals(connector.getType()) ||
-                TitledSkinConstants.TITLED_TOP_INPUT_CONNECTOR.equals(connector.getType()) ||
-                TitledSkinConstants.TITLED_RIGHT_OUTPUT_CONNECTOR.equals(connector.getType()) ||
-                TitledSkinConstants.TITLED_BOTTOM_OUTPUT_CONNECTOR.equals(connector.getType()) ?
-                new TitledTailSkin(connector) : new DefaultTailSkin(connector);
+        return new TitledTailSkin(connector);
     }
 
 }
