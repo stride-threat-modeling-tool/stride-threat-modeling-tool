@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class DataFlowJointSkin extends GJointSkin {
     private static final Logger LOGGER = Logger.getLogger("JOINT SKIN");
 
-    public static final String DATAFLOW_JOINT_CLASS = "dataflow-joint";
+    public static final String DATAFLOW_JOINT_CLASS = "data-flow-joint";
     public static final int WIDTH_OFFSET = 10;
     public static final int MAX_LENGTH = 45;
 

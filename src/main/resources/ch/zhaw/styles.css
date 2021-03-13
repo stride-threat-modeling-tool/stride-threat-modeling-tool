@@ -68,7 +68,7 @@
     -fx-fill: null;
 }
 
-.data-flow-diagram-skin.default-joint {
+.data-flow-diagram-skin.data-flow-joint {
     /* Invisible by default but make sure it has the exact same dimensions as for hover and pressed effects. */
     -fx-border-width: 1;
     -fx-border-color: transparent;
@@ -78,22 +78,22 @@
     -fx-background-radius: 0;
 }
 
-.data-flow-diagram-skin.default-joint:hover, .data-flow-diagram-skin.default-joint:selected:hover {
+.data-flow-diagram-skin.data-flow-joint:hover, .data-flow-diagram-skin.R:selected:hover {
     -fx-border-color: -border-color;
     -fx-background-color: white;
     -fx-opacity: 0.6;
     -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
 }
 
-.data-flow-diagram-skin.default-joint:pressed, .data-flow-diagram-skin.default-joint:selected, .data-flow-diagram-skin.default-joint:selected:pressed {
+.data-flow-diagram-skin.data-flow-joint:pressed, .data-flow-diagram-skin.data-flow-joint:selected, .data-flow-diagram-skin.data-flow-joint:selected:pressed {
     -fx-border-color: -border-color;
     -fx-background-color: derive(white, -4%);
     -fx-opacity: 0.6;
     -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
 }
 
-.dataflow-joint {
-    -fx-background-color: #D0FFB4;
+.data-flow-joint {
+    -fx-background-color: rgba(208, 255, 180, 0.5);
     -fx-border-color: black;
     -fx-border-width: 1;
     -fx-stroke-type: inside;
