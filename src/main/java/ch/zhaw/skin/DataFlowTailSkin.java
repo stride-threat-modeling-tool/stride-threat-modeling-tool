@@ -5,7 +5,7 @@ import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
 import javafx.geometry.Point2D;
 
-public class TitledTailSkin extends DefaultTailSkin {
+public class DataFlowTailSkin extends DefaultTailSkin {
 
     private static final String STYLE_CLASS = "titled-tail"; //$NON-NLS-1$
     private static final String STYLE_CLASS_ENDPOINT = "titled-tail-endpoint"; //$NON-NLS-1$
@@ -17,12 +17,13 @@ public class TitledTailSkin extends DefaultTailSkin {
      *
      * @param connector the {@link GConnector} the skin is being created for
      */
-    public TitledTailSkin(final GConnector connector) {
+    public DataFlowTailSkin(final GConnector connector) {
 
         super(connector);
 
         line.getStyleClass().setAll(STYLE_CLASS);
         endpoint.getStyleClass().setAll(STYLE_CLASS_ENDPOINT);
+        // 4 points (x,y) that make up a square with side length SIZE
         endpoint.getPoints().setAll(0D, 0D, 0D, SIZE, SIZE, SIZE, SIZE, 0D);
 
         group.setManaged(false);

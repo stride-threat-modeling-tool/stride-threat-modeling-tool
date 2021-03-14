@@ -1,5 +1,6 @@
 package ch.zhaw.controller;
 
+import ch.zhaw.connections.DataFlowConnectorValidator;
 import ch.zhaw.skin.DataFlowDiagramSkinController;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.DefaultGraphEditor;
@@ -30,7 +31,7 @@ public class MainController {
         graphEditorContainer.setGraphEditor(graphEditor);
         dfdSkinController = new DataFlowDiagramSkinController(graphEditor, graphEditorContainer);
         graphEditor.getView().getStyleClass().add(STYLE_CLASS_TITLED_SKINS);
-        graphEditor.setConnectorValidator(null);
+        graphEditor.setConnectorValidator(new DataFlowConnectorValidator());
         graphEditor.getProperties().setGridVisible(true);
     }
 

@@ -9,10 +9,15 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A square-shaped connector skin for the 'grey-skins' theme.
  */
-public class TitledConnectorSkin extends GConnectorSkin {
+public class DataFlowConnectorSkin extends GConnectorSkin {
+
+    private static final Logger LOGGER = Logger.getLogger("CONNECTOR SKIN");
 
     private static final String STYLE_CLASS = "connector";
     private static final String STYLE_CLASS_FORBIDDEN_GRAPHIC = "data-flow-forbidden-graphic";
@@ -28,11 +33,11 @@ public class TitledConnectorSkin extends GConnectorSkin {
     private final Group forbiddenGraphic;
 
     /**
-     * Creates a new {@link TitledConnectorSkin} instance.
+     * Creates a new {@link DataFlowConnectorSkin} instance.
      *
      * @param connector the {@link GConnector} that this skin is representing
      */
-    public TitledConnectorSkin(final GConnector connector) {
+    public DataFlowConnectorSkin(final GConnector connector) {
 
         super(connector);
 
@@ -64,6 +69,7 @@ public class TitledConnectorSkin extends GConnectorSkin {
     @Override
     public void applyStyle(final GConnectorStyle style) {
 
+        LOGGER.log(Level.INFO, style.toString());
         switch (style) {
 
         case DEFAULT:

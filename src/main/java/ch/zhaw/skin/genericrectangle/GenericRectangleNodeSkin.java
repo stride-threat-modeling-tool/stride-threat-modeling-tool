@@ -2,7 +2,7 @@ package ch.zhaw.skin.genericrectangle;
 
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
-import de.tesis.dynaware.grapheditor.core.connectors.DefaultConnectorTypes;
+import ch.zhaw.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
@@ -67,13 +67,13 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin {
 
                 final String type = connectorSkin.getItem().getType();
 
-                if (DefaultConnectorTypes.isTop(type)) {
+                if (DataFlowConnectorTypes.isTop(type)) {
                     topConnectorSkins.add(connectorSkin);
-                } else if (DefaultConnectorTypes.isRight(type)) {
+                } else if (DataFlowConnectorTypes.isRight(type)) {
                     rightConnectorSkins.add(connectorSkin);
-                } else if (DefaultConnectorTypes.isBottom(type)) {
+                } else if (DataFlowConnectorTypes.isBottom(type)) {
                     bottomConnectorSkins.add(connectorSkin);
-                } else if (DefaultConnectorTypes.isLeft(type)) {
+                } else if (DataFlowConnectorTypes.isLeft(type)) {
                     leftConnectorSkins.add(connectorSkin);
                 }
 
@@ -95,7 +95,7 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin {
 
         final Node connectorRoot = connectorSkin.getRoot();
 
-        final Side side = DefaultConnectorTypes.getSide(connectorSkin.getItem().getType());
+        final Side side = DataFlowConnectorTypes.getSide(connectorSkin.getItem().getType());
 
         // The following logic is required because the connectors are offset slightly from the node edges.
         final double x, y;
@@ -218,7 +218,7 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin {
 
         final String type = connector.getType();
 
-        if (type.equals(DefaultConnectorTypes.LEFT_INPUT) || type.equals(DefaultConnectorTypes.RIGHT_OUTPUT)) {
+        if (type.equals(DataFlowConnectorTypes.LEFT) || type.equals(DataFlowConnectorTypes.RIGHT)) {
             return MINOR_POSITIVE_OFFSET;
         } else {
             return MINOR_NEGATIVE_OFFSET;
@@ -236,7 +236,7 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin {
 
         final String type = connector.getType();
 
-        if (type.equals(DefaultConnectorTypes.TOP_INPUT) || type.equals(DefaultConnectorTypes.BOTTOM_OUTPUT)) {
+        if (type.equals(DataFlowConnectorTypes.TOP) || type.equals(DataFlowConnectorTypes.BOTTOM)) {
             return MINOR_POSITIVE_OFFSET;
         } else {
             return MINOR_NEGATIVE_OFFSET;

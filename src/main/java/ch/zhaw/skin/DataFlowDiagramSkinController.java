@@ -1,11 +1,10 @@
 package ch.zhaw.skin;
 
+import ch.zhaw.connections.DataFlowConnectorValidator;
 import ch.zhaw.skin.datastore.DataStoreNodeSkin;
 import ch.zhaw.skin.externalentity.ExternalEntityNodeSkin;
 import de.tesis.dynaware.grapheditor.*;
-import de.tesis.dynaware.grapheditor.core.connectors.DefaultConnectorTypes;
-import de.tesis.dynaware.grapheditor.core.skins.defaults.DefaultConnectorSkin;
-import de.tesis.dynaware.grapheditor.core.skins.defaults.DefaultTailSkin;
+import ch.zhaw.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.*;
 import javafx.geometry.Side;
@@ -43,26 +42,26 @@ public class DataFlowDiagramSkinController implements SkinController {
         final GNode node = GraphFactory.eINSTANCE.createGNode();
         node.setY(NODE_INITIAL_Y + windowYOffset);
 
-        node.setType(TitledSkinConstants.TITLED_NODE);
+        node.setType(DataFlowSkinConstants.DFD_NODE);
         node.setX(NODE_INITIAL_X + windowXOffset);
         node.setId(allocateNewId());
 
-        // A node has 2 inputs (left / top) and 2 outputs (right / bottom) for now
-        final GConnector leftInput = GraphFactory.eINSTANCE.createGConnector();
-        node.getConnectors().add(leftInput);
-        leftInput.setType(TitledSkinConstants.TITLED_LEFT_INPUT_CONNECTOR);
+        // A node has 4 bidirectional connectors
+        final GConnector left = GraphFactory.eINSTANCE.createGConnector();
+        node.getConnectors().add(left);
+        left.setType(DataFlowSkinConstants.DFD_LEFT_CONNECTOR);
 
-        final GConnector topInput = GraphFactory.eINSTANCE.createGConnector();
-        node.getConnectors().add(topInput);
-        topInput.setType(TitledSkinConstants.TITLED_TOP_INPUT_CONNECTOR);
+        final GConnector top = GraphFactory.eINSTANCE.createGConnector();
+        node.getConnectors().add(top);
+        top.setType(DataFlowSkinConstants.DFD_TOP_CONNECTOR);
 
-        final GConnector rightOutput = GraphFactory.eINSTANCE.createGConnector();
-        node.getConnectors().add(rightOutput);
-        rightOutput.setType(TitledSkinConstants.TITLED_RIGHT_OUTPUT_CONNECTOR);
+        final GConnector right = GraphFactory.eINSTANCE.createGConnector();
+        node.getConnectors().add(right);
+        right.setType(DataFlowSkinConstants.DFD_RIGHT_CONNECTOR);
 
-        final GConnector bottomOutput = GraphFactory.eINSTANCE.createGConnector();
-        node.getConnectors().add(bottomOutput);
-        bottomOutput.setType(TitledSkinConstants.TITLED_BOTTOM_OUTPUT_CONNECTOR);
+        final GConnector bottom = GraphFactory.eINSTANCE.createGConnector();
+        node.getConnectors().add(bottom);
+        bottom.setType(DataFlowSkinConstants.DFD_BOTTOM_CONNECTOR);
 
         Commands.addNode(graphEditor.getModel(), node);
     }
@@ -98,7 +97,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     @Override
     public void addConnector(Side position, boolean input) {
-        final String type = getType(position, input);
+        final String type = getType(position);
 
         final GModel model = graphEditor.getModel();
         final SkinLookup skinLookup = graphEditor.getSkinLookup();
@@ -111,6 +110,7 @@ public class DataFlowDiagramSkinController implements SkinController {
                 if (countConnectors(node, position) < MAX_CONNECTOR_COUNT) {
 
                     final GConnector connector = GraphFactory.eINSTANCE.createGConnector();
+                    System.out.println(type);
                     connector.setType(type);
 
                     final EReference connectors = GraphPackage.Literals.GNODE__CONNECTORS;
@@ -125,28 +125,16 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     }
 
-    private String getType(Side position, boolean input) {
+    private String getType(Side position) {
         switch (position) {
             case TOP:
-                if (input) {
-                    return DefaultConnectorTypes.TOP_INPUT;
-                }
-                return DefaultConnectorTypes.TOP_OUTPUT;
+                return DataFlowConnectorTypes.TOP;
             case RIGHT:
-                if (input) {
-                    return DefaultConnectorTypes.RIGHT_INPUT;
-                }
-                return DefaultConnectorTypes.RIGHT_OUTPUT;
+                return DataFlowConnectorTypes.RIGHT;
             case BOTTOM:
-                if (input) {
-                    return DefaultConnectorTypes.BOTTOM_INPUT;
-                }
-                return DefaultConnectorTypes.BOTTOM_OUTPUT;
+                return DataFlowConnectorTypes.BOTTOM;
             case LEFT:
-                if (input) {
-                    return DefaultConnectorTypes.LEFT_INPUT;
-                }
-                return DefaultConnectorTypes.LEFT_OUTPUT;
+                return DataFlowConnectorTypes.LEFT;
         }
         return null;
     }
@@ -156,7 +144,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         int count = 0;
 
         for (final GConnector connector : node.getConnectors()) {
-            if (side.equals(DefaultConnectorTypes.getSide(connector.getType()))) {
+            if (side.equals(DataFlowConnectorTypes.getSide(connector.getType()))) {
                 count++;
             }
         }
@@ -186,13 +174,12 @@ public class DataFlowDiagramSkinController implements SkinController {
         return new DataFlowJointSkin(joint);
     }
 
-
     private GConnectorSkin createConnectorSkin(final GConnector connector) {
-        return new TitledConnectorSkin(connector);
+        return new DataFlowConnectorSkin(connector);
     }
 
     private GTailSkin createTailSkin(final GConnector connector) {
-        return new TitledTailSkin(connector);
+        return new DataFlowTailSkin(connector);
     }
 
 }
