@@ -13,11 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A square-shaped connector skin for the 'grey-skins' theme.
+ * A square-shaped connector skin for Dataflow nodes.
  */
 public class DataFlowConnectorSkin extends GConnectorSkin {
-
-    private static final Logger LOGGER = Logger.getLogger("CONNECTOR SKIN");
 
     private static final String STYLE_CLASS = "connector";
     private static final String STYLE_CLASS_FORBIDDEN_GRAPHIC = "data-flow-forbidden-graphic";
@@ -69,7 +67,6 @@ public class DataFlowConnectorSkin extends GConnectorSkin {
     @Override
     public void applyStyle(final GConnectorStyle style) {
 
-        LOGGER.log(Level.INFO, style.toString());
         switch (style) {
 
         case DEFAULT:
