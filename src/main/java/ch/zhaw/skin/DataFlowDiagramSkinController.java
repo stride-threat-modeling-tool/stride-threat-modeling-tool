@@ -1,6 +1,5 @@
 package ch.zhaw.skin;
 
-import ch.zhaw.connections.DataFlowConnectorValidator;
 import ch.zhaw.skin.datastore.DataStoreNodeSkin;
 import ch.zhaw.skin.externalentity.ExternalEntityNodeSkin;
 import de.tesis.dynaware.grapheditor.*;
@@ -110,7 +109,6 @@ public class DataFlowDiagramSkinController implements SkinController {
                 if (countConnectors(node, position) < MAX_CONNECTOR_COUNT) {
 
                     final GConnector connector = GraphFactory.eINSTANCE.createGConnector();
-                    System.out.println(type);
                     connector.setType(type);
 
                     final EReference connectors = GraphPackage.Literals.GNODE__CONNECTORS;
