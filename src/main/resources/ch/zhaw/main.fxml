@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-<?import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<AnchorPane fx:id="root" xmlns:fx="http://javafx.com/fxml" fx:controller="ch.zhaw.controller.MainController">
-    <VBox AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
-        <MenuBar fx:id="menuBar">
-            <Menu text="Actions">
-                <items>
-                    <MenuItem text="Add data store" onAction="#addDataStore"/>
-                    <MenuItem text="Add external entity" onAction="#addExternalEntity"/>
-                </items>
-            </Menu>
-        </MenuBar>
-        <GraphEditorContainer  fx:id="graphEditorContainer" minWidth="0" minHeight="0" maxWidth="+Infinity" maxHeight="+Infinity" VBox.vgrow="ALWAYS"/>
-        <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-        </padding>
-    </VBox>
+<AnchorPane fx:id="root" minHeight="600" minWidth="800" prefHeight="1000" prefWidth="1200" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.zhaw.controller.MainController">
+    <MenuBar fx:id="menuBar" layoutX="19.0" AnchorPane.leftAnchor="-20.0" AnchorPane.rightAnchor="-20.0">
+        <Menu text="Actions">
+            <MenuItem onAction="#addDataStore" text="Add data store" />
+            <MenuItem onAction="#addExternalEntity" text="Add external entity" />
+        </Menu>
+    </MenuBar>
+    <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+       <VBox fx:id="graphEditorParent">
+       </VBox>
+        <VBox fillWidth="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600" minWidth="266.66" prefHeight="1000" prefWidth="300">
+        </VBox>
+    </HBox>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
+    </padding>
 </AnchorPane>
