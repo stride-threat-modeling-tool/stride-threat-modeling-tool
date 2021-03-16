@@ -2,7 +2,6 @@ package ch.zhaw.skin;
 
 import ch.zhaw.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.GTailSkin;
-import de.tesis.dynaware.grapheditor.core.connectors.DefaultConnectorTypes;
 import de.tesis.dynaware.grapheditor.core.skins.defaults.tail.RectangularPathCreator;
 import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
@@ -136,7 +135,7 @@ public class DataFlowTailSkin extends GTailSkin {
         clearPoints();
         addPoint(start);
 
-        if (DefaultConnectorTypes.getSide(getItem().getType()).isVertical()) {
+        if (DataFlowConnectorTypes.getSide(getItem().getType()).isVertical()) {
             addPoint((start.getX() + end.getX()) / 2, start.getY());
             addPoint((start.getX() + end.getX()) / 2, end.getY());
         } else {
@@ -160,8 +159,8 @@ public class DataFlowTailSkin extends GTailSkin {
         clearPoints();
         addPoint(start);
 
-        final Side startSide = DefaultConnectorTypes.getSide(getItem().getType());
-        final Side endSide = DefaultConnectorTypes.getSide(target.getType());
+        final Side startSide = DataFlowConnectorTypes.getSide(getItem().getType());
+        final Side endSide = DataFlowConnectorTypes.getSide(target.getType());
 
         final List<Point2D> points = RectangularPathCreator.createPath(start, end, startSide, endSide);
         points.stream().forEachOrdered(point -> addPoint(point));
