@@ -42,6 +42,8 @@ public class DataFlowTailSkin extends GTailSkin {
 
         super(connector);
 
+        performChecks();
+
         line.getStyleClass().setAll(STYLE_CLASS);
         endpoint.getStyleClass().setAll(STYLE_CLASS_ENDPOINT);
         // 4 points (x,y) that make up a square with side length SIZE
