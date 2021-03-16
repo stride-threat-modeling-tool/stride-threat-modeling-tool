@@ -9,9 +9,6 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A square-shaped connector skin for Dataflow nodes.
  */
