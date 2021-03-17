@@ -6,7 +6,7 @@
 
 <AnchorPane fx:id="root" minHeight="600" minWidth="800" prefHeight="1000" prefWidth="1200" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.zhaw.controller.MainController">
     <MenuBar fx:id="menuBar" layoutX="19.0" AnchorPane.leftAnchor="-20.0" AnchorPane.rightAnchor="-20.0">
-        <Menu text="Actions">
+        <Menu text="File">
             <MenuItem onAction="#addDataStore" text="Add data store" />
             <MenuItem onAction="#addExternalEntity" text="Add external entity" />
         </Menu>
@@ -18,25 +18,37 @@
          <children>
             <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Stencils" VBox.vgrow="ALWAYS">
                <content>
-                    <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0">
+                    <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                      <children>
-                        <Label text="Data Store" onMouseClicked="#addDataStore"/>
-                        <Label text="External Entity" onMouseClicked="#addExternalEntity"/>
+                        <Label onMouseClicked="#addDataStore" text="Data Store" />
+                        <Label onMouseClicked="#addExternalEntity" text="External Entity" />
                      </children></VBox>
                </content>
             </TitledPane>
             <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Element Properties" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
+                  <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0" VBox.vgrow="ALWAYS">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding></VBox>
+                     </padding>
+                     <children>
+                        <Label text="NODE_TYPE" />
+                        <HBox prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label text="Text:" />
+                              <TextField />
+                           </children>
+                        </HBox>
+                     </children></VBox>
                </content>
             </TitledPane>
-         </children></VBox>
+         </children>
+         <HBox.margin>
+            <Insets left="20.0" />
+         </HBox.margin></VBox>
       <padding>
          <Insets top="15.0" />
       </padding>
