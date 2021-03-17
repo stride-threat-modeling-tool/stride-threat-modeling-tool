@@ -14,8 +14,32 @@
     <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
        <VBox fx:id="graphEditorParent">
        </VBox>
-        <VBox fillWidth="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600" minWidth="266.66" prefHeight="1000" prefWidth="300">
-        </VBox>
+        <VBox fillWidth="false" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="600" minWidth="266.66" prefHeight="1000" prefWidth="300">
+         <children>
+            <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Stencils" VBox.vgrow="ALWAYS">
+               <content>
+                    <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <children>
+                        <Label text="Data Store" onMouseClicked="#addDataStore"/>
+                        <Label text="External Entity" onMouseClicked="#addExternalEntity"/>
+                     </children></VBox>
+               </content>
+            </TitledPane>
+            <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Element Properties" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding></VBox>
+               </content>
+            </TitledPane>
+         </children></VBox>
+      <padding>
+         <Insets top="15.0" />
+      </padding>
     </HBox>
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
