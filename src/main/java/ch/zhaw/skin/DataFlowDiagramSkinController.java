@@ -6,7 +6,10 @@ import de.tesis.dynaware.grapheditor.*;
 import ch.zhaw.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.*;
+import javafx.event.EventHandler;
 import javafx.geometry.Side;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.edit.command.AddCommand;
@@ -15,14 +18,18 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DataFlowDiagramSkinController implements SkinController {
-
     protected final GraphEditor graphEditor;
     protected final GraphEditorContainer graphEditorContainer;
     protected static final int NODE_INITIAL_X = 19;
     protected static final int NODE_INITIAL_Y = 19;
     private static final int MAX_CONNECTOR_COUNT = 5;
+    private static final Logger LOGGER = Logger.getLogger("DataFlowController");
+
+    private DataFlowElement currentSelectedElement;
 
 
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container) {
@@ -160,16 +167,33 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     }
 
+    private EventHandler<MouseEvent> createClickDataFlowElementHandler(DataFlowElement element){
+        return mouseEvent -> {
+            if(MouseButton.PRIMARY.equals(mouseEvent.getButton())){
+                LOGGER.info("clicked on data flow element");
+                this.currentSelectedElement = element;
+            }
+            mouseEvent.consume();
+        };
+    }
+
     private GNodeSkin createDataStoreSkin(final GNode node) {
-        return new DataStoreNodeSkin(node);
+        DataStoreNodeSkin skin = new DataStoreNodeSkin(node);
+        skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
+        return skin;
     }
 
     private GNodeSkin createExternalEntitySkin(final GNode node) {
-        return new ExternalEntityNodeSkin(node);
+        ExternalEntityNodeSkin skin = new ExternalEntityNodeSkin(node);
+        skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
+        return skin;
     }
 
     private GJointSkin createJointSkin(final GJoint joint){
-        return new DataFlowJointSkin(joint);
+
+        DataFlowJointSkin skin = new DataFlowJointSkin(joint);
+        skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
+        return skin;
     }
 
     private GConnectorSkin createConnectorSkin(final GConnector connector) {

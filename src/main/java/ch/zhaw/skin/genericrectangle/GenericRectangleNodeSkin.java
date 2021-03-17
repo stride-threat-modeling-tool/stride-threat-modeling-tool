@@ -1,5 +1,6 @@
 package ch.zhaw.skin.genericrectangle;
 
+import ch.zhaw.skin.DataFlowElement;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import ch.zhaw.connectors.DataFlowConnectorTypes;
@@ -7,9 +8,11 @@ import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
 import javafx.css.PseudoClass;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -17,7 +20,7 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GenericRectangleNodeSkin extends GNodeSkin {
+public abstract class GenericRectangleNodeSkin extends GNodeSkin implements DataFlowElement {
 
 
     protected static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
@@ -38,6 +41,24 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin {
 
 
     protected final VBox contentRoot = new VBox();
+
+    private String text = "DATAFLOW JOINT";
+    public static final String ELEMENT_TYPE = "Data Flow";
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
+    public String getElementType() {
+        return ELEMENT_TYPE;
+    }
 
     /**
      * Creates a new {@link GNodeSkin}.
@@ -255,4 +276,8 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin {
     }
 
     protected abstract void createContent();
+
+    public void setHasBeenSelectedHandler(EventHandler<MouseEvent> hasBeenSelectedHandler) {
+        getRoot().setOnMouseClicked(hasBeenSelectedHandler);
+    }
 }
