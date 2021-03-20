@@ -23,7 +23,7 @@ public class DataStoreNodeSkin extends GenericRectangleNodeSkin {
     public DataStoreNodeSkin(final GNode node) {
 
         super(node);
-
+        typeProperty().set(TITLE_TEXT);
         Rectangle border = new Rectangle();
         border.widthProperty().bind(getRoot().widthProperty());
         border.heightProperty().bind(getRoot().heightProperty());
@@ -45,10 +45,5 @@ public class DataStoreNodeSkin extends GenericRectangleNodeSkin {
     @Override
     protected void createContent() {
         createGenericContent(STYLE_CLASS_BACKGROUND, TITLE_TEXT);
-    }
-
-    @Override
-    public String getElementType() {
-        return "Data Store";
     }
 }

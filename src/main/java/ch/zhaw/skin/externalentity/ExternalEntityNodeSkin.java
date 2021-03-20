@@ -14,6 +14,7 @@ public class ExternalEntityNodeSkin extends DataStoreNodeSkin {
      */
     public ExternalEntityNodeSkin(GNode node) {
         super(node);
+        typeProperty().set(TITLE_TEXT);
     }
 
     @Override

@@ -20,7 +20,13 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     public static final String ELEMENT_TYPE = "Data Flow";
 
     private final StringProperty text = new SimpleStringProperty();
+    private final StringProperty type = new SimpleStringProperty();
     private final Label label = new Label();
+
+    public StringProperty typeProperty(){
+        return type;
+    }
+
     public StringProperty textProperty() {
         return text;
     }
@@ -42,7 +48,8 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
      */
     public DataFlowJointSkin(GJoint joint) {
         super(joint);
-        setText("data flow");
+        setText(ELEMENT_TYPE);
+        type.set(ELEMENT_TYPE);
         StackPane pane = new StackPane();
         label.boundsInLocalProperty().addListener((observableValue, bounds, t1) -> {
             getRoot().resize(label.getWidth() + WIDTH_OFFSET, label.getHeight());
@@ -70,11 +77,6 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
 
     @Override
     protected void selectionChanged(boolean isSelected) {
-    }
-
-    @Override
-    public String getElementType() {
-        return ELEMENT_TYPE;
     }
 
     @Override

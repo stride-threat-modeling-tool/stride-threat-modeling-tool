@@ -5,7 +5,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
 public interface DataFlowElement {
-    String getElementType();
+    StringProperty typeProperty();
 
     String getText();
 

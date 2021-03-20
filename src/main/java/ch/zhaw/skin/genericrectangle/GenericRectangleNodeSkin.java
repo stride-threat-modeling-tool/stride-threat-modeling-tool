@@ -46,6 +46,8 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
     protected final VBox contentRoot = new VBox();
 
     private final StringProperty text = new SimpleStringProperty();
+    private final StringProperty type = new SimpleStringProperty();
+
 
     @Override
     public String getText() {
@@ -56,6 +58,12 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
     public StringProperty textProperty(){
         return text;
     }
+
+    @Override
+    public StringProperty typeProperty(){
+        return type;
+    }
+
 
     @Override
     public void setText(String newText) {
@@ -71,10 +79,6 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
         super(node);
     }
 
-    public VBox getContentRoot() {
-        return contentRoot;
-    }
-
     @Override
     public void setConnectorSkins(final List<GConnectorSkin> connectorSkins) {
 
@@ -88,15 +92,15 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
         if (connectorSkins != null) {
             for (final GConnectorSkin connectorSkin : connectorSkins) {
 
-                final String type = connectorSkin.getItem().getType();
+                final String connectorType = connectorSkin.getItem().getType();
 
-                if (DataFlowConnectorTypes.isTop(type)) {
+                if (DataFlowConnectorTypes.isTop(connectorType)) {
                     topConnectorSkins.add(connectorSkin);
-                } else if (DataFlowConnectorTypes.isRight(type)) {
+                } else if (DataFlowConnectorTypes.isRight(connectorType)) {
                     rightConnectorSkins.add(connectorSkin);
-                } else if (DataFlowConnectorTypes.isBottom(type)) {
+                } else if (DataFlowConnectorTypes.isBottom(connectorType)) {
                     bottomConnectorSkins.add(connectorSkin);
-                } else if (DataFlowConnectorTypes.isLeft(type)) {
+                } else if (DataFlowConnectorTypes.isLeft(connectorType)) {
                     leftConnectorSkins.add(connectorSkin);
                 }
 
@@ -239,9 +243,9 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
      */
     private double getMinorOffsetX(final GConnector connector) {
 
-        final String type = connector.getType();
+        final String connectorType = connector.getType();
 
-        if (type.equals(DataFlowConnectorTypes.LEFT) || type.equals(DataFlowConnectorTypes.RIGHT)) {
+        if (connectorType.equals(DataFlowConnectorTypes.LEFT) || connectorType.equals(DataFlowConnectorTypes.RIGHT)) {
             return MINOR_POSITIVE_OFFSET;
         } else {
             return MINOR_NEGATIVE_OFFSET;
@@ -257,9 +261,9 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
      */
     private double getMinorOffsetY(final GConnector connector) {
 
-        final String type = connector.getType();
+        final String connectorType = connector.getType();
 
-        if (type.equals(DataFlowConnectorTypes.TOP) || type.equals(DataFlowConnectorTypes.BOTTOM)) {
+        if (connectorType.equals(DataFlowConnectorTypes.TOP) || connectorType.equals(DataFlowConnectorTypes.BOTTOM)) {
             return MINOR_POSITIVE_OFFSET;
         } else {
             return MINOR_NEGATIVE_OFFSET;
@@ -279,7 +283,7 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
 
     protected abstract void createContent();
 
-    protected void createGenericContent(String stlyeclass, String text) {
+    protected void createGenericContent(String styleClass, String text) {
         setText(text);
         Label label = new Label(getText());
         label.textProperty().bindBidirectional(textProperty());
@@ -287,7 +291,7 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
         getRoot().getChildren().add(contentRoot);
 
         contentRoot.setAlignment(Pos.CENTER);
-        contentRoot.getStyleClass().setAll(stlyeclass);
+        contentRoot.getStyleClass().setAll(styleClass);
     }
 
     public void setHasBeenSelectedHandler(EventHandler<MouseEvent> hasBeenSelectedHandler) {

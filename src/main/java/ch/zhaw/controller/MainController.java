@@ -56,17 +56,18 @@ public class MainController {
         graphEditor.setConnectorValidator(new DataFlowConnectorValidator());
         graphEditor.getProperties().setGridVisible(true);
 
-        bindTextFieldToCurrentElement();
+        bindTextFieldsToCurrentElement();
 
     }
 
-    private void bindTextFieldToCurrentElement() {
+    private void bindTextFieldsToCurrentElement() {
         dfdSkinController.getCurrentElement().addListener((observableValue, oldVal, newVal) -> {
             if(oldVal != null) {
                 editTextTextField.textProperty().unbindBidirectional(oldVal.textProperty());
+                nodeTypeLabel.textProperty().unbindBidirectional(oldVal.typeProperty());
             }
             editTextTextField.textProperty().bindBidirectional(newVal.textProperty());
-            editTextTextField.setText(newVal.getText());
+            nodeTypeLabel.textProperty().bindBidirectional(newVal.typeProperty());
         });
     }
 
