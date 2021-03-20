@@ -1,4 +1,4 @@
-package ch.zhaw.connectors;
+package ch.zhaw.threatmodeling.skin.connectors;
 
 import javafx.geometry.Side;
 

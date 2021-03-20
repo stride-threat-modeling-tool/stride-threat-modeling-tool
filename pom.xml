@@ -88,7 +88,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.3</version>
                 <configuration>
-                    <mainClass>ch.zhaw.App</mainClass>
+                    <mainClass>ch.zhaw.threatmodeling.App</mainClass>
                 </configuration>
             </plugin>
         </plugins>

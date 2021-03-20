@@ -1,6 +1,6 @@
-package ch.zhaw.skin.externalentity;
+package ch.zhaw.threatmodeling.skin.nodes.externalentity;
 
-import ch.zhaw.skin.datastore.DataStoreNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GNode;
 
 public class ExternalEntityNodeSkin extends DataStoreNodeSkin {

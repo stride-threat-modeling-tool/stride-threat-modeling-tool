@@ -1,5 +1,5 @@
-package ch.zhaw;
-import ch.zhaw.controller.MainController;
+package ch.zhaw.threatmodeling;
+import ch.zhaw.threatmodeling.controller.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

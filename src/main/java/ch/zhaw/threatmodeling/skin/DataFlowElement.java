@@ -1,4 +1,4 @@
-package ch.zhaw.skin;
+package ch.zhaw.threatmodeling.skin;
 
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;

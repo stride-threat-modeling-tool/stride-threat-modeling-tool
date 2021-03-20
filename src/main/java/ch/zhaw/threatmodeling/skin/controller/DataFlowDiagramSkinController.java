@@ -1,8 +1,12 @@
-package ch.zhaw.skin;
+package ch.zhaw.threatmodeling.skin.controller;
 
-import ch.zhaw.connectors.DataFlowConnectorTypes;
-import ch.zhaw.skin.datastore.DataStoreNodeSkin;
-import ch.zhaw.skin.externalentity.ExternalEntityNodeSkin;
+import ch.zhaw.threatmodeling.skin.*;
+import ch.zhaw.threatmodeling.skin.connectors.DataFlowConnectorSkin;
+import ch.zhaw.threatmodeling.skin.connectors.DataFlowConnectorTypes;
+import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;
+import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
+import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
 import de.tesis.dynaware.grapheditor.*;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.*;

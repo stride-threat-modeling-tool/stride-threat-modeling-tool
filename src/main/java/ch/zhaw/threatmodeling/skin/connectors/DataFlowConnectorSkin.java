@@ -1,4 +1,4 @@
-package ch.zhaw.skin;
+package ch.zhaw.threatmodeling.skin.connectors;
 
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GConnectorStyle;

@@ -1,4 +1,4 @@
-package ch.zhaw.skin;
+package ch.zhaw.threatmodeling.skin;
 
 /**
  * Some constants used by the grey skins.

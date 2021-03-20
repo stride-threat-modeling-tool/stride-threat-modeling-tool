@@ -1,5 +1,6 @@
-package ch.zhaw.skin;
+package ch.zhaw.threatmodeling.skin.joint;
 
+import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import de.tesis.dynaware.grapheditor.GJointSkin;
 import de.tesis.dynaware.grapheditor.model.GJoint;
 import javafx.beans.property.SimpleStringProperty;

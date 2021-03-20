@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="root" minHeight="600" minWidth="800" prefHeight="1000" prefWidth="1200" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.zhaw.controller.MainController">
+<AnchorPane fx:id="root" minHeight="600" minWidth="800" prefHeight="1000" prefWidth="1200" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.zhaw.threatmodeling.controller.MainController">
     <MenuBar fx:id="menuBar" layoutX="19.0" AnchorPane.leftAnchor="-20.0" AnchorPane.rightAnchor="-20.0">
         <Menu text="File">
             <MenuItem onAction="#addDataStore" text="Add data store" />

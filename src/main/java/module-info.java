@@ -9,11 +9,11 @@ module STRIDEModel {
     requires java.logging;
 
 
-    exports ch.zhaw  to javafx.graphics, javafx.fxml;
-    exports ch.zhaw.controller to javafx.graphics, javafx.fxml;
-    exports ch.zhaw.skin to javafx.graphics, javafx.fxml;
-    opens ch.zhaw to javafx.fxml;
-    opens ch.zhaw.controller to javafx.fxml;
-    opens ch.zhaw.skin to javafx.fxml;
+    exports ch.zhaw.threatmodeling  to javafx.graphics, javafx.fxml;
+    exports ch.zhaw.threatmodeling.controller to javafx.graphics, javafx.fxml;
+    exports ch.zhaw.threatmodeling.skin to javafx.graphics, javafx.fxml;
+    opens ch.zhaw.threatmodeling to javafx.fxml;
+    opens ch.zhaw.threatmodeling.controller to javafx.fxml;
+    opens ch.zhaw.threatmodeling.skin to javafx.fxml;
 
 }
