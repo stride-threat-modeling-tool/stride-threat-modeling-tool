@@ -1,9 +1,10 @@
 package ch.zhaw.threatmodeling.skin.nodes.genericrectangle;
 
-import ch.zhaw.threatmodeling.skin.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
+import ch.zhaw.threatmodeling.skin.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
+import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
@@ -218,9 +219,22 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
             layoutSelectionHalo();
             contentRoot.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
             getRoot().toFront();
+            setConnectorsSelected();
         } else {
             selectionHalo.setVisible(false);
             contentRoot.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+        }
+
+    }
+
+    public void setConnectorsSelected()
+    {
+        final GraphEditor editor = getGraphEditor();
+        if(editor != null) {
+           topConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
+           rightConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
+           leftConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
+           bottomConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
         }
     }
 
