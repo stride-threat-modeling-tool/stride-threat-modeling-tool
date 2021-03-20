@@ -1,15 +1,18 @@
 package ch.zhaw.skin.genericrectangle;
 
+import ch.zhaw.connectors.DataFlowConnectorTypes;
 import ch.zhaw.skin.DataFlowElement;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
-import ch.zhaw.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -22,7 +25,7 @@ import java.util.List;
 
 public abstract class GenericRectangleNodeSkin extends GNodeSkin implements DataFlowElement {
 
-
+    private static final String STYLE_CLASS_SELECTION_HALO = "node-selection-halo";
     protected static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
 
     protected static final double HALO_OFFSET = 5;
@@ -42,22 +45,21 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
 
     protected final VBox contentRoot = new VBox();
 
-    private String text = "DATAFLOW JOINT";
-    public static final String ELEMENT_TYPE = "Data Flow";
+    private final StringProperty text = new SimpleStringProperty();
 
     @Override
     public String getText() {
+        return text.get();
+    }
+
+    @Override
+    public StringProperty textProperty(){
         return text;
     }
 
     @Override
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    @Override
-    public String getElementType() {
-        return ELEMENT_TYPE;
+    public void setText(String newText) {
+        text.set(newText);
     }
 
     /**
@@ -277,7 +279,36 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
 
     protected abstract void createContent();
 
+    protected void createGenericContent(String stlyeclass, String text) {
+        setText(text);
+        Label label = new Label(getText());
+        label.textProperty().bindBidirectional(textProperty());
+        contentRoot.getChildren().add(label);
+        getRoot().getChildren().add(contentRoot);
+
+        contentRoot.setAlignment(Pos.CENTER);
+        contentRoot.getStyleClass().setAll(stlyeclass);
+    }
+
     public void setHasBeenSelectedHandler(EventHandler<MouseEvent> hasBeenSelectedHandler) {
         getRoot().setOnMouseClicked(hasBeenSelectedHandler);
+    }
+
+
+    /**
+     * Adds the selection halo and initializes some of its values.
+     */
+    protected void addSelectionHalo() {
+
+        getRoot().getChildren().add(selectionHalo);
+
+        selectionHalo.setManaged(false);
+        selectionHalo.setMouseTransparent(false);
+        selectionHalo.setVisible(false);
+
+        selectionHalo.setLayoutX(-HALO_OFFSET);
+        selectionHalo.setLayoutY(-HALO_OFFSET);
+
+        selectionHalo.getStyleClass().add(STYLE_CLASS_SELECTION_HALO);
     }
 }

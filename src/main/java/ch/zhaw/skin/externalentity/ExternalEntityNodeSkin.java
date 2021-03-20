@@ -2,12 +2,9 @@ package ch.zhaw.skin.externalentity;
 
 import ch.zhaw.skin.datastore.DataStoreNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GNode;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 
 public class ExternalEntityNodeSkin extends DataStoreNodeSkin {
-    private static final String TITLE_TEXT = "External\nEntity";
+    private static final String TITLE_TEXT = "External Entity";
     private static final String STYLE_CLASS_BACKGROUND = "external-entity-node-background";
 
     /**
@@ -21,11 +18,6 @@ public class ExternalEntityNodeSkin extends DataStoreNodeSkin {
 
     @Override
     protected void createContent() {
-        VBox contentRoot = super.getContentRoot();
-        contentRoot.getChildren().add(new Label(TITLE_TEXT));
-        getRoot().getChildren().add(contentRoot);
-
-        contentRoot.setAlignment(Pos.CENTER);
-        contentRoot.getStyleClass().setAll(STYLE_CLASS_BACKGROUND);
+        createGenericContent(STYLE_CLASS_BACKGROUND, TITLE_TEXT);
     }
 }

@@ -9,16 +9,21 @@ import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.logging.Logger;
+
 public class MainController {
+    private static final Logger LOGGER = Logger.getLogger("Main controller");
     private final GraphEditor graphEditor = new DefaultGraphEditor();
 
-    private static final String STYLE_CLASS_TITLED_SKINS = "data-flow-diagram-skin";
+    private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     @FXML
     public VBox graphEditorParent;
 
@@ -28,6 +33,12 @@ public class MainController {
     private AnchorPane root;
     @FXML
     private MenuBar menuBar;
+
+    @FXML
+    private TextField editTextTextField;
+
+    @FXML
+    private Label nodeTypeLabel;
 
     public void initialize() {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
@@ -41,9 +52,22 @@ public class MainController {
 
         graphEditorContainer.setGraphEditor(graphEditor);
         dfdSkinController = new DataFlowDiagramSkinController(graphEditor, graphEditorContainer);
-        graphEditor.getView().getStyleClass().add(STYLE_CLASS_TITLED_SKINS);
+        graphEditor.getView().getStyleClass().add(STYLE_CLASS_SKINS);
         graphEditor.setConnectorValidator(new DataFlowConnectorValidator());
         graphEditor.getProperties().setGridVisible(true);
+
+        bindTextFieldToCurrentElement();
+
+    }
+
+    private void bindTextFieldToCurrentElement() {
+        dfdSkinController.getCurrentElement().addListener((observableValue, oldVal, newVal) -> {
+            if(oldVal != null) {
+                editTextTextField.textProperty().unbindBidirectional(oldVal.textProperty());
+            }
+            editTextTextField.textProperty().bindBidirectional(newVal.textProperty());
+            editTextTextField.setText(newVal.getText());
+        });
     }
 
     private void setGrowth(Node node) {

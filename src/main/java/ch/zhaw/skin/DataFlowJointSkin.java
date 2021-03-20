@@ -2,12 +2,13 @@ package ch.zhaw.skin;
 
 import de.tesis.dynaware.grapheditor.GJointSkin;
 import de.tesis.dynaware.grapheditor.model.GJoint;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
@@ -16,10 +17,23 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     public static final String DATAFLOW_JOINT_CLASS = "data-flow-joint";
     public static final int WIDTH_OFFSET = 10;
     public static final int MAX_LENGTH = 45;
-
-
-    private String text = "DATAFLOW JOINT";
     public static final String ELEMENT_TYPE = "Data Flow";
+
+    private final StringProperty text = new SimpleStringProperty();
+    private final Label label = new Label();
+    public StringProperty textProperty() {
+        return text;
+    }
+
+    @Override
+    public String getText() {
+        return text.get();
+    }
+
+    @Override
+    public void setText(String newText) {
+        text.set(newText);
+    }
 
     /**
      * Creates a new {@link GJointSkin}.
@@ -28,12 +42,12 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
      */
     public DataFlowJointSkin(GJoint joint) {
         super(joint);
-        //Label label =
-        Label label = new Label(text);
+        setText("data flow");
         StackPane pane = new StackPane();
         label.boundsInLocalProperty().addListener((observableValue, bounds, t1) -> {
             getRoot().resize(label.getWidth() + WIDTH_OFFSET, label.getHeight());
         });
+        label.textProperty().bindBidirectional(textProperty());
 
         pane.getChildren().add(label);
         pane.setMouseTransparent(true);
@@ -61,17 +75,6 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     @Override
     public String getElementType() {
         return ELEMENT_TYPE;
-    }
-
-    @Override
-    public String getText() {
-        return text;
-    }
-
-    @Override
-    public void setText(String text) {
-        LOGGER.log(Level.INFO, text);
-        this.text = text;
     }
 
     @Override

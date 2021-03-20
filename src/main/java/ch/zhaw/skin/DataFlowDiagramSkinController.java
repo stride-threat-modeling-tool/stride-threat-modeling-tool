@@ -1,11 +1,13 @@
 package ch.zhaw.skin;
 
+import ch.zhaw.connectors.DataFlowConnectorTypes;
 import ch.zhaw.skin.datastore.DataStoreNodeSkin;
 import ch.zhaw.skin.externalentity.ExternalEntityNodeSkin;
 import de.tesis.dynaware.grapheditor.*;
-import ch.zhaw.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.input.MouseButton;
@@ -18,7 +20,6 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataFlowDiagramSkinController implements SkinController {
@@ -29,8 +30,11 @@ public class DataFlowDiagramSkinController implements SkinController {
     private static final int MAX_CONNECTOR_COUNT = 5;
     private static final Logger LOGGER = Logger.getLogger("DataFlowController");
 
-    private DataFlowElement currentSelectedElement;
+    private final ObjectProperty<DataFlowElement> currentElement = new SimpleObjectProperty<>();
 
+    public ObjectProperty<DataFlowElement> getCurrentElement(){
+        return currentElement;
+    }
 
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container) {
         this.graphEditor = graphEditor;
@@ -39,6 +43,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         graphEditor.setTailSkinFactory(this::createTailSkin);
         graphEditor.setJointSkinFactory(this::createJointSkin);
     }
+
 
     @Override
     public void addNode(double currentZoomFactor) {
@@ -171,7 +176,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         return mouseEvent -> {
             if(MouseButton.PRIMARY.equals(mouseEvent.getButton())){
                 LOGGER.info("clicked on data flow element");
-                this.currentSelectedElement = element;
+                this.currentElement.set(element);
             }
             mouseEvent.consume();
         };
