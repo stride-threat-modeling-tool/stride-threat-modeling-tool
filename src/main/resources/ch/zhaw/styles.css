@@ -99,3 +99,18 @@
     -fx-stroke-type: inside;
 
 }
+.node-selection-halo {
+    -fx-stroke: -halo-color;
+    -fx-opacity: 0.6;
+    -fx-stroke-type: inside;
+    -fx-stroke-line-cap: butt;
+    -fx-fill: null;
+}
+
+.root {
+    -background-color: rgba(240, 235, 242, 0.9);
+    -border-color: rgba(160, 160, 160, 0.8);
+    -halo-color: rgba(80, 80, 80, 0.8);
+}
+
+
