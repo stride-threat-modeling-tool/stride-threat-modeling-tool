@@ -1,5 +1,6 @@
 package ch.zhaw.threatmodeling.skin.connectors;
 
+import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GConnectorStyle;
 import de.tesis.dynaware.grapheditor.model.GConnector;
@@ -9,19 +10,18 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
+import java.util.logging.Logger;
+
 /**
  * A square-shaped connector skin for Dataflow nodes.
  */
 public class DataFlowConnectorSkin extends GConnectorSkin {
 
+    private static final Logger LOGGER = Logger.getLogger("Connector skin");
     private static final String STYLE_CLASS = "connector";
     private static final String STYLE_CLASS_FORBIDDEN_GRAPHIC = "data-flow-forbidden-graphic";
 
     private static final double SIZE = 15;
-
-    private static final PseudoClass PSEUDO_CLASS_ALLOWED = PseudoClass.getPseudoClass("allowed");
-    private static final PseudoClass PSEUDO_CLASS_FORBIDDEN = PseudoClass.getPseudoClass("forbidden");
-    private static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
 
     private final Pane root = new Pane();
 
@@ -67,20 +67,20 @@ public class DataFlowConnectorSkin extends GConnectorSkin {
         switch (style) {
 
         case DEFAULT:
-            root.pseudoClassStateChanged(PSEUDO_CLASS_FORBIDDEN, false);
-            root.pseudoClassStateChanged(PSEUDO_CLASS_ALLOWED, false);
+            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, false);
+            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, false);
             forbiddenGraphic.setVisible(false);
             break;
 
         case DRAG_OVER_ALLOWED:
-            root.pseudoClassStateChanged(PSEUDO_CLASS_FORBIDDEN, false);
-            root.pseudoClassStateChanged(PSEUDO_CLASS_ALLOWED, true);
+            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, false);
+            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, true);
             forbiddenGraphic.setVisible(false);
             break;
 
         case DRAG_OVER_FORBIDDEN:
-            root.pseudoClassStateChanged(PSEUDO_CLASS_FORBIDDEN, true);
-            root.pseudoClassStateChanged(PSEUDO_CLASS_ALLOWED, false);
+            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, true);
+            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, false);
             forbiddenGraphic.setVisible(true);
             break;
         }
@@ -89,9 +89,9 @@ public class DataFlowConnectorSkin extends GConnectorSkin {
     @Override
     protected void selectionChanged(boolean isSelected) {
         if (isSelected) {
-            root.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_SELECTED, true);
         } else {
-            root.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_SELECTED, false);
         }
     }
 
