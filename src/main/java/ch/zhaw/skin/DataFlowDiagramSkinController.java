@@ -58,23 +58,21 @@ public class DataFlowDiagramSkinController implements SkinController {
         node.setId(allocateNewId());
 
         // A node has 4 bidirectional connectors
-        final GConnector left = GraphFactory.eINSTANCE.createGConnector();
-        node.getConnectors().add(left);
-        left.setType(DataFlowSkinConstants.DFD_LEFT_CONNECTOR);
+        addConnectorToNode(node, DataFlowSkinConstants.DFD_BOTTOM_CONNECTOR);
+        addConnectorToNode(node, DataFlowSkinConstants.DFD_TOP_CONNECTOR);
 
-        final GConnector top = GraphFactory.eINSTANCE.createGConnector();
-        node.getConnectors().add(top);
-        top.setType(DataFlowSkinConstants.DFD_TOP_CONNECTOR);
-
-        final GConnector right = GraphFactory.eINSTANCE.createGConnector();
-        node.getConnectors().add(right);
-        right.setType(DataFlowSkinConstants.DFD_RIGHT_CONNECTOR);
-
-        final GConnector bottom = GraphFactory.eINSTANCE.createGConnector();
-        node.getConnectors().add(bottom);
-        bottom.setType(DataFlowSkinConstants.DFD_BOTTOM_CONNECTOR);
+        for(int i = 0; i < 3; i++){
+            addConnectorToNode(node, DataFlowSkinConstants.DFD_LEFT_CONNECTOR);
+            addConnectorToNode(node, DataFlowSkinConstants.DFD_RIGHT_CONNECTOR);
+        }
 
         Commands.addNode(graphEditor.getModel(), node);
+    }
+
+    private void addConnectorToNode(GNode node, String type){
+        final GConnector connector = GraphFactory.eINSTANCE.createGConnector();
+        node.getConnectors().add(connector);
+        connector.setType(type);
     }
 
 

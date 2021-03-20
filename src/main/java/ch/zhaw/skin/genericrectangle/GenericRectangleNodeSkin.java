@@ -22,8 +22,10 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public abstract class GenericRectangleNodeSkin extends GNodeSkin implements DataFlowElement {
+    private static final Logger LOGGER = Logger.getLogger("Generic Rectangle");
 
     private static final String STYLE_CLASS_SELECTION_HALO = "node-selection-halo";
     protected static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
@@ -164,19 +166,18 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
     private void layoutConnectors(final List<GConnectorSkin> connectorSkins, final boolean vertical, final double offset) {
 
         final int count = connectorSkins.size();
+        final float yOffsetVertical = -7.5f;
 
         for (int i = 0; i < count; i++) {
 
             final GConnectorSkin skin = connectorSkins.get(i);
             final Node root = skin.getRoot();
-
             if (vertical) {
 
-                final double offsetY = getRoot().getHeight() / (count + 1);
                 final double offsetX = getMinorOffsetX(skin.getItem());
 
                 root.setLayoutX(GeometryUtils.moveOnPixel(offset - skin.getWidth() / 2 + offsetX));
-                root.setLayoutY(GeometryUtils.moveOnPixel((i + 1) * offsetY - skin.getHeight() / 2));
+                root.setLayoutY((getRoot().getHeight() / (count - 1) * i) + yOffsetVertical);
 
             } else {
 
