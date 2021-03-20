@@ -17,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -80,6 +81,13 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
      */
     protected GenericRectangleNodeSkin(GNode node) {
         super(node);
+        initEventListener();
+    }
+
+
+    private void initEventListener(){
+        getRoot().setOnMouseDragOver(mouseDragEvent -> setConnectorsSelected());
+        getRoot().setOnMouseDragExited(mouseDragEvent -> setConnectorsUnselected());
     }
 
     @Override
@@ -236,6 +244,17 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
            leftConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
            bottomConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
         }
+    }
+
+    private void setConnectorsUnselected(){
+        final GraphEditor editor = getGraphEditor();
+        if(editor != null) {
+            topConnectorSkins.forEach(skin -> editor.getSelectionManager().clearSelection(skin.getItem()));
+            rightConnectorSkins.forEach(skin -> editor.getSelectionManager().clearSelection(skin.getItem()));
+            leftConnectorSkins.forEach(skin -> editor.getSelectionManager().clearSelection(skin.getItem()));
+            bottomConnectorSkins.forEach(skin -> editor.getSelectionManager().clearSelection(skin.getItem()));
+        }
+
     }
 
     /**
