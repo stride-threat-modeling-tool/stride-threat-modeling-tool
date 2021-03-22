@@ -13,9 +13,9 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.util.logging.Logger;
@@ -30,7 +30,7 @@ public class MainController {
     private DataFlowDiagramSkinController dfdSkinController;
 
     @FXML
-    private AnchorPane root;
+    private StackPane root;
     @FXML
     private MenuBar menuBar;
 
