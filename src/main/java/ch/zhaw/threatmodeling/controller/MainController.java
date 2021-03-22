@@ -1,6 +1,9 @@
 package ch.zhaw.threatmodeling.controller;
 
+import ch.zhaw.threatmodeling.model.Threat;
 import ch.zhaw.threatmodeling.model.ThreatGenerator;
+import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
+import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.skin.connections.DataFlowConnectorValidator;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import de.tesis.dynaware.grapheditor.GraphEditor;
@@ -12,7 +15,10 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -26,6 +32,7 @@ public class MainController {
     private final GraphEditor graphEditor = new DefaultGraphEditor();
     @FXML
     public VBox graphEditorParent;
+
     private ThreatGenerator threatGenerator;
     private DataFlowDiagramSkinController dfdSkinController;
 
@@ -39,6 +46,35 @@ public class MainController {
 
     @FXML
     private Label nodeTypeLabel;
+
+    @FXML
+    private TableView<Threat> threatTable;
+
+    @FXML
+    private TableColumn<Threat, Integer> colID;
+
+    @FXML
+    private TableColumn<Threat, State> colState;
+
+    @FXML
+    private TableColumn<Threat, String> colTitle;
+
+    @FXML
+    private TableColumn<Threat, STRIDECategory> colCategory;
+
+    @FXML
+    private TableColumn<Threat, String> colDescription;
+
+    @FXML
+    private TableColumn<Threat, String> colPriority;
+
+    @FXML
+    private TableColumn<Threat, String> colJustification;
+
+    @FXML
+    private TextField descriptionTextField;
+
+
 
     public void initialize() {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
@@ -60,7 +96,22 @@ public class MainController {
 
 
         bindTextFieldsToCurrentElement();
+        bindTextFieldsToCurrentThreat();
+        initThreatListTable();
 
+    }
+
+    private void bindTextFieldsToCurrentThreat() {
+    }
+
+    private void initThreatListTable() {
+        colID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colState.setCellValueFactory(new PropertyValueFactory<>("state"));
+        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        colJustification.setCellValueFactory(new PropertyValueFactory<>("justification"));
     }
 
     private void bindTextFieldsToCurrentElement() {
@@ -98,5 +149,7 @@ public class MainController {
     @FXML
     public void analyseDiagram() {
         threatGenerator.generateAllThreats();
+        LOGGER.info("Generated threats count: " + threatGenerator.getThreats().size());
+        threatTable.setItems(threatGenerator.getThreats());
     }
 }

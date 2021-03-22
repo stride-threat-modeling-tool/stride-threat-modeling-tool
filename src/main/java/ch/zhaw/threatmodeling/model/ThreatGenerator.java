@@ -7,15 +7,15 @@ import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class ThreatGenerator {
     private static final Logger LOGGER = Logger.getLogger(ThreatGenerator.class.getName());
 
-    private final List<Threat> threats = new ArrayList<>();
+    private final ObservableList<Threat> threats = FXCollections.observableArrayList();
     private final GModel model;
     private final SkinLookup skinLookup;
 
@@ -24,10 +24,12 @@ public class ThreatGenerator {
         this.model = model;
     }
 
+    public ObservableList<Threat> getThreats() {
+        return threats;
+    }
     public void generateAllThreats(){
         threats.clear();
         for (GConnection con : model.getConnections()) {
-
             final GNodeSkin target = skinLookup.lookupNode(con.getTarget().getParent());
             final  GNodeSkin source = skinLookup.lookupNode(con.getSource().getParent());
             LOGGER.info("Target is a " + target.getItem().getType());

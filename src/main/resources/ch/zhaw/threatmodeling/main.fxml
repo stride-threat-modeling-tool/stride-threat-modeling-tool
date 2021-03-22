@@ -68,17 +68,22 @@
             <Insets />
         </StackPane.margin>
         <content>
-            <VBox id="threatPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" minHeight="300.0" prefHeight="650.0" prefWidth="100.0">
+            <VBox fx:id="threatPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" minHeight="300.0" prefHeight="650.0" prefWidth="100.0">
                 <children>
                     <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" text="Threat List" VBox.vgrow="ALWAYS">
                         <padding>
                             <Insets bottom="10.0" />
                         </padding>
                         <content>
-                            <TableView id="threatTable">
+                            <TableView fx:id="threatTable">
                                 <columns>
-                                    <TableColumn prefWidth="75.0" text="C1" />
-                                    <TableColumn prefWidth="75.0" text="C2" />
+                                   <TableColumn fx:id="colID" prefWidth="75.0" text="ID" />
+                                   <TableColumn fx:id="colState" prefWidth="75.0" text="State" />
+                                   <TableColumn fx:id="colTitle" prefWidth="75.0" text="Title" />
+                                   <TableColumn fx:id="colCategory" prefWidth="75.0" text="Category" />
+                                   <TableColumn fx:id="colDescription" prefWidth="75.0" text="Description" />
+                                   <TableColumn fx:id="colJustification" prefWidth="75.0" text="Justification" />
+                                   <TableColumn fx:id="colPriority" prefWidth="75.0" text="Priority" />
                                 </columns>
                                 <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -96,8 +101,8 @@
                         <content>
                             <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="200.0">
                                 <HBox maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
-                                    <Label text="Description:" />
-                                    <TextField />
+                                    <Label  text="Description:" />
+                                    <TextField fx:id="descriptionTextField"/>
                                 </HBox>
                             </VBox>
                         </content>

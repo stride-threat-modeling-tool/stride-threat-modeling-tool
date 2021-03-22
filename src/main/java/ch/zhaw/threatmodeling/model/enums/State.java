@@ -16,4 +16,9 @@ public enum State {
     State(String text) {
         this.text = text;
     }
+
+    @Override
+    public String toString() {
+        return getText();
+    }
 }

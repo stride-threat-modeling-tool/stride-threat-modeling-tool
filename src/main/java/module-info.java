@@ -16,4 +16,7 @@ module STRIDEModel {
     opens ch.zhaw.threatmodeling.controller to javafx.fxml;
     opens ch.zhaw.threatmodeling.skin to javafx.fxml;
 
+
+    opens ch.zhaw.threatmodeling.model to javafx.base;
+
 }

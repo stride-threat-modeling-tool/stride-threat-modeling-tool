@@ -17,4 +17,9 @@ public enum STRIDECategory {
     STRIDECategory(String text) {
         this.text = text;
     }
+
+    @Override
+    public String toString() {
+        return getText();
+    }
 }
