@@ -6,6 +6,7 @@ import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.skin.connections.DataFlowConnectorValidator;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
+import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.DefaultGraphEditor;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
@@ -32,6 +33,7 @@ public class MainController {
     private static final Logger LOGGER = Logger.getLogger("Main controller");
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DefaultGraphEditor();
+
 
 
     private ThreatGenerator threatGenerator;
@@ -77,6 +79,9 @@ public class MainController {
     private TableColumn<Threat, String> colJustification;
 
     @FXML
+    private TableColumn<Threat, DataFlowJointSkin> colInteraction;
+
+    @FXML
     private TextField descriptionTextField;
 
 
@@ -101,6 +106,7 @@ public class MainController {
 
 
         descriptionTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
+        editTextTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
 
         bindTextFieldsToCurrentElement();
         initThreatListTable();
@@ -123,6 +129,7 @@ public class MainController {
         colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
         colJustification.setCellValueFactory(new PropertyValueFactory<>("justification"));
+        colInteraction.setCellValueFactory(new PropertyValueFactory<>("interaction"));
 
         threatTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldThreat, newThreat) -> {
             LOGGER.info("changed selected item " + newThreat.getTitle());

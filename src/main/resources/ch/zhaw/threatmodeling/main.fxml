@@ -81,9 +81,10 @@
                                    <TableColumn fx:id="colState" prefWidth="75.0" text="State" />
                                    <TableColumn fx:id="colTitle" prefWidth="75.0" text="Title" />
                                    <TableColumn fx:id="colCategory" prefWidth="75.0" text="Category" />
-                                   <TableColumn fx:id="colDescription" prefWidth="75.0" text="Description" />
+                                   <TableColumn fx:id="colDescription" prefWidth="350.0" text="Description" />
                                    <TableColumn fx:id="colJustification" prefWidth="75.0" text="Justification" />
                                    <TableColumn fx:id="colPriority" prefWidth="75.0" text="Priority" />
+                                    <TableColumn fx:id="colInteraction" prefWidth="75.0" text="Interaction" />
                                 </columns>
                                 <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
