@@ -11,6 +11,8 @@ import de.tesis.dynaware.grapheditor.core.DefaultGraphEditor;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -30,12 +32,15 @@ public class MainController {
     private static final Logger LOGGER = Logger.getLogger("Main controller");
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DefaultGraphEditor();
-    @FXML
-    public VBox graphEditorParent;
+
 
     private ThreatGenerator threatGenerator;
     private DataFlowDiagramSkinController dfdSkinController;
 
+    private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
+
+    @FXML
+    public VBox graphEditorParent;
     @FXML
     private StackPane root;
     @FXML
@@ -95,14 +100,20 @@ public class MainController {
         threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
 
 
+        descriptionTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
+
         bindTextFieldsToCurrentElement();
-        bindTextFieldsToCurrentThreat();
         initThreatListTable();
 
     }
 
     private void bindTextFieldsToCurrentThreat() {
+        descriptionTextField.textProperty().bindBidirectional(currentThreat.get().getDescriptionProperty());
     }
+    private void unbindTextFieldsToCurrentThreat() {
+        descriptionTextField.textProperty().unbindBidirectional(currentThreat.get().getDescriptionProperty());
+    }
+
 
     private void initThreatListTable() {
         colID.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -112,6 +123,17 @@ public class MainController {
         colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
         colJustification.setCellValueFactory(new PropertyValueFactory<>("justification"));
+
+        threatTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldThreat, newThreat) -> {
+            LOGGER.info("changed selected item " + newThreat.getTitle());
+            if(currentThreat.get() != null){
+                unbindTextFieldsToCurrentThreat();
+            }
+            currentThreat.set(newThreat);
+            bindTextFieldsToCurrentThreat();
+        });
+
+        threatTable.itemsProperty().bindBidirectional(threatGenerator.getThreatsProperty());
     }
 
     private void bindTextFieldsToCurrentElement() {
@@ -150,6 +172,5 @@ public class MainController {
     public void analyseDiagram() {
         threatGenerator.generateAllThreats();
         LOGGER.info("Generated threats count: " + threatGenerator.getThreats().size());
-        threatTable.setItems(threatGenerator.getThreats());
     }
 }

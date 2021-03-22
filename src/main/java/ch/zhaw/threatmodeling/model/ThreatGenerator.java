@@ -7,6 +7,8 @@ import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -15,20 +17,32 @@ import java.util.logging.Logger;
 public class ThreatGenerator {
     private static final Logger LOGGER = Logger.getLogger(ThreatGenerator.class.getName());
 
-    private final ObservableList<Threat> threats = FXCollections.observableArrayList();
+    private final ObjectProperty<ObservableList<Threat>> threatsProperty = new SimpleObjectProperty<>();
     private final GModel model;
     private final SkinLookup skinLookup;
 
     public ThreatGenerator(GModel model, SkinLookup skinLookup) {
         this.skinLookup = skinLookup;
         this.model = model;
+        clearThreats();
+    }
+
+    private void clearThreats(){
+        setThreats(FXCollections.observableArrayList());
     }
 
     public ObservableList<Threat> getThreats() {
-        return threats;
+        return threatsProperty.get();
+    }
+
+    private void setThreats(ObservableList<Threat> threats) {
+        threatsProperty.set(threats);
+    }
+
+    public ObjectProperty<ObservableList<Threat>> getThreatsProperty(){
+        return threatsProperty;
     }
     public void generateAllThreats(){
-        threats.clear();
         for (GConnection con : model.getConnections()) {
             final GNodeSkin target = skinLookup.lookupNode(con.getTarget().getParent());
             final  GNodeSkin source = skinLookup.lookupNode(con.getSource().getParent());
@@ -36,10 +50,10 @@ public class ThreatGenerator {
             LOGGER.info("Source is a " + source.getItem().getType());
 
             if(target.getItem().getType().equals(DataStoreNodeSkin.TITLE_TEXT)) {
-                threats.add(generateDataStoreDestinationSpoofingThreat((DataStoreNodeSkin) target));
+                getThreats().add(generateDataStoreDestinationSpoofingThreat((DataStoreNodeSkin) target));
             }
             if(source.getItem().getType().equals(DataStoreNodeSkin.TITLE_TEXT)){
-                threats.add(generateDataStoreSourceSpoofingThreat((DataStoreNodeSkin) source, ((DataStoreNodeSkin)target).getText()));
+                getThreats().add(generateDataStoreSourceSpoofingThreat((DataStoreNodeSkin) source, ((DataStoreNodeSkin)target).getText()));
             }
         }
 
