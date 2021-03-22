@@ -12,7 +12,7 @@ public class DataStoreNodeSkin extends GenericRectangleNodeSkin {
 
     private static final double MIN_WIDTH = 81;
     private static final double MIN_HEIGHT = 81;
-    private static final String TITLE_TEXT = "Data Store";
+    public static final String TITLE_TEXT = "Data Store";
 
 
     /**

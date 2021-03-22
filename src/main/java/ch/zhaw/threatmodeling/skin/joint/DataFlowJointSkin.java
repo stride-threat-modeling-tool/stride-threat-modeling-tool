@@ -85,5 +85,8 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
         getRoot().setOnMouseClicked(hasBeenSelectedHandler);
     }
 
-
+    @Override
+    public String toString() {
+        return label.getText();
+    }
 }

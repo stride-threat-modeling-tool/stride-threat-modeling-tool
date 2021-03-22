@@ -54,14 +54,14 @@ public class DataFlowDiagramSkinController implements SkinController {
 
 
     @Override
-    public void addNode(double currentZoomFactor) {
+    public void addNode(double currentZoomFactor, String type) {
         final double windowXOffset = graphEditorContainer.getContentX() / currentZoomFactor;
         final double windowYOffset = graphEditorContainer.getContentY() / currentZoomFactor;
-
         final GNode node = GraphFactory.eINSTANCE.createGNode();
+        node.setType(type);
+
         node.setY(NODE_INITIAL_Y + windowYOffset);
 
-        node.setType(DataFlowSkinConstants.DFD_NODE);
         node.setX(NODE_INITIAL_X + windowXOffset);
         node.setId(allocateNewId());
 
@@ -86,12 +86,12 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void addDataStore(double currentZoomFactor) {
         graphEditor.setNodeSkinFactory(this::createDataStoreSkin);
-        addNode(currentZoomFactor);
+        addNode(currentZoomFactor, DataStoreNodeSkin.TITLE_TEXT);
     }
 
     public void addExternalEntity(double currentZoomFactor) {
         graphEditor.setNodeSkinFactory(this::createExternalEntitySkin);
-        addNode(currentZoomFactor);
+        addNode(currentZoomFactor, ExternalEntityNodeSkin.TITLE_TEXT);
 
     }
 
@@ -133,6 +133,7 @@ public class DataFlowDiagramSkinController implements SkinController {
                     command.append(AddCommand.create(editingDomain, node, connectors, connector));
                 }
             }
+
         }
 
         if (command.canExecute()) {

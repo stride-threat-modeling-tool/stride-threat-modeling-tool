@@ -12,7 +12,7 @@ public interface SkinController {
      *
      * @param currentZoomFactor the current zoom factor (1 for 100%)
      */
-    void addNode(final double currentZoomFactor);
+    void addNode(final double currentZoomFactor, String type);
 
     /**
      * activates this skin

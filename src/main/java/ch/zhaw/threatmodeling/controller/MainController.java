@@ -1,36 +1,50 @@
 package ch.zhaw.threatmodeling.controller;
 
 import ch.zhaw.connections.DataFlowConnectorValidator;
+import ch.zhaw.threatmodeling.model.Threat;
+import ch.zhaw.threatmodeling.model.ThreatGenerator;
+import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
+import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
+import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.DefaultGraphEditor;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.util.logging.Logger;
 
 public class MainController {
     private static final Logger LOGGER = Logger.getLogger("Main controller");
+    private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DefaultGraphEditor();
 
-    private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
-    @FXML
-    public VBox graphEditorParent;
 
+
+    private ThreatGenerator threatGenerator;
     private DataFlowDiagramSkinController dfdSkinController;
 
+    private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
+
     @FXML
-    private AnchorPane root;
+    public VBox graphEditorParent;
+    @FXML
+    private StackPane root;
     @FXML
     private MenuBar menuBar;
 
@@ -39,6 +53,38 @@ public class MainController {
 
     @FXML
     private Label nodeTypeLabel;
+
+    @FXML
+    private TableView<Threat> threatTable;
+
+    @FXML
+    private TableColumn<Threat, Integer> colID;
+
+    @FXML
+    private TableColumn<Threat, State> colState;
+
+    @FXML
+    private TableColumn<Threat, String> colTitle;
+
+    @FXML
+    private TableColumn<Threat, STRIDECategory> colCategory;
+
+    @FXML
+    private TableColumn<Threat, String> colDescription;
+
+    @FXML
+    private TableColumn<Threat, String> colPriority;
+
+    @FXML
+    private TableColumn<Threat, String> colJustification;
+
+    @FXML
+    private TableColumn<Threat, DataFlowJointSkin> colInteraction;
+
+    @FXML
+    private TextField descriptionTextField;
+
+
 
     public void initialize() {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
@@ -56,13 +102,50 @@ public class MainController {
         graphEditor.setConnectorValidator(new DataFlowConnectorValidator());
         graphEditor.getProperties().setGridVisible(true);
 
-        bindTextFieldsToCurrentElement();
+        threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
 
+
+        descriptionTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
+        editTextTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
+
+        bindTextFieldsToCurrentElement();
+        initThreatListTable();
+
+    }
+
+    private void bindTextFieldsToCurrentThreat() {
+        descriptionTextField.textProperty().bindBidirectional(currentThreat.get().getDescriptionProperty());
+    }
+    private void unbindTextFieldsToCurrentThreat() {
+        descriptionTextField.textProperty().unbindBidirectional(currentThreat.get().getDescriptionProperty());
+    }
+
+
+    private void initThreatListTable() {
+        colID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colState.setCellValueFactory(new PropertyValueFactory<>("state"));
+        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colPriority.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        colJustification.setCellValueFactory(new PropertyValueFactory<>("justification"));
+        colInteraction.setCellValueFactory(new PropertyValueFactory<>("interaction"));
+
+        threatTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldThreat, newThreat) -> {
+            LOGGER.info("changed selected item " + newThreat.getTitle());
+            if(currentThreat.get() != null){
+                unbindTextFieldsToCurrentThreat();
+            }
+            currentThreat.set(newThreat);
+            bindTextFieldsToCurrentThreat();
+        });
+
+        threatTable.itemsProperty().bindBidirectional(threatGenerator.getThreatsProperty());
     }
 
     private void bindTextFieldsToCurrentElement() {
         dfdSkinController.getCurrentElement().addListener((observableValue, oldVal, newVal) -> {
-            if(oldVal != null) {
+            if (oldVal != null) {
                 editTextTextField.textProperty().unbindBidirectional(oldVal.textProperty());
                 nodeTypeLabel.textProperty().unbindBidirectional(oldVal.typeProperty());
             }
@@ -90,5 +173,11 @@ public class MainController {
     @FXML
     public void addExternalEntity() {
         dfdSkinController.addExternalEntity(graphEditor.getView().getLocalToSceneTransform().getMxx());
+    }
+
+    @FXML
+    public void analyseDiagram() {
+        threatGenerator.generateAllThreats();
+        LOGGER.info("Generated threats count: " + threatGenerator.getThreats().size());
     }
 }
