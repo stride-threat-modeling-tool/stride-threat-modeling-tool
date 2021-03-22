@@ -9,6 +9,7 @@
         <Menu text="File">
             <MenuItem onAction="#addDataStore" text="Add data store" />
             <MenuItem onAction="#addExternalEntity" text="Add external entity" />
+            <MenuItem onAction="#analyseDiagram" text="Analyse Diagram" />
         </Menu>
     </MenuBar>
     <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">

@@ -1,5 +1,6 @@
 package ch.zhaw.threatmodeling.controller;
 
+import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import ch.zhaw.threatmodeling.skin.connections.DataFlowConnectorValidator;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import de.tesis.dynaware.grapheditor.GraphEditor;
@@ -21,12 +22,11 @@ import java.util.logging.Logger;
 
 public class MainController {
     private static final Logger LOGGER = Logger.getLogger("Main controller");
-    private final GraphEditor graphEditor = new DefaultGraphEditor();
-
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
+    private final GraphEditor graphEditor = new DefaultGraphEditor();
     @FXML
     public VBox graphEditorParent;
-
+    private ThreatGenerator threatGenerator;
     private DataFlowDiagramSkinController dfdSkinController;
 
     @FXML
@@ -56,13 +56,16 @@ public class MainController {
         graphEditor.setConnectorValidator(new DataFlowConnectorValidator());
         graphEditor.getProperties().setGridVisible(true);
 
+        threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
+
+
         bindTextFieldsToCurrentElement();
 
     }
 
     private void bindTextFieldsToCurrentElement() {
         dfdSkinController.getCurrentElement().addListener((observableValue, oldVal, newVal) -> {
-            if(oldVal != null) {
+            if (oldVal != null) {
                 editTextTextField.textProperty().unbindBidirectional(oldVal.textProperty());
                 nodeTypeLabel.textProperty().unbindBidirectional(oldVal.typeProperty());
             }
@@ -90,5 +93,10 @@ public class MainController {
     @FXML
     public void addExternalEntity() {
         dfdSkinController.addExternalEntity(graphEditor.getView().getLocalToSceneTransform().getMxx());
+    }
+
+    @FXML
+    public void analyseDiagram() {
+        threatGenerator.generateAllThreats();
     }
 }
