@@ -1,12 +1,13 @@
 package ch.zhaw.threatmodeling.model;
 
+import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import javafx.beans.property.*;
 
 public class Threat {
-    public static final String DEFAULT_PRIORITY = "High";
+    public static final ThreatPriority DEFAULT_THREAT_PRIORITY = ThreatPriority.HIGH;
 
     private final IntegerProperty id = new SimpleIntegerProperty();
     private final ObjectProperty<State> state = new SimpleObjectProperty<>();
@@ -15,7 +16,7 @@ public class Threat {
     private final StringProperty description  = new SimpleStringProperty();
     private final StringProperty justification  = new SimpleStringProperty();
     private final ObjectProperty<DataFlowElement> interaction = new SimpleObjectProperty<>();
-    private final StringProperty priority  = new SimpleStringProperty();
+    private final ObjectProperty<ThreatPriority> priority  = new SimpleObjectProperty<>();
 
 
     public Threat(int id,
@@ -32,14 +33,32 @@ public class Threat {
        setDescription(description);
        setJustification(justification);
        setInteraction(interaction);
-       setPriority(DEFAULT_PRIORITY);
+       setPriority(DEFAULT_THREAT_PRIORITY);
     }
 
     public StringProperty getDescriptionProperty() {
         return description;
     }
 
+    public Property<STRIDECategory> getCategoryProperty() {
+        return category;
+    }
 
+    public Property<State> getStateProperty(){
+        return state;
+    }
+
+    public Property<ThreatPriority> getPriorityProperty(){
+        return priority;
+    }
+
+    public StringProperty getTitleProperty() {
+        return title;
+    }
+
+    public StringProperty getJustificationProperty() {
+        return justification;
+    }
 
     public int getId() {
         return id.get();
@@ -97,13 +116,14 @@ public class Threat {
         this.interaction.set(interaction);
     }
 
-    public String getPriority() {
+    public ThreatPriority getPriority() {
         return priority.get();
     }
 
-    public void setPriority(String priority) {
-        this.priority.set(priority);
+    public void setPriority(ThreatPriority threatPriority) {
+        this.priority.set(threatPriority);
     }
+
 
 
 }
