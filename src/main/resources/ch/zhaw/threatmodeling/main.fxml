@@ -4,57 +4,106 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="root" minHeight="600" minWidth="800" prefHeight="1000" prefWidth="1200" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.zhaw.threatmodeling.controller.MainController">
-    <MenuBar fx:id="menuBar" layoutX="19.0" AnchorPane.leftAnchor="-20.0" AnchorPane.rightAnchor="-20.0">
+<StackPane fx:id="root" minHeight="600.0" minWidth="800.0" prefHeight="1000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.zhaw.threatmodeling.controller.MainController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
+    </padding>
+    <MenuBar fx:id="menuBar" StackPane.alignment="TOP_LEFT">
         <Menu text="File">
             <MenuItem onAction="#addDataStore" text="Add data store" />
             <MenuItem onAction="#addExternalEntity" text="Add external entity" />
             <MenuItem onAction="#analyseDiagram" text="Analyse Diagram" />
         </Menu>
+        <StackPane.margin>
+            <Insets left="-20.0" right="-20.0" top="-30.0" />
+        </StackPane.margin>
     </MenuBar>
-    <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-       <VBox fx:id="graphEditorParent">
-       </VBox>
+    <HBox>
+        <VBox fx:id="graphEditorParent">
+        </VBox>
         <VBox fillWidth="false" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="600" minWidth="266.66" prefHeight="1000" prefWidth="300">
-         <children>
-            <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Stencils" VBox.vgrow="ALWAYS">
-               <content>
-                    <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <children>
-                        <Label onMouseClicked="#addDataStore" text="Data Store" />
-                        <Label onMouseClicked="#addExternalEntity" text="External Entity" />
-                     </children></VBox>
-               </content>
-            </TitledPane>
-            <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Element Properties" VBox.vgrow="ALWAYS">
-               <content>
-                  <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0" VBox.vgrow="ALWAYS">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <children>
-                        <Label fx:id="nodeTypeLabel" text="NODE_TYPE" />
-                        <HBox prefWidth="200.0" spacing="10.0">
-                           <children>
-                              <Label text="Text:" />
-                              <TextField fx:id="editTextTextField" />
-                           </children>
-                        </HBox>
-                     </children></VBox>
-               </content>
-            </TitledPane>
-         </children>
-         <HBox.margin>
-            <Insets left="20.0" />
-         </HBox.margin></VBox>
-      <padding>
-         <Insets top="15.0" />
-      </padding>
+            <children>
+                <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Stencils" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                            </padding>
+                            <children>
+                                <Label onMouseClicked="#addDataStore" text="Data Store" />
+                                <Label onMouseClicked="#addExternalEntity" text="External Entity" />
+                            </children>
+                        </VBox>
+                    </content>
+                </TitledPane>
+                <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Element Properties" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                            </padding>
+                            <children>
+                                <Label fx:id="nodeTypeLabel" text="NODE_TYPE" />
+                                <HBox prefWidth="200.0" spacing="10.0">
+                                    <children>
+                                        <Label text="Text:" />
+                                        <TextField fx:id="editTextTextField" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </TitledPane>
+            </children>
+            <HBox.margin>
+                <Insets left="20.0" />
+            </HBox.margin>
+        </VBox>
+        <padding>
+            <Insets top="15.0" />
+        </padding>
     </HBox>
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
-    </padding>
-</AnchorPane>
+    <TitledPane StackPane.alignment="BOTTOM_CENTER">
+        <StackPane.margin>
+            <Insets />
+        </StackPane.margin>
+        <content>
+            <VBox id="threatPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" minHeight="300.0" prefHeight="650.0" prefWidth="100.0">
+                <children>
+                    <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" text="Threat List" VBox.vgrow="ALWAYS">
+                        <padding>
+                            <Insets bottom="10.0" />
+                        </padding>
+                        <content>
+                            <TableView id="threatTable">
+                                <columns>
+                                    <TableColumn prefWidth="75.0" text="C1" />
+                                    <TableColumn prefWidth="75.0" text="C2" />
+                                </columns>
+                                <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </padding>
+                            </TableView>
+                        </content>
+                        <VBox.margin>
+                            <Insets />
+                        </VBox.margin>
+                    </TitledPane>
+                    <TitledPane alignment="TOP_LEFT" collapsible="false" maxHeight="1.7976931348623157E308" prefHeight="200.0" text="Threat Properties" VBox.vgrow="ALWAYS">
+                        <VBox.margin>
+                            <Insets />
+                        </VBox.margin>
+                        <content>
+                            <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="200.0">
+                                <HBox maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
+                                    <Label text="Description:" />
+                                    <TextField />
+                                </HBox>
+                            </VBox>
+                        </content>
+                    </TitledPane>
+                </children>
+            </VBox>
+        </content>
+    </TitledPane>
+</StackPane>
