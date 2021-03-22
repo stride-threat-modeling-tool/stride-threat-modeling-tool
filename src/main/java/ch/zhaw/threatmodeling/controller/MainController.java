@@ -1,6 +1,6 @@
 package ch.zhaw.threatmodeling.controller;
 
-import ch.zhaw.threatmodeling.skin.connections.DataFlowConnectorValidator;
+import ch.zhaw.connections.DataFlowConnectorValidator;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.DefaultGraphEditor;

@@ -1,10 +1,9 @@
-package ch.zhaw.threatmodeling.skin.connectors;
+package ch.zhaw.threatmodeling.skin.connector;
 
 import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GConnectorStyle;
 import de.tesis.dynaware.grapheditor.model.GConnector;
-import javafx.css.PseudoClass;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class DataFlowConnectorSkin extends GConnectorSkin {
 
-    private static final Logger LOGGER = Logger.getLogger("Connector skin");
+    private static final Logger LOGGER = Logger.getLogger("Data Flow Connector skin");
     private static final String STYLE_CLASS = "connector";
     private static final String STYLE_CLASS_FORBIDDEN_GRAPHIC = "data-flow-forbidden-graphic";
 

@@ -13,7 +13,7 @@ import javafx.scene.layout.StackPane;
 import java.util.logging.Logger;
 
 public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
-    private static final Logger LOGGER = Logger.getLogger("JOINT SKIN");
+    private static final Logger LOGGER = Logger.getLogger("Data Flow Joint Skin");
 
     public static final String DATAFLOW_JOINT_CLASS = "data-flow-joint";
     public static final int WIDTH_OFFSET = 10;

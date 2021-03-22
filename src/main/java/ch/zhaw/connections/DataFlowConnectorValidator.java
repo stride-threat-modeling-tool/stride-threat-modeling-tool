@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
  */
-package ch.zhaw.threatmodeling.skin.connections;
+package ch.zhaw.connections;
 
 import de.tesis.dynaware.grapheditor.GConnectorValidator;
 import de.tesis.dynaware.grapheditor.model.GConnector;
@@ -25,7 +25,10 @@ public class DataFlowConnectorValidator implements GConnectorValidator {
 
     @Override
     public boolean validate(final GConnector source, final GConnector target) {
-
+        /*
+         * Compared to the DefaultConnectorValidator we don't check whether source and target are input or output since
+         * since the connectors are bidirectional.
+         */
         if (source.getType() == null || target.getType() == null) {
             return false;
         } else if (!source.getConnections().isEmpty() || !target.getConnections().isEmpty()) {
@@ -34,9 +37,6 @@ public class DataFlowConnectorValidator implements GConnectorValidator {
             return false;
         }
 
-        /* Compared to the DefaultConnectorValidator we don't check whether source and target are input or output since
-           since the connectors are bidirectional.
-         */
         return true;
     }
 

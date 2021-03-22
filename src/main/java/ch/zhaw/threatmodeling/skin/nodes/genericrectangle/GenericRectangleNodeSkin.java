@@ -1,7 +1,7 @@
 package ch.zhaw.threatmodeling.skin.nodes.genericrectangle;
 
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
-import ch.zhaw.threatmodeling.skin.connectors.DataFlowConnectorTypes;
+import ch.zhaw.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
@@ -17,7 +17,6 @@ import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;

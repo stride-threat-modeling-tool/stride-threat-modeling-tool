@@ -3,26 +3,16 @@ package ch.zhaw.threatmodeling.skin.controller;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.SkinController;
-import ch.zhaw.threatmodeling.skin.connectors.DataFlowConnectorSkin;
-import ch.zhaw.threatmodeling.skin.connectors.DataFlowConnectorTypes;
+import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
+import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
+import ch.zhaw.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
-import de.tesis.dynaware.grapheditor.Commands;
-import de.tesis.dynaware.grapheditor.GConnectorSkin;
-import de.tesis.dynaware.grapheditor.GJointSkin;
-import de.tesis.dynaware.grapheditor.GNodeSkin;
-import de.tesis.dynaware.grapheditor.GTailSkin;
-import de.tesis.dynaware.grapheditor.GraphEditor;
-import de.tesis.dynaware.grapheditor.SkinLookup;
+import de.tesis.dynaware.grapheditor.*;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
-import de.tesis.dynaware.grapheditor.model.GConnector;
-import de.tesis.dynaware.grapheditor.model.GJoint;
-import de.tesis.dynaware.grapheditor.model.GModel;
-import de.tesis.dynaware.grapheditor.model.GNode;
-import de.tesis.dynaware.grapheditor.model.GraphFactory;
-import de.tesis.dynaware.grapheditor.model.GraphPackage;
+import de.tesis.dynaware.grapheditor.model.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
@@ -45,7 +35,7 @@ public class DataFlowDiagramSkinController implements SkinController {
     protected static final int NODE_INITIAL_X = 19;
     protected static final int NODE_INITIAL_Y = 19;
     private static final int MAX_CONNECTOR_COUNT = 5;
-    private static final Logger LOGGER = Logger.getLogger("DataFlowController");
+    private static final Logger LOGGER = Logger.getLogger("Data Flow Controller");
 
     private final ObjectProperty<DataFlowElement> currentElement = new SimpleObjectProperty<>();
 
@@ -59,6 +49,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
         graphEditor.setTailSkinFactory(this::createTailSkin);
         graphEditor.setJointSkinFactory(this::createJointSkin);
+        graphEditor.setConnectionSkinFactory(this::createConnectionSkin);
     }
 
 
@@ -223,4 +214,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         return new DataFlowTailSkin(connector);
     }
 
+    private GConnectionSkin createConnectionSkin(GConnection gConnection) {
+        return new DataFlowConnectionSkin(gConnection);
+    }
 }

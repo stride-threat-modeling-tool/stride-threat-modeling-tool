@@ -28,30 +28,25 @@
     -fx-fill: null;
 }
 
-.titled-tail  {
+.data-flow-tail-curve  {
     -fx-stroke: derive(-border-color, 50%);
-    -fx-effect: dropshadow(one-pass-box, rgb(220, 220, 220), 5, 0, 1, 1);
+    -fx-effect: dropshadow(one-pass-box, rgb(220, 220, 220), 1, 0, 1, 1);
 }
 
-.titled-tail-endpoint  {
+.data-flow-tail-endpoint  {
     -fx-stroke: derive(-border-color, 50%);
     -fx-stroke-type: inside;
     -fx-fill: derive(-background-color, 50%);
     -fx-effect: dropshadow(one-pass-box, rgb(220, 220, 220), 5, 0, 1, 1);
 }
 
-.data-flow-diagram-skin.default-connection {
+.curved-connection {
     -fx-stroke-width: 1;
     -fx-stroke: -border-color;
     -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
 }
 
-.data-flow-diagram-skin.default-connection-background {
-    -fx-stroke-width: 7;
-    -fx-stroke: transparent;
-}
-
-.data-flow-diagram-skin.default-connection-hover-effect {
+.curved-connection-hover-effect {
     -fx-stroke-width: 1;
     -fx-stroke: -border-color;
     -fx-stroke-dash-array: 8 4;
@@ -61,44 +56,27 @@
     -fx-fill: transparent;
 }
 
-.data-flow-diagram-skin.default-connection-hover-effect:pressed {
-    -fx-stroke-width: 1;
-    -fx-stroke: null;
-    -fx-stroke-type: inside;
-    -fx-fill: null;
-}
-
-.data-flow-diagram-skin.data-flow-joint {
-    /* Invisible by default but make sure it has the exact same dimensions as for hover and pressed effects. */
+.data-flow-joint {
+    -fx-background-color: rgba(208, 255, 180, 0.5);
+    -fx-border-color: black;
     -fx-border-width: 1;
-    -fx-border-color: transparent;
-    -fx-border-style: solid inside;
-    -fx-background-color: transparent;
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
+    -fx-stroke-type: inside;
 }
 
-.data-flow-diagram-skin.data-flow-joint:hover, .data-flow-diagram-skin.R:selected:hover {
-    -fx-border-color: -border-color;
-    -fx-background-color: white;
-    -fx-opacity: 0.6;
-    -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
-}
-
-.data-flow-diagram-skin.data-flow-joint:pressed, .data-flow-diagram-skin.data-flow-joint:selected, .data-flow-diagram-skin.data-flow-joint:selected:pressed {
+.data-flow-joint:pressed, .data-flow-joint:selected, .data-flow-joint:selected:pressed {
     -fx-border-color: -border-color;
     -fx-background-color: derive(white, -4%);
     -fx-opacity: 0.6;
     -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
 }
 
-.data-flow-joint {
-    -fx-background-color: rgba(208, 255, 180, 0.5);
-    -fx-border-color: black;
-    -fx-border-width: 1;
-    -fx-stroke-type: inside;
-
+.data-flow-joint:hover, .R:selected:hover {
+    -fx-border-color: -border-color;
+    -fx-background-color: white;
+    -fx-opacity: 0.6;
+    -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
 }
+
 .node-selection-halo {
     -fx-stroke: -halo-color;
     -fx-opacity: 0.6;
@@ -112,5 +90,3 @@
     -border-color: rgba(160, 160, 160, 0.8);
     -halo-color: rgba(80, 80, 80, 0.8);
 }
-
-
