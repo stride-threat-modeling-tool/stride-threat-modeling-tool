@@ -1,6 +1,6 @@
 package ch.zhaw.threatmodeling.skin.tail;
 
-import ch.zhaw.connectors.DataFlowConnectorTypes;
+import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.GTailSkin;
 import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;

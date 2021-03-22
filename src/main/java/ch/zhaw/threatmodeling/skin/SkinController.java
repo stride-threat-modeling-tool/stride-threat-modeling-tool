@@ -35,8 +35,8 @@ public interface SkinController {
     /**
      * Handles the paste operation.
      * @param selectionCopier {@link SelectionCopier}
-
-    void handlePaste(SelectionCopier selectionCopier);*/
+     */
+    //void handlePaste(SelectionCopier selectionCopier);
 
     /**
      * Handles the select-all operation.

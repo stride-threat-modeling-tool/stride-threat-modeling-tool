@@ -5,7 +5,7 @@ import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.SkinController;
 import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
-import ch.zhaw.connectors.DataFlowConnectorTypes;
+import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;

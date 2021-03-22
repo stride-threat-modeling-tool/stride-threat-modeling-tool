@@ -1,6 +1,6 @@
 package ch.zhaw.threatmodeling.controller;
 
-import ch.zhaw.connections.DataFlowConnectorValidator;
+import ch.zhaw.threatmodeling.connections.DataFlowConnectorValidator;
 import ch.zhaw.threatmodeling.model.Threat;
 import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
