@@ -33,8 +33,6 @@ public class DataFlowConnectorValidator implements GConnectorValidator {
             return false;
         } else if (!source.getConnections().isEmpty() || !target.getConnections().isEmpty()) {
             return false;
-        } else if (source.getParent().equals(target.getParent())) {
-            return false;
         }
 
         return true;
