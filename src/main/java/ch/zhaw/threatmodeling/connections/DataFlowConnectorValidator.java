@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
- */
-package ch.zhaw.connections;
+package ch.zhaw.threatmodeling.connections;
 
 import de.tesis.dynaware.grapheditor.GConnectorValidator;
 import de.tesis.dynaware.grapheditor.model.GConnector;
