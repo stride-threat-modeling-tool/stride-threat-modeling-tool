@@ -3,6 +3,7 @@ package ch.zhaw.threatmodeling.controller;
 import ch.zhaw.threatmodeling.connections.DataFlowConnectorValidator;
 import ch.zhaw.threatmodeling.model.Threat;
 import ch.zhaw.threatmodeling.model.ThreatGenerator;
+import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
@@ -14,12 +15,16 @@ import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -33,7 +38,6 @@ public class MainController {
     private static final Logger LOGGER = Logger.getLogger("Main controller");
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DefaultGraphEditor();
-
 
 
     private ThreatGenerator threatGenerator;
@@ -82,9 +86,22 @@ public class MainController {
     private TableColumn<Threat, DataFlowJointSkin> colInteraction;
 
     @FXML
-    private TextField descriptionTextField;
+    private TextArea descriptionTextArea;
 
+    @FXML
+    private ChoiceBox<STRIDECategory> categoryChoiceBox;
 
+    @FXML
+    private ChoiceBox<ThreatPriority> priorityChoiceBox;
+
+    @FXML
+    private ChoiceBox<State> stateChoiceBox;
+
+    @FXML
+    private TextField editTitleTextField;
+
+    @FXML
+    private TextArea justificationTextArea;
 
     public void initialize() {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
@@ -105,19 +122,58 @@ public class MainController {
         threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
 
 
-        descriptionTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
-        editTextTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
 
         bindTextFieldsToCurrentElement();
+        initThreatTableUpdates();
         initThreatListTable();
+        initChoiceBoxes();
 
     }
 
-    private void bindTextFieldsToCurrentThreat() {
-        descriptionTextField.textProperty().bindBidirectional(currentThreat.get().getDescriptionProperty());
+    private void initThreatTableUpdates() {
+        descriptionTextArea.setOnKeyTyped(keyEvent -> threatTable.refresh());
+        justificationTextArea.setOnKeyTyped(keyEvent -> threatTable.refresh());
+
+        editTextTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
+        editTitleTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
+
+        categoryChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, s, t) -> threatTable.refresh());
+        stateChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, s, t) -> threatTable.refresh());
+        priorityChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, p, t) -> threatTable.refresh());
     }
-    private void unbindTextFieldsToCurrentThreat() {
-        descriptionTextField.textProperty().unbindBidirectional(currentThreat.get().getDescriptionProperty());
+
+    private void initChoiceBoxes() {
+        ObservableList<STRIDECategory> categories = FXCollections.observableArrayList();
+        ObservableList<ThreatPriority> priorities = FXCollections.observableArrayList();
+        ObservableList<State> states = FXCollections.observableArrayList();
+
+        categories.addAll(STRIDECategory.values());
+        priorities.addAll(ThreatPriority.values());
+        states.addAll(State.values());
+
+        categoryChoiceBox.setItems(categories);
+        priorityChoiceBox.setItems(priorities);
+        stateChoiceBox.setItems(states);
+    }
+
+    private void bindFieldsToCurrentThreat() {
+        descriptionTextArea.textProperty().bindBidirectional(currentThreat.get().getDescriptionProperty());
+        justificationTextArea.textProperty().bindBidirectional(currentThreat.get().getJustificationProperty());
+        editTitleTextField.textProperty().bindBidirectional(currentThreat.get().getTitleProperty());
+
+        categoryChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getCategoryProperty());
+        priorityChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getPriorityProperty());
+        stateChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getStateProperty());
+
+    }
+    private void unbindFieldsToCurrentThreat() {
+        descriptionTextArea.textProperty().unbindBidirectional(currentThreat.get().getDescriptionProperty());
+        justificationTextArea.textProperty().unbindBidirectional(currentThreat.get().getJustificationProperty());
+        editTitleTextField.textProperty().unbindBidirectional(currentThreat.get().getTitleProperty());
+
+        categoryChoiceBox.valueProperty().unbindBidirectional(currentThreat.get().getCategoryProperty());
+        priorityChoiceBox.valueProperty().unbindBidirectional(currentThreat.get().getPriorityProperty());
+        stateChoiceBox.valueProperty().unbindBidirectional(currentThreat.get().getStateProperty());
     }
 
 
@@ -134,10 +190,10 @@ public class MainController {
         threatTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldThreat, newThreat) -> {
             LOGGER.info("changed selected item " + newThreat.getTitle());
             if(currentThreat.get() != null){
-                unbindTextFieldsToCurrentThreat();
+                unbindFieldsToCurrentThreat();
             }
             currentThreat.set(newThreat);
-            bindTextFieldsToCurrentThreat();
+            bindFieldsToCurrentThreat();
         });
 
         threatTable.itemsProperty().bindBidirectional(threatGenerator.getThreatsProperty());

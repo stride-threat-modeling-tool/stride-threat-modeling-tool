@@ -1,17 +1,14 @@
-/*
- * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
- */
 package ch.zhaw.threatmodeling.skin.connection;
-
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import ch.zhaw.threatmodeling.connections.CurvedConnections;
 import de.tesis.dynaware.grapheditor.GJointSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.skins.defaults.connection.SimpleConnectionSkin;
 import de.tesis.dynaware.grapheditor.model.GConnection;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The DataFlow connection skin.
