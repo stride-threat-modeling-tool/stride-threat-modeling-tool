@@ -247,4 +247,10 @@ public class MainController {
         threatGenerator.generateAllThreats();
         LOGGER.info("Generated threats count: " + threatGenerator.getThreats().size());
     }
+
+    @FXML
+    public void addProcess() {
+        dfdSkinController.addProcess(graphEditor.getView().getLocalToSceneTransform().getMxx());
+        LOGGER.info("Added process");
+    }
 }

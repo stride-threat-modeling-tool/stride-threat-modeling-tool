@@ -1,17 +1,18 @@
 package ch.zhaw.threatmodeling.skin.controller;
 
+import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.model.Threat;
+import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.SkinController;
 import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
-import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
-import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import de.tesis.dynaware.grapheditor.Commands;
 import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
@@ -54,10 +55,6 @@ public class DataFlowDiagramSkinController implements SkinController {
     private final ObjectProperty<DataFlowElement> currentElement = new SimpleObjectProperty<>();
     private final ThreatGenerator threatGenerator;
 
-    public ObjectProperty<DataFlowElement> getCurrentElement(){
-        return currentElement;
-    }
-
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container, final ThreatGenerator threatGenerator) {
         this.graphEditor = graphEditor;
         this.graphEditorContainer = container;
@@ -66,6 +63,10 @@ public class DataFlowDiagramSkinController implements SkinController {
         graphEditor.setTailSkinFactory(this::createTailSkin);
         graphEditor.setJointSkinFactory(this::createJointSkin);
         graphEditor.setConnectionSkinFactory(this::createConnectionSkin);
+    }
+
+    public ObjectProperty<DataFlowElement> getCurrentElement() {
+        return currentElement;
     }
 
     @Override
@@ -110,6 +111,11 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     }
 
+    public void addProcess(double currentZoomFactor) {
+        graphEditor.setNodeSkinFactory(this::createProcessSkin);
+        addNode(currentZoomFactor, ProcessNodeSkin.TITLE_TEXT);
+
+    }
 
     private String allocateNewId() {
 
@@ -223,6 +229,14 @@ public class DataFlowDiagramSkinController implements SkinController {
         ExternalEntityNodeSkin skin = new ExternalEntityNodeSkin(node);
         skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
         addTextPropertyChangeListener(skin, node);
+        return skin;
+    }
+
+
+    private GNodeSkin createProcessSkin(GNode gNode) {
+        ProcessNodeSkin skin = new ProcessNodeSkin(gNode);
+        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
+        addTextPropertyChangeListener(skin, gNode);
         return skin;
     }
 

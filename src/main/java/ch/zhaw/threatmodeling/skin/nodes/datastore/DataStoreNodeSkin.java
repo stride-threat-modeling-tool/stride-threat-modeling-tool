@@ -8,10 +8,6 @@ import javafx.scene.shape.Rectangle;
 public class DataStoreNodeSkin extends GenericRectangleNodeSkin {
 
     private static final String STYLE_CLASS_BACKGROUND = "data-store-node-background";
-
-
-    private static final double MIN_WIDTH = 81;
-    private static final double MIN_HEIGHT = 81;
     public static final String TITLE_TEXT = "Data Store";
 
 
@@ -44,6 +40,6 @@ public class DataStoreNodeSkin extends GenericRectangleNodeSkin {
      */
     @Override
     protected void createContent() {
-        createGenericContent(STYLE_CLASS_BACKGROUND, TITLE_TEXT);
+        createGenericRectangleContent(STYLE_CLASS_BACKGROUND, TITLE_TEXT);
     }
 }
