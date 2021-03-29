@@ -3,9 +3,9 @@ package ch.zhaw.threatmodeling.controller;
 import ch.zhaw.threatmodeling.connections.DataFlowConnectorValidator;
 import ch.zhaw.threatmodeling.model.Threat;
 import ch.zhaw.threatmodeling.model.ThreatGenerator;
-import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
+import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
@@ -38,15 +38,11 @@ public class MainController {
     private static final Logger LOGGER = Logger.getLogger("Main controller");
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DefaultGraphEditor();
-
-
-    private ThreatGenerator threatGenerator;
-    private DataFlowDiagramSkinController dfdSkinController;
-
     private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
-
     @FXML
     public VBox graphEditorParent;
+    private ThreatGenerator threatGenerator;
+    private DataFlowDiagramSkinController dfdSkinController;
     @FXML
     private StackPane root;
     @FXML
@@ -105,6 +101,7 @@ public class MainController {
 
     public void initialize() {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
+        threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
         graphEditor.setModel(model);
         GraphEditorContainer graphEditorContainer = new GraphEditorContainer();
         setMaxSizeToInfinity(graphEditorContainer);
@@ -114,20 +111,33 @@ public class MainController {
         graphEditorParent.getChildren().add(graphEditorContainer);
 
         graphEditorContainer.setGraphEditor(graphEditor);
-        dfdSkinController = new DataFlowDiagramSkinController(graphEditor, graphEditorContainer);
+        dfdSkinController = new DataFlowDiagramSkinController(graphEditor, graphEditorContainer, threatGenerator);
         graphEditor.getView().getStyleClass().add(STYLE_CLASS_SKINS);
         graphEditor.setConnectorValidator(new DataFlowConnectorValidator());
         graphEditor.getProperties().setGridVisible(true);
 
-        threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
 
 
 
         bindTextFieldsToCurrentElement();
         initThreatTableUpdates();
         initThreatListTable();
-        initChoiceBoxes();
+        initChoiceBoxesValues();
+        initThreatModifiedListener();
 
+    }
+
+    private void initThreatModifiedListener() {
+        descriptionTextArea.textProperty().addListener((observableValue, oldVal, newVal) -> setCurrentThreatModified());
+        editTitleTextField.textProperty().addListener((observableValue, s, t1) -> setCurrentThreatModified());
+        justificationTextArea.textProperty().addListener((observableValue, s, t1) -> setCurrentThreatModified());
+    }
+
+    private void setCurrentThreatModified(){
+        Threat threat = currentThreat.get();
+        if (threat != null) {
+            threat.setModified(true);
+        }
     }
 
     private void initThreatTableUpdates() {
@@ -142,7 +152,7 @@ public class MainController {
         priorityChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, p, t) -> threatTable.refresh());
     }
 
-    private void initChoiceBoxes() {
+    private void initChoiceBoxesValues() {
         ObservableList<STRIDECategory> categories = FXCollections.observableArrayList();
         ObservableList<ThreatPriority> priorities = FXCollections.observableArrayList();
         ObservableList<State> states = FXCollections.observableArrayList();
@@ -166,6 +176,7 @@ public class MainController {
         stateChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getStateProperty());
 
     }
+
     private void unbindFieldsToCurrentThreat() {
         descriptionTextArea.textProperty().unbindBidirectional(currentThreat.get().getDescriptionProperty());
         justificationTextArea.textProperty().unbindBidirectional(currentThreat.get().getJustificationProperty());
@@ -189,7 +200,7 @@ public class MainController {
 
         threatTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldThreat, newThreat) -> {
             LOGGER.info("changed selected item " + newThreat.getTitle());
-            if(currentThreat.get() != null){
+            if (currentThreat.get() != null) {
                 unbindFieldsToCurrentThreat();
             }
             currentThreat.set(newThreat);
@@ -235,5 +246,11 @@ public class MainController {
     public void analyseDiagram() {
         threatGenerator.generateAllThreats();
         LOGGER.info("Generated threats count: " + threatGenerator.getThreats().size());
+    }
+
+    @FXML
+    public void addProcess() {
+        dfdSkinController.addProcess(graphEditor.getView().getLocalToSceneTransform().getMxx());
+        LOGGER.info("Added process");
     }
 }

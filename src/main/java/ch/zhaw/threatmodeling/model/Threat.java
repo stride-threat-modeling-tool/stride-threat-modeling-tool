@@ -4,6 +4,7 @@ import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
+import de.tesis.dynaware.grapheditor.model.GConnection;
 import javafx.beans.property.*;
 
 public class Threat {
@@ -17,6 +18,8 @@ public class Threat {
     private final StringProperty justification  = new SimpleStringProperty();
     private final ObjectProperty<DataFlowElement> interaction = new SimpleObjectProperty<>();
     private final ObjectProperty<ThreatPriority> priority  = new SimpleObjectProperty<>();
+    private final GConnection connection;
+    private boolean modified = false;
 
 
     public Threat(int id,
@@ -25,7 +28,8 @@ public class Threat {
                   STRIDECategory category,
                   String description,
                   String justification,
-                  DataFlowElement interaction) {
+                  DataFlowElement interaction,
+                  GConnection connection) {
        setId(id);
        setState(state);
        setTitle(title);
@@ -33,7 +37,13 @@ public class Threat {
        setDescription(description);
        setJustification(justification);
        setInteraction(interaction);
+       this.connection = connection;
        setPriority(DEFAULT_THREAT_PRIORITY);
+    }
+
+    public void updateThreatElementNames(String oldName, String newName){
+        setDescription(getDescription().replaceFirst(oldName, newName));
+        setTitle(getTitle().replace(oldName, newName));
     }
 
     public StringProperty getDescriptionProperty() {
@@ -125,5 +135,15 @@ public class Threat {
     }
 
 
+    public boolean isModified() {
+        return modified;
+    }
 
+    public void setModified(boolean modified) {
+        this.modified = modified;
+    }
+
+    public GConnection getConnection() {
+        return connection;
+    }
 }

@@ -19,6 +19,6 @@ public class ExternalEntityNodeSkin extends DataStoreNodeSkin {
 
     @Override
     protected void createContent() {
-        createGenericContent(STYLE_CLASS_BACKGROUND, TITLE_TEXT);
+        createGenericRectangleContent(STYLE_CLASS_BACKGROUND, TITLE_TEXT);
     }
 }

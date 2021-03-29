@@ -1,18 +1,34 @@
 package ch.zhaw.threatmodeling.skin.controller;
 
+import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
+import ch.zhaw.threatmodeling.model.Threat;
+import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.SkinController;
 import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
-import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
-import de.tesis.dynaware.grapheditor.*;
+import de.tesis.dynaware.grapheditor.Commands;
+import de.tesis.dynaware.grapheditor.GConnectionSkin;
+import de.tesis.dynaware.grapheditor.GConnectorSkin;
+import de.tesis.dynaware.grapheditor.GJointSkin;
+import de.tesis.dynaware.grapheditor.GNodeSkin;
+import de.tesis.dynaware.grapheditor.GTailSkin;
+import de.tesis.dynaware.grapheditor.GraphEditor;
+import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
-import de.tesis.dynaware.grapheditor.model.*;
+import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GConnector;
+import de.tesis.dynaware.grapheditor.model.GJoint;
+import de.tesis.dynaware.grapheditor.model.GModel;
+import de.tesis.dynaware.grapheditor.model.GNode;
+import de.tesis.dynaware.grapheditor.model.GraphFactory;
+import de.tesis.dynaware.grapheditor.model.GraphPackage;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
@@ -30,28 +46,28 @@ import java.util.OptionalInt;
 import java.util.logging.Logger;
 
 public class DataFlowDiagramSkinController implements SkinController {
-    protected final GraphEditor graphEditor;
-    protected final GraphEditorContainer graphEditorContainer;
     protected static final int NODE_INITIAL_X = 19;
     protected static final int NODE_INITIAL_Y = 19;
     private static final int MAX_CONNECTOR_COUNT = 5;
     private static final Logger LOGGER = Logger.getLogger("Data Flow Controller");
-
+    protected final GraphEditor graphEditor;
+    protected final GraphEditorContainer graphEditorContainer;
     private final ObjectProperty<DataFlowElement> currentElement = new SimpleObjectProperty<>();
+    private final ThreatGenerator threatGenerator;
 
-    public ObjectProperty<DataFlowElement> getCurrentElement(){
-        return currentElement;
-    }
-
-    public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container) {
+    public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container, final ThreatGenerator threatGenerator) {
         this.graphEditor = graphEditor;
         this.graphEditorContainer = container;
+        this.threatGenerator = threatGenerator;
         graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
         graphEditor.setTailSkinFactory(this::createTailSkin);
         graphEditor.setJointSkinFactory(this::createJointSkin);
         graphEditor.setConnectionSkinFactory(this::createConnectionSkin);
     }
 
+    public ObjectProperty<DataFlowElement> getCurrentElement() {
+        return currentElement;
+    }
 
     @Override
     public void addNode(double currentZoomFactor, String type) {
@@ -69,7 +85,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         addConnectorToNode(node, DataFlowSkinConstants.DFD_BOTTOM_CONNECTOR);
         addConnectorToNode(node, DataFlowSkinConstants.DFD_TOP_CONNECTOR);
 
-        for(int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
             addConnectorToNode(node, DataFlowSkinConstants.DFD_LEFT_CONNECTOR);
             addConnectorToNode(node, DataFlowSkinConstants.DFD_RIGHT_CONNECTOR);
         }
@@ -77,7 +93,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         Commands.addNode(graphEditor.getModel(), node);
     }
 
-    private void addConnectorToNode(GNode node, String type){
+    private void addConnectorToNode(GNode node, String type) {
         final GConnector connector = GraphFactory.eINSTANCE.createGConnector();
         node.getConnectors().add(connector);
         connector.setType(type);
@@ -95,6 +111,11 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     }
 
+    public void addProcess(double currentZoomFactor) {
+        graphEditor.setNodeSkinFactory(this::createProcessSkin);
+        addNode(currentZoomFactor, ProcessNodeSkin.TITLE_TEXT);
+
+    }
 
     private String allocateNewId() {
 
@@ -179,9 +200,18 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     }
 
-    private EventHandler<MouseEvent> createClickDataFlowElementHandler(DataFlowElement element){
+    private EventHandler<MouseEvent> createClickDataFlowElementHandler(DataFlowElement element) {
         return mouseEvent -> {
-            if(MouseButton.PRIMARY.equals(mouseEvent.getButton())){
+            if (MouseButton.PRIMARY.equals(mouseEvent.getButton())) {
+                this.currentElement.set(element);
+            }
+            mouseEvent.consume();
+        };
+    }
+
+    private EventHandler<MouseEvent> createClickDataFlowNodeHandler(DataFlowElement element) {
+        return mouseEvent -> {
+            if (MouseButton.PRIMARY.equals(mouseEvent.getButton())) {
                 this.currentElement.set(element);
             }
             mouseEvent.consume();
@@ -190,18 +220,27 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     private GNodeSkin createDataStoreSkin(final GNode node) {
         DataStoreNodeSkin skin = new DataStoreNodeSkin(node);
-        skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
+        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
+        addTextPropertyChangeListener(skin, node);
         return skin;
     }
 
     private GNodeSkin createExternalEntitySkin(final GNode node) {
         ExternalEntityNodeSkin skin = new ExternalEntityNodeSkin(node);
-        skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
+        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
+        addTextPropertyChangeListener(skin, node);
         return skin;
     }
 
-    private GJointSkin createJointSkin(final GJoint joint){
 
+    private GNodeSkin createProcessSkin(GNode gNode) {
+        ProcessNodeSkin skin = new ProcessNodeSkin(gNode);
+        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
+        addTextPropertyChangeListener(skin, gNode);
+        return skin;
+    }
+
+    private GJointSkin createJointSkin(final GJoint joint) {
         DataFlowJointSkin skin = new DataFlowJointSkin(joint);
         skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
         return skin;
@@ -218,4 +257,20 @@ public class DataFlowDiagramSkinController implements SkinController {
     private GConnectionSkin createConnectionSkin(GConnection gConnection) {
         return new DataFlowConnectionSkin(gConnection);
     }
+
+    private void addTextPropertyChangeListener(DataFlowElement element, GNode node) {
+        element.textProperty().addListener((observableValue, oldVal, newVal) -> {
+            if (!oldVal.isBlank() && !newVal.isBlank()) {
+                for (GConnector connector : node.getConnectors()) {
+                    for (GConnection connection : connector.getConnections()) {
+                        for (Threat threat : threatGenerator.getAllThreatsForConnection(connection))
+                            if (!threat.isModified()) {
+                                threat.updateThreatElementNames(oldVal.trim(), newVal.trim());
+                            }
+                    }
+                }
+            }
+        });
+    }
+
 }

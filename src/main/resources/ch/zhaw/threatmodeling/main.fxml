@@ -32,6 +32,7 @@
                             <children>
                                 <Label onMouseClicked="#addDataStore" text="Data Store" />
                                 <Label onMouseClicked="#addExternalEntity" text="External Entity" />
+                                <Label onMouseClicked="#addProcess" text="Process" />
                             </children>
                         </VBox>
                     </content>
