@@ -1,6 +1,6 @@
 package ch.zhaw.threatmodeling.skin.nodes.datastore;
 
-import ch.zhaw.threatmodeling.skin.nodes.genericrectangle.GenericRectangleNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.generic.rectangle.GenericRectangleNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;

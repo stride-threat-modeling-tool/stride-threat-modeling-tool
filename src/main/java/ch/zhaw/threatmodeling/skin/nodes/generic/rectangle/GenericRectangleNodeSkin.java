@@ -1,77 +1,30 @@
-package ch.zhaw.threatmodeling.skin.nodes.genericrectangle;
+package ch.zhaw.threatmodeling.skin.nodes.generic.rectangle;
 
-import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.connectors.DataFlowConnectorTypes;
+import ch.zhaw.threatmodeling.skin.DataFlowElement;
+import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
-import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.css.PseudoClass;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public abstract class GenericRectangleNodeSkin extends GNodeSkin implements DataFlowElement {
-    private static final Logger LOGGER = Logger.getLogger("Generic Rectangle");
-
-    private static final String STYLE_CLASS_SELECTION_HALO = "node-selection-halo";
-    protected static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
-
+public abstract class GenericRectangleNodeSkin extends GenericNodeSkin implements DataFlowElement {
     protected static final double HALO_OFFSET = 5;
     protected static final double HALO_CORNER_SIZE = 10;
-
     protected static final double MINOR_POSITIVE_OFFSET = 2;
     protected static final double MINOR_NEGATIVE_OFFSET = -3;
-
-
+    private static final Logger LOGGER = Logger.getLogger("Generic Rectangle");
     protected final Rectangle selectionHalo = new Rectangle();
 
-    protected final List<GConnectorSkin> topConnectorSkins = new ArrayList<>();
-    protected final List<GConnectorSkin> rightConnectorSkins = new ArrayList<>();
-    protected final List<GConnectorSkin> bottomConnectorSkins = new ArrayList<>();
-    protected final List<GConnectorSkin> leftConnectorSkins = new ArrayList<>();
-
-
-    protected final VBox contentRoot = new VBox();
-
-    private final StringProperty text = new SimpleStringProperty();
-    private final StringProperty type = new SimpleStringProperty();
-
-
-    @Override
-    public String getText() {
-        return text.get();
-    }
-
-    @Override
-    public StringProperty textProperty(){
-        return text;
-    }
-
-    @Override
-    public StringProperty typeProperty(){
-        return type;
-    }
-
-
-    @Override
-    public void setText(String newText) {
-        text.set(newText);
-    }
 
     /**
      * Creates a new {@link GNodeSkin}.
@@ -80,46 +33,8 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
      */
     protected GenericRectangleNodeSkin(GNode node) {
         super(node);
-        initEventListener();
     }
 
-
-    private void initEventListener(){
-        getRoot().setOnMouseDragOver(mouseDragEvent -> setConnectorsSelected());
-        getRoot().setOnMouseDragExited(mouseDragEvent -> setConnectorsUnselected());
-    }
-
-    @Override
-    public void setConnectorSkins(final List<GConnectorSkin> connectorSkins) {
-
-        removeAllConnectors();
-
-        topConnectorSkins.clear();
-        rightConnectorSkins.clear();
-        bottomConnectorSkins.clear();
-        leftConnectorSkins.clear();
-
-        if (connectorSkins != null) {
-            for (final GConnectorSkin connectorSkin : connectorSkins) {
-
-                final String connectorType = connectorSkin.getItem().getType();
-
-                if (DataFlowConnectorTypes.isTop(connectorType)) {
-                    topConnectorSkins.add(connectorSkin);
-                } else if (DataFlowConnectorTypes.isRight(connectorType)) {
-                    rightConnectorSkins.add(connectorSkin);
-                } else if (DataFlowConnectorTypes.isBottom(connectorType)) {
-                    bottomConnectorSkins.add(connectorSkin);
-                } else if (DataFlowConnectorTypes.isLeft(connectorType)) {
-                    leftConnectorSkins.add(connectorSkin);
-                }
-
-                getRoot().getChildren().add(connectorSkin.getRoot());
-            }
-        }
-
-        layoutConnectors();
-    }
 
     @Override
     public void layoutConnectors() {
@@ -168,8 +83,8 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
      * Lays out the given connector skins in a horizontal or vertical direction at the given offset.
      *
      * @param connectorSkins the skins to lay out
-     * @param vertical {@code true} to lay out vertically, {@code false} to lay out horizontally
-     * @param offset the offset in the other dimension that the skins are layed out in
+     * @param vertical       {@code true} to lay out vertically, {@code false} to lay out horizontally
+     * @param offset         the offset in the other dimension that the skins are layed out in
      */
     private void layoutConnectors(final List<GConnectorSkin> connectorSkins, final boolean vertical, final double offset) {
 
@@ -197,7 +112,6 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
             }
         }
     }
-
 
 
     /**
@@ -231,41 +145,8 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
             selectionHalo.setVisible(false);
             contentRoot.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
         }
-
     }
 
-    public void setConnectorsSelected()
-    {
-        final GraphEditor editor = getGraphEditor();
-        if(editor != null) {
-           topConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
-           rightConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
-           leftConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
-           bottomConnectorSkins.forEach(skin -> editor.getSelectionManager().select(skin.getItem()));
-        }
-    }
-
-    private void setConnectorsUnselected(){
-        final GraphEditor editor = getGraphEditor();
-        if(editor != null) {
-            topConnectorSkins.forEach(skin -> editor.getSelectionManager().clearSelection(skin.getItem()));
-            rightConnectorSkins.forEach(skin -> editor.getSelectionManager().clearSelection(skin.getItem()));
-            leftConnectorSkins.forEach(skin -> editor.getSelectionManager().clearSelection(skin.getItem()));
-            bottomConnectorSkins.forEach(skin -> editor.getSelectionManager().clearSelection(skin.getItem()));
-        }
-
-    }
-
-    /**
-     * Removes all connectors from the list of children.
-     */
-    private void removeAllConnectors() {
-
-        topConnectorSkins.stream().forEach(skin -> getRoot().getChildren().remove(skin.getRoot()));
-        rightConnectorSkins.stream().forEach(skin -> getRoot().getChildren().remove(skin.getRoot()));
-        bottomConnectorSkins.stream().forEach(skin -> getRoot().getChildren().remove(skin.getRoot()));
-        leftConnectorSkins.stream().forEach(skin -> getRoot().getChildren().remove(skin.getRoot()));
-    }
 
     /**
      * Gets a minor x-offset of a few pixels in order that the connector's area is distributed more evenly on either
@@ -313,24 +194,6 @@ public abstract class GenericRectangleNodeSkin extends GNodeSkin implements Data
             event.consume();
         }
     }
-
-    protected abstract void createContent();
-
-    protected void createGenericContent(String styleClass, String text) {
-        setText(text);
-        Label label = new Label(getText());
-        label.textProperty().bindBidirectional(textProperty());
-        contentRoot.getChildren().add(label);
-        getRoot().getChildren().add(contentRoot);
-
-        contentRoot.setAlignment(Pos.CENTER);
-        contentRoot.getStyleClass().setAll(styleClass);
-    }
-
-    public void setHasBeenSelectedHandler(EventHandler<MouseEvent> hasBeenSelectedHandler) {
-        getRoot().setOnMouseClicked(hasBeenSelectedHandler);
-    }
-
 
     /**
      * Adds the selection halo and initializes some of its values.
