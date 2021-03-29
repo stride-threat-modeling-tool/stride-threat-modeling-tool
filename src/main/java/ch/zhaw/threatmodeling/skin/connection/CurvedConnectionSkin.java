@@ -102,7 +102,8 @@ public class CurvedConnectionSkin extends GConnectionSkin {
         final double startX = startPoint.getX();
         final double startY = startPoint.getY();
 
-        // points[1] is the old control point which we ignore since the new control point decided by the joint position
+        // points[1] is the old control point which we ignore since the new control point is only decided by the
+        // joint position
 
         final Point2D endPoint = points[points.length-1];
         final double endX = endPoint.getX();

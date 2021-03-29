@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ThreatGenerator {
@@ -52,44 +53,48 @@ public class ThreatGenerator {
             LOGGER.info("Source is a " + source.getItem().getType());
 
             if(target.getItem().getType().equals(DataStoreNodeSkin.TITLE_TEXT)) {
-                getThreats().add(generateDataStoreDestinationSpoofingThreat((DataStoreNodeSkin) target, joint));
+                getThreats().add(generateDataStoreDestinationSpoofingThreat((DataStoreNodeSkin) target, joint, con));
             }
             if(source.getItem().getType().equals(DataStoreNodeSkin.TITLE_TEXT)){
-                getThreats().add(generateDataStoreSourceSpoofingThreat((DataStoreNodeSkin) source, ((DataStoreNodeSkin)target).getText(), joint));
+                getThreats().add(generateDataStoreSourceSpoofingThreat((DataStoreNodeSkin) source, ((DataStoreNodeSkin)target).getText(), joint, con));
             }
         }
-
     }
 
-    private Threat generateDataStoreGenericSpoofingThreat(DataStoreNodeSkin store, String srcDest, String name, String name2, String specificText,   DataFlowJointSkin joint){
+    private Threat generateDataStoreGenericSpoofingThreat(DataStoreNodeSkin store, String srcDest, String name, String name2, String specificText,   DataFlowJointSkin joint, GConnection con){
         return new Threat(getThreats().size() + 1,
                 State.NOT_STARTED,
                 "Spoofing of " + srcDest + " Data Store " + store.getText(),
                 STRIDECategory.SPOOFING,
                 String.format(ThreatConstants.DATA_STORE_SPOOFING_GENERIC_TEXT, name, specificText, name2,srcDest.toLowerCase()),
                 "",
-                joint
+                joint,
+                con
                 );
     }
 
-    private Threat generateDataStoreDestinationSpoofingThreat(DataStoreNodeSkin store, DataFlowJointSkin joint) {
+    private Threat generateDataStoreDestinationSpoofingThreat(DataStoreNodeSkin store, DataFlowJointSkin joint, GConnection con) {
         return generateDataStoreGenericSpoofingThreat(
                 store,
                 "Destination",
                 store.getText(),
                 store.getText(),
                 ThreatConstants.DATA_STORE_SPOOFING_DESTINATION_TEXT,
-                joint);
+                joint
+        ,con);
     }
 
-    private Threat generateDataStoreSourceSpoofingThreat(DataStoreNodeSkin store, String targetName,  DataFlowJointSkin joint) {
+    private Threat generateDataStoreSourceSpoofingThreat(DataStoreNodeSkin store, String targetName,  DataFlowJointSkin joint, GConnection con) {
         return generateDataStoreGenericSpoofingThreat(
                 store,
                 "Source",
                 store.getText(),
                 targetName,
                 ThreatConstants.DATA_STORE_SPOOFING_SOURCE_TEXT,
-                joint);
+                joint, con);
     }
 
+    public List<Threat> getAllThreatsForConnection(GConnection connection) {
+        return getThreats().filtered(threat -> threat.getConnection().equals(connection));
+    }
 }

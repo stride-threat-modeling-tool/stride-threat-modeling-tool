@@ -24,11 +24,10 @@ public class DataFlowConnectorValidator implements GConnectorValidator {
     public boolean validate(final GConnector source, final GConnector target) {
         /*
          * Compared to the DefaultConnectorValidator we don't check whether source and target are input or output since
-         * since the connectors are bidirectional.
+         * since the connectors are bidirectional. We also allow reflexive connections (same source and target node) as
+         * well as multiple incoming and outgoing connections per connector.
          */
         if (source.getType() == null || target.getType() == null) {
-            return false;
-        } else if (!source.getConnections().isEmpty() || !target.getConnections().isEmpty()) {
             return false;
         }
 

@@ -1,8 +1,8 @@
 package ch.zhaw.threatmodeling.skin.nodes.generic.rectangle;
 
-import ch.zhaw.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
+import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GConnector;
