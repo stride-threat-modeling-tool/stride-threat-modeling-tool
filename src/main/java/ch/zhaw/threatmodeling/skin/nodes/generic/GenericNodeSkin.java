@@ -1,5 +1,6 @@
 package ch.zhaw.threatmodeling.skin.nodes.generic;
 
+import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
@@ -79,13 +80,13 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
 
                 final String connectorType = connectorSkin.getItem().getType();
 
-                if (ch.zhaw.connectors.DataFlowConnectorTypes.isTop(connectorType)) {
+                if (DataFlowConnectorTypes.isTop(connectorType)) {
                     topConnectorSkins.add(connectorSkin);
-                } else if (ch.zhaw.connectors.DataFlowConnectorTypes.isRight(connectorType)) {
+                } else if (DataFlowConnectorTypes.isRight(connectorType)) {
                     rightConnectorSkins.add(connectorSkin);
-                } else if (ch.zhaw.connectors.DataFlowConnectorTypes.isBottom(connectorType)) {
+                } else if (DataFlowConnectorTypes.isBottom(connectorType)) {
                     bottomConnectorSkins.add(connectorSkin);
-                } else if (ch.zhaw.connectors.DataFlowConnectorTypes.isLeft(connectorType)) {
+                } else if (DataFlowConnectorTypes.isLeft(connectorType)) {
                     leftConnectorSkins.add(connectorSkin);
                 }
 
