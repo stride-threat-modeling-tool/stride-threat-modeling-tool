@@ -28,16 +28,9 @@
     -fx-fill: null;
 }
 
-.data-flow-tail-curve  {
+.data-flow-tail  {
     -fx-stroke: derive(-border-color, 50%);
     -fx-effect: dropshadow(one-pass-box, rgb(220, 220, 220), 1, 0, 1, 1);
-}
-
-.data-flow-tail-endpoint  {
-    -fx-stroke: derive(-border-color, 50%);
-    -fx-stroke-type: inside;
-    -fx-fill: derive(-background-color, 50%);
-    -fx-effect: dropshadow(one-pass-box, rgb(220, 220, 220), 5, 0, 1, 1);
 }
 
 .curved-connection {
