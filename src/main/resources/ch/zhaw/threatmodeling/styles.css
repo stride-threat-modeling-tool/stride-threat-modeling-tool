@@ -35,8 +35,6 @@
 
 .curved-connection {
     -fx-stroke-width: 1;
-    -fx-stroke: -border-color;
-    -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
 }
 
 .curved-connection-hover-effect {
