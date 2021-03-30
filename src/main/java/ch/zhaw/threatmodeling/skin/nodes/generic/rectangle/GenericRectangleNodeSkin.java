@@ -1,11 +1,9 @@
 package ch.zhaw.threatmodeling.skin.nodes.generic.rectangle;
 
-import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
-import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
 import javafx.geometry.Pos;
@@ -16,8 +14,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public abstract class GenericRectangleNodeSkin extends GenericNodeSkin implements DataFlowElement {
-    protected static final double MINOR_POSITIVE_OFFSET = 2;
-    protected static final double MINOR_NEGATIVE_OFFSET = -3;
     private static final Logger LOGGER = Logger.getLogger("Generic Rectangle");
 
 
@@ -69,7 +65,7 @@ public abstract class GenericRectangleNodeSkin extends GenericNodeSkin implement
                 final double offsetX = getMinorOffsetX(skin.getItem());
 
                 root.setLayoutX(GeometryUtils.moveOnPixel(offset - skin.getWidth() / 2 + offsetX));
-                root.setLayoutY((getRoot().getHeight() / (count - 1) * i) + yOffsetVertical);
+                root.setLayoutY(GeometryUtils.moveOnPixel((getRoot().getHeight() / (count - 1) * i) + yOffsetVertical));
 
             } else {
 
@@ -79,42 +75,6 @@ public abstract class GenericRectangleNodeSkin extends GenericNodeSkin implement
                 root.setLayoutX(GeometryUtils.moveOnPixel((i + 1) * offsetX - skin.getWidth() / 2));
                 root.setLayoutY(GeometryUtils.moveOnPixel(offset - skin.getHeight() / 2 + offsetY));
             }
-        }
-    }
-
-    /**
-     * Gets a minor x-offset of a few pixels in order that the connector's area is distributed more evenly on either
-     * side of the node border.
-     *
-     * @param connector the connector to be positioned
-     * @return an x-offset of a few pixels
-     */
-    protected double getMinorOffsetX(final GConnector connector) {
-
-        final String connectorType = connector.getType();
-
-        if (connectorType.equals(DataFlowConnectorTypes.LEFT) || connectorType.equals(DataFlowConnectorTypes.RIGHT)) {
-            return MINOR_POSITIVE_OFFSET;
-        } else {
-            return MINOR_NEGATIVE_OFFSET;
-        }
-    }
-
-    /**
-     * Gets a minor y-offset of a few pixels in order that the connector's area is distributed more evenly on either
-     * side of the node border.
-     *
-     * @param connector the connector to be positioned
-     * @return a y-offset of a few pixels
-     */
-    protected double getMinorOffsetY(final GConnector connector) {
-
-        final String connectorType = connector.getType();
-
-        if (connectorType.equals(DataFlowConnectorTypes.TOP) || connectorType.equals(DataFlowConnectorTypes.BOTTOM)) {
-            return MINOR_POSITIVE_OFFSET;
-        } else {
-            return MINOR_NEGATIVE_OFFSET;
         }
     }
 
