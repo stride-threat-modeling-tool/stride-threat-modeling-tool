@@ -1,5 +1,6 @@
-package ch.zhaw.threatmodeling.skin.nodes.generic.circle;
+package ch.zhaw.threatmodeling.skin.nodes.generic.ellipse;
 
+import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.model.GNode;
@@ -14,7 +15,7 @@ import javafx.scene.shape.StrokeType;
 import java.util.List;
 
 
-public abstract class GenericEllipseNodeSkin extends GenericNodeSkin {
+public abstract class GenericEllipseNodeSkin extends GenericNodeSkin implements DataFlowElement {
     protected static final Paint ELLIPSE_FILL_COLOR = Paint.valueOf("white");
     protected static final Paint ELLIPSE_STROKE_COLOR = Paint.valueOf("black");
     protected static final double STROKE_WIDTH = 1.5;
@@ -56,16 +57,6 @@ public abstract class GenericEllipseNodeSkin extends GenericNodeSkin {
                 root.setLayoutY(GeometryUtils.moveOnPixel(offset - skin.getHeight() / 2 + offsetY));
             }
         }
-    }
-
-    @Override
-    public Point2D getConnectorPosition(GConnectorSkin gConnectorSkin) {
-        return null;
-    }
-
-    @Override
-    protected void createContent() {
-
     }
 
     protected void setEllipseProperties(Ellipse ellipse) {

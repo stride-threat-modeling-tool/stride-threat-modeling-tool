@@ -1,6 +1,6 @@
 package ch.zhaw.threatmodeling.skin.nodes.process;
 
-import ch.zhaw.threatmodeling.skin.nodes.generic.circle.GenericEllipseNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.generic.ellipse.GenericEllipseNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.DraggableBox;
 import javafx.scene.layout.StackPane;
