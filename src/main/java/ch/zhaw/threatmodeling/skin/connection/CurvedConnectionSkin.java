@@ -3,6 +3,7 @@ package ch.zhaw.threatmodeling.skin.connection;
 import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.GJointSkin;
 import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.utils.ArrowHead;
 import de.tesis.dynaware.grapheditor.utils.DraggableBox;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
 import javafx.geometry.Point2D;
@@ -28,10 +29,12 @@ public class CurvedConnectionSkin extends GConnectionSkin {
     protected final Group root = new Group();
     protected final Path path = new Path();
     protected final QuadCurveTo curve = new QuadCurveTo();
-    protected final Path backgroundPath = new Path();
+    protected final ArrowHead arrowHead = new ArrowHead();
+
+    private static final double ARROW_LENGTH = 16;
+    private static final double ARROW_WIDTH = 10;
 
     private static final String STYLE_CLASS = "curved-connection";
-    private static final String STYLE_CLASS_BACKGROUND = "curved-connection-background";
 
     private List<GJointSkin> jointSkins;
 
@@ -48,12 +51,14 @@ public class CurvedConnectionSkin extends GConnectionSkin {
 
         root.setManaged(false);
 
-        // Background path is invisible and used only to capture hover events.
-        root.getChildren().add(backgroundPath);
+        // ArrowHead at the end the curve
+        arrowHead.setLength(ARROW_LENGTH);
+        arrowHead.setWidth(ARROW_WIDTH);
+
         root.getChildren().add(path);
+        root.getChildren().add(arrowHead);
         path.setMouseTransparent(true);
 
-        backgroundPath.getStyleClass().setAll(STYLE_CLASS_BACKGROUND);
         path.getStyleClass().setAll(STYLE_CLASS);
     }
 
@@ -132,12 +137,18 @@ public class CurvedConnectionSkin extends GConnectionSkin {
         // Initial MoveTo is needed to start the path
         final MoveTo moveTo = new MoveTo(GeometryUtils.moveOffPixel(startX), GeometryUtils.moveOffPixel(startY));
 
+        // Calculate angle of the arrow
+        final double deltaX = endX - controlPoint.getX();
+        final double deltaY = endY - controlPoint.getY();
+        final double angle = Math.atan2(deltaX, deltaY);
+
+        arrowHead.setCenter(endX, endY);
+        arrowHead.setAngle(Math.toDegrees(-angle));
+        arrowHead.draw();
+
         path.getElements().clear();
         path.getElements().add(moveTo);
         path.getElements().add(curve);
-
-        backgroundPath.getElements().clear();
-        backgroundPath.getElements().addAll(path.getElements());
     }
 
     @Override
