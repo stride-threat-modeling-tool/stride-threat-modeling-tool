@@ -19,6 +19,8 @@ public class DataFlowTailSkin extends GTailSkin {
 
     private static final String STYLE_CLASS = "data-flow-tail"; //$NON-NLS-1$
 
+    private static final double ARROW_LENGTH = 16;
+    private static final double ARROW_WIDTH = 10;
     private static final double OFFSET_DISTANCE = 0;
 
     protected final Arrow arrow = new Arrow();
@@ -37,6 +39,8 @@ public class DataFlowTailSkin extends GTailSkin {
 
         performChecks();
 
+        arrow.setHeadLength(ARROW_LENGTH);
+        arrow.setHeadWidth(ARROW_WIDTH);
         arrow.getStyleClass().setAll(STYLE_CLASS);
 
     }
