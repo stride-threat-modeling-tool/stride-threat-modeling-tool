@@ -8,6 +8,7 @@ import javafx.scene.shape.Ellipse;
 
 public class ProcessNodeSkin extends GenericEllipseNodeSkin {
     public static final String TITLE_TEXT = "Process";
+    protected StackPane pane;
 
     public ProcessNodeSkin(GNode node) {
         super(node);
@@ -26,8 +27,7 @@ public class ProcessNodeSkin extends GenericEllipseNodeSkin {
         setEllipseProperties(ellipse);
         bindEllipseToRoot(ellipse, root);
 
-        StackPane pane = new StackPane(ellipse, createBoundLabel());
-        pane.setStyle("-fx-background-color: white");
+        this.pane = new StackPane(ellipse, createBoundLabel());
         root.getChildren().add(pane);
     }
 }

@@ -11,6 +11,7 @@ import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.multipleprocess.MultipleProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
 import de.tesis.dynaware.grapheditor.Commands;
@@ -116,6 +117,12 @@ public class DataFlowDiagramSkinController implements SkinController {
         addNode(currentZoomFactor, ProcessNodeSkin.TITLE_TEXT);
 
     }
+    public void addMultipleProcess(double currentZoomFactor) {
+        graphEditor.setNodeSkinFactory(this::createMultipleProcessSkin);
+        addNode(currentZoomFactor, MultipleProcessNodeSkin.TITLE_TEXT);
+
+   }
+
 
     private String allocateNewId() {
 
@@ -235,6 +242,14 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     private GNodeSkin createProcessSkin(GNode gNode) {
         ProcessNodeSkin skin = new ProcessNodeSkin(gNode);
+        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
+        addTextPropertyChangeListener(skin, gNode);
+        return skin;
+    }
+
+
+    private GNodeSkin createMultipleProcessSkin(GNode gNode) {
+        MultipleProcessNodeSkin skin = new MultipleProcessNodeSkin(gNode);
         skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
         addTextPropertyChangeListener(skin, gNode);
         return skin;

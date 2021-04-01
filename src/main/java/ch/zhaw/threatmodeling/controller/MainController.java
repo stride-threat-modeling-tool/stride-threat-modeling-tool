@@ -251,6 +251,10 @@ public class MainController {
     @FXML
     public void addProcess() {
         dfdSkinController.addProcess(graphEditor.getView().getLocalToSceneTransform().getMxx());
-        LOGGER.info("Added process");
+    }
+
+    @FXML
+    public  void addMultipleProcess(){
+        dfdSkinController.addMultipleProcess(graphEditor.getView().getLocalToSceneTransform().getMxx());
     }
 }
