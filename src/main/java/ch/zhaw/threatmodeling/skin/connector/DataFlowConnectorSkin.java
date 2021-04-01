@@ -20,7 +20,7 @@ public class DataFlowConnectorSkin extends GConnectorSkin {
     private static final String STYLE_CLASS = "connector";
     private static final String STYLE_CLASS_FORBIDDEN_GRAPHIC = "data-flow-forbidden-graphic";
 
-    private static final double SIZE = 15;
+    public static final double SIZE = 15;
 
     private final Pane root = new Pane();
 

@@ -1,6 +1,7 @@
 package ch.zhaw.threatmodeling.skin.nodes.generic.rectangle;
 
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
+import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
@@ -54,7 +55,7 @@ public abstract class GenericRectangleNodeSkin extends GenericNodeSkin implement
     private void layoutConnectors(final List<GConnectorSkin> connectorSkins, final boolean vertical, final double offset) {
 
         final int count = connectorSkins.size();
-        final float yOffsetVertical = -7.5f;
+        final double yOffsetVertical = -DataFlowConnectorSkin.SIZE / 2.0;
 
         for (int i = 0; i < count; i++) {
 

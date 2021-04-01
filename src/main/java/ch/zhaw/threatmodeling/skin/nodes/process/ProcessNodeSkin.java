@@ -22,10 +22,12 @@ public class ProcessNodeSkin extends GenericEllipseNodeSkin {
         root.setMinHeight(MIN_HEIGHT);
         root.setMinWidth(MIN_WIDTH);
         Ellipse ellipse = new Ellipse();
+        this.ellipseWithConnectors = ellipse;
         setEllipseProperties(ellipse);
         bindEllipseToRoot(ellipse, root);
 
         StackPane pane = new StackPane(ellipse, createBoundLabel());
+        pane.setStyle("-fx-background-color: white");
         root.getChildren().add(pane);
     }
 }
