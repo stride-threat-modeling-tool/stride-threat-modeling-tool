@@ -29,15 +29,16 @@ public abstract class GenericEllipseNodeSkin extends GenericNodeSkin implements 
 
     @Override
     public void layoutConnectors() {
-        List<GConnectorSkin> allConnectors = new ArrayList<>(topConnectorSkins);
-        allConnectors.addAll(rightConnectorSkins);
+        List<GConnectorSkin> allConnectors = new ArrayList<>(rightConnectorSkins);
         allConnectors.addAll(bottomConnectorSkins);
         allConnectors.addAll(leftConnectorSkins);
+        allConnectors.addAll(topConnectorSkins);
         final double offset = -DataFlowConnectorSkin.SIZE / 2.0;
         //formula from here:
         //https://mathopenref.com/coordparamellipse.html
-        double currentRadian = 0;
+
         final double incrementRadian = 2 * Math.PI / allConnectors.size();
+        double currentRadian = 2 * Math.PI - incrementRadian;
         for (GConnectorSkin skin: allConnectors) {
             final Node skinRoot = skin.getRoot();
             final double x = ellipseWithConnectors.getCenterX() + ellipseWithConnectors.getRadiusX() * Math.cos(currentRadian) + offset;
