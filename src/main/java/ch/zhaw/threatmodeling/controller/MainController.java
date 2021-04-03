@@ -35,6 +35,7 @@ import javafx.scene.layout.VBox;
 import java.util.logging.Logger;
 
 public class MainController {
+    public static final String CONNECTION_LAYER_CSS_NAME = "graph-editor-connection-layer";
     private static final Logger LOGGER = Logger.getLogger("Main controller");
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DefaultGraphEditor();
@@ -116,9 +117,7 @@ public class MainController {
         graphEditor.setConnectorValidator(new DataFlowConnectorValidator());
         graphEditor.getProperties().setGridVisible(true);
 
-
-
-
+        bringConnectionsToForeGround();
         bindTextFieldsToCurrentElement();
         initThreatTableUpdates();
         initThreatListTable();
@@ -127,13 +126,22 @@ public class MainController {
 
     }
 
+    private void bringConnectionsToForeGround() {
+        graphEditor.getView().getChildrenUnmodifiable().forEach(element -> {
+                    if (element.getStyleClass().contains(CONNECTION_LAYER_CSS_NAME)) {
+                        element.toFront();
+                    }
+                }
+        );
+    }
+
     private void initThreatModifiedListener() {
         descriptionTextArea.textProperty().addListener((observableValue, oldVal, newVal) -> setCurrentThreatModified());
         editTitleTextField.textProperty().addListener((observableValue, s, t1) -> setCurrentThreatModified());
         justificationTextArea.textProperty().addListener((observableValue, s, t1) -> setCurrentThreatModified());
     }
 
-    private void setCurrentThreatModified(){
+    private void setCurrentThreatModified() {
         Threat threat = currentThreat.get();
         if (threat != null) {
             threat.setModified(true);
@@ -254,7 +262,7 @@ public class MainController {
     }
 
     @FXML
-    public  void addMultipleProcess(){
+    public void addMultipleProcess() {
         dfdSkinController.addMultipleProcess(graphEditor.getView().getLocalToSceneTransform().getMxx());
     }
 }

@@ -65,6 +65,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         graphEditor.setTailSkinFactory(this::createTailSkin);
         graphEditor.setJointSkinFactory(this::createJointSkin);
         graphEditor.setConnectionSkinFactory(this::createConnectionSkin);
+
     }
 
     public ObjectProperty<DataFlowElement> getCurrentElement() {
@@ -79,6 +80,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         node.setType(type);
 
         node.setY(NODE_INITIAL_Y + windowYOffset);
+
 
         node.setX(NODE_INITIAL_X + windowXOffset);
         node.setId(allocateNewId());
@@ -236,7 +238,6 @@ public class DataFlowDiagramSkinController implements SkinController {
         ProcessNodeSkin skin = new ProcessNodeSkin(gNode);
         return initNodeEventListeners(gNode, skin);
     }
-
 
 
     private GNodeSkin createMultipleProcessSkin(GNode gNode) {
