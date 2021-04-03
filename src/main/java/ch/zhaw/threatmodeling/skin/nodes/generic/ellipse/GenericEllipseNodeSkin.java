@@ -1,11 +1,12 @@
 package ch.zhaw.threatmodeling.skin.nodes.generic.ellipse;
 
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
-import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
+import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.DraggableBox;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
@@ -33,20 +34,27 @@ public abstract class GenericEllipseNodeSkin extends GenericNodeSkin implements 
         allConnectors.addAll(bottomConnectorSkins);
         allConnectors.addAll(leftConnectorSkins);
         allConnectors.addAll(topConnectorSkins);
-        final double offset = -DataFlowConnectorSkin.SIZE / 2.0;
+        for (GConnectorSkin skin : allConnectors) {
+            final Node skinRoot = skin.getRoot();
+            final double offsetX = -skin.getWidth() / 2;
+            final double offsetY = -skin.getHeight() / 2;
+            Point2D coords = calculateConnectorPosition(skin.getItem().getType(), offsetX, offsetY);
+            skinRoot.setLayoutX(coords.getX());
+            skinRoot.setLayoutY(coords.getY());
+        }
+
+    }
+
+    private Point2D calculateConnectorPosition(String connectorType, double offsetX, double offsetY) {
         //formula from here:
         //https://mathopenref.com/coordparamellipse.html
-
-        final double incrementRadian = 2 * Math.PI / allConnectors.size();
-        double currentRadian = 2 * Math.PI - incrementRadian;
-        for (GConnectorSkin skin: allConnectors) {
-            final Node skinRoot = skin.getRoot();
-            final double x = ellipseWithConnectors.getCenterX() + ellipseWithConnectors.getRadiusX() * Math.cos(currentRadian) + offset;
-            final double y = ellipseWithConnectors.getCenterY() + ellipseWithConnectors.getRadiusY() * Math.sin(currentRadian)+ offset;
-            skinRoot.setLayoutX(x);
-            skinRoot.setLayoutY(y);
-            currentRadian += incrementRadian;
-        }
+        final double incrementRadian = 2 * Math.PI / DataFlowSkinConstants.DFD_CONNECTOR_LAYOUT_ORDER.size();
+        final double startRadian = 2 * Math.PI - incrementRadian;
+        final int indexOfType = DataFlowSkinConstants.DFD_CONNECTOR_LAYOUT_ORDER.indexOf(connectorType);
+        final double currentRadian = startRadian - incrementRadian * indexOfType;
+        return new Point2D(
+                ellipseWithConnectors.getCenterX() + ellipseWithConnectors.getRadiusX() * Math.cos(currentRadian) + offsetX,
+                ellipseWithConnectors.getCenterY() + ellipseWithConnectors.getRadiusY() * Math.sin(currentRadian) + offsetY);
 
     }
 
@@ -62,5 +70,11 @@ public abstract class GenericEllipseNodeSkin extends GenericNodeSkin implements 
         ellipse.centerYProperty().bind(root.heightProperty().divide(2));
         ellipse.radiusXProperty().bind(root.widthProperty().divide(2));
         ellipse.radiusYProperty().bind(root.heightProperty().divide(2));
+    }
+
+    @Override
+    // Because ellipse nodes have different placements of connectors, this method has to be overwritten
+    public Point2D getConnectorPosition(GConnectorSkin connectorSkin) {
+        return calculateConnectorPosition(connectorSkin.getItem().getType(), 0, 0);
     }
 }

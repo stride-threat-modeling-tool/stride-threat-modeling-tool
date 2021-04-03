@@ -11,6 +11,7 @@ import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.multipleprocess.MultipleProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
@@ -82,15 +83,9 @@ public class DataFlowDiagramSkinController implements SkinController {
         node.setX(NODE_INITIAL_X + windowXOffset);
         node.setId(allocateNewId());
 
-        // A node has 4 bidirectional connectors
-        addConnectorToNode(node, DataFlowSkinConstants.DFD_BOTTOM_CONNECTOR);
-        addConnectorToNode(node, DataFlowSkinConstants.DFD_TOP_CONNECTOR);
-
-        for (int i = 0; i < 3; i++) {
-            addConnectorToNode(node, DataFlowSkinConstants.DFD_LEFT_CONNECTOR);
-            addConnectorToNode(node, DataFlowSkinConstants.DFD_RIGHT_CONNECTOR);
+        for (String currentType : DataFlowSkinConstants.DFD_CONNECTOR_LAYOUT_ORDER) {
+            addConnectorToNode(node, currentType);
         }
-
         Commands.addNode(graphEditor.getModel(), node);
     }
 
@@ -117,11 +112,12 @@ public class DataFlowDiagramSkinController implements SkinController {
         addNode(currentZoomFactor, ProcessNodeSkin.TITLE_TEXT);
 
     }
+
     public void addMultipleProcess(double currentZoomFactor) {
         graphEditor.setNodeSkinFactory(this::createMultipleProcessSkin);
         addNode(currentZoomFactor, MultipleProcessNodeSkin.TITLE_TEXT);
 
-   }
+    }
 
 
     private String allocateNewId() {
@@ -227,32 +223,25 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     private GNodeSkin createDataStoreSkin(final GNode node) {
         DataStoreNodeSkin skin = new DataStoreNodeSkin(node);
-        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
-        addTextPropertyChangeListener(skin, node);
-        return skin;
+        return initNodeEventListeners(node, skin);
     }
 
     private GNodeSkin createExternalEntitySkin(final GNode node) {
         ExternalEntityNodeSkin skin = new ExternalEntityNodeSkin(node);
-        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
-        addTextPropertyChangeListener(skin, node);
-        return skin;
+        return initNodeEventListeners(node, skin);
     }
 
 
     private GNodeSkin createProcessSkin(GNode gNode) {
         ProcessNodeSkin skin = new ProcessNodeSkin(gNode);
-        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
-        addTextPropertyChangeListener(skin, gNode);
-        return skin;
+        return initNodeEventListeners(gNode, skin);
     }
+
 
 
     private GNodeSkin createMultipleProcessSkin(GNode gNode) {
         MultipleProcessNodeSkin skin = new MultipleProcessNodeSkin(gNode);
-        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
-        addTextPropertyChangeListener(skin, gNode);
-        return skin;
+        return initNodeEventListeners(gNode, skin);
     }
 
     private GJointSkin createJointSkin(final GJoint joint) {
@@ -271,6 +260,13 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     private GConnectionSkin createConnectionSkin(GConnection gConnection) {
         return new DataFlowConnectionSkin(gConnection);
+    }
+
+
+    private GenericNodeSkin initNodeEventListeners(GNode gNode, GenericNodeSkin skin) {
+        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
+        addTextPropertyChangeListener(skin, gNode);
+        return skin;
     }
 
     private void addTextPropertyChangeListener(DataFlowElement element, GNode node) {

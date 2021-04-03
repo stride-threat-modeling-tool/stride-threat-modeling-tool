@@ -21,6 +21,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowElement {
     protected static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
@@ -31,6 +32,7 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
     protected static final double HALO_CORNER_SIZE = 10;
     protected static final double MIN_WIDTH = 81;
     protected static final double MIN_HEIGHT = 81;
+    private static final Logger LOGGER = Logger.getLogger("Generic node");
     protected final List<GConnectorSkin> topConnectorSkins = new ArrayList<>();
     protected final List<GConnectorSkin> rightConnectorSkins = new ArrayList<>();
     protected final List<GConnectorSkin> bottomConnectorSkins = new ArrayList<>();
