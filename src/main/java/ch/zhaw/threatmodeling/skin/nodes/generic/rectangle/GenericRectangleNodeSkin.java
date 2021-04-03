@@ -1,7 +1,6 @@
 package ch.zhaw.threatmodeling.skin.nodes.generic.rectangle;
 
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
-import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
@@ -55,26 +54,24 @@ public abstract class GenericRectangleNodeSkin extends GenericNodeSkin implement
     private void layoutConnectors(final List<GConnectorSkin> connectorSkins, final boolean vertical, final double offset) {
 
         final int count = connectorSkins.size();
-        final double yOffsetVertical = -DataFlowConnectorSkin.SIZE / 2.0;
-
         for (int i = 0; i < count; i++) {
 
             final GConnectorSkin skin = connectorSkins.get(i);
-            final Node root = skin.getRoot();
+            final Node skinRoot = skin.getRoot();
+            final double connectorOffset = -skin.getWidth() /2 ;
             if (vertical) {
-
-                final double offsetX = getMinorOffsetX(skin.getItem());
-
-                root.setLayoutX(GeometryUtils.moveOnPixel(offset - skin.getWidth() / 2 + offsetX));
-                root.setLayoutY(GeometryUtils.moveOnPixel((getRoot().getHeight() / (count - 1) * i) + yOffsetVertical));
+                //left and right connectors
+                skinRoot.setLayoutX(offset + connectorOffset);
+                skinRoot.setLayoutY((getRoot().getHeight() / (count - 1) * i) + connectorOffset);
 
             } else {
-
-                final double offsetX = getRoot().getWidth() / (count + 1);
-                final double offsetY = getMinorOffsetY(skin.getItem());
-
-                root.setLayoutX(GeometryUtils.moveOnPixel((i + 1) * offsetX - skin.getWidth() / 2));
-                root.setLayoutY(GeometryUtils.moveOnPixel(offset - skin.getHeight() / 2 + offsetY));
+                /*
+                top and bottom connectors
+                usage of MoveOnPixel is discouraged because it messes up the placements and gives the connectors a
+                asymmetrical look
+                */
+                skinRoot.setLayoutX(getRoot().getWidth() / 2 + connectorOffset);
+                skinRoot.setLayoutY(offset + connectorOffset);
             }
         }
     }
