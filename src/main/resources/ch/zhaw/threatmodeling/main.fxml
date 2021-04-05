@@ -15,9 +15,9 @@
             <MenuItem onAction="#analyseDiagram" text="Analyse Diagram" />
         </Menu>
         <Menu text="Edit">
-            <MenuItem onAction="#undo" text="Undo"/>
-            <MenuItem onAction="#redo" text="Redo"/>
-            <MenuItem onAction="#deleteElement" text="Delete"/>
+            <MenuItem onAction="#undo" text="Undo" accelerator="Shortcut + Z"/>
+            <MenuItem onAction="#redo" text="Redo" accelerator="Shortcut + Y"/>
+            <MenuItem onAction="#deleteElement" text="Delete" accelerator="Delete"/>
         </Menu>
         <StackPane.margin>
             <Insets left="-20.0" right="-20.0" top="-30.0" />
