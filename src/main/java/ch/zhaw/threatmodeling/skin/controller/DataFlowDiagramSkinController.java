@@ -15,6 +15,7 @@ import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.multipleprocess.MultipleProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
+import ch.zhaw.threatmodeling.skin.utils.ConnectionCommands;
 import de.tesis.dynaware.grapheditor.Commands;
 import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
@@ -288,7 +289,18 @@ public class DataFlowDiagramSkinController implements SkinController {
     public void undo() {
         Commands.undo(graphEditor.getModel());
     }
+
     public void redo() {
         Commands.redo(graphEditor.getModel());
+    }
+
+    public void deleteElement() {
+        DataFlowElement element = currentElement.get();
+        if (!element.typeProperty().get().equals(DataFlowJointSkin.ELEMENT_TYPE)) {
+            Commands.removeNode(graphEditor.getModel(), ((GenericNodeSkin) element).getNode());
+        } else {
+            ConnectionCommands.removeConnection(graphEditor.getModel(), ((DataFlowJointSkin)element).getJoint().getConnection(), null);
+        }
+        currentElement.set(null);
     }
 }

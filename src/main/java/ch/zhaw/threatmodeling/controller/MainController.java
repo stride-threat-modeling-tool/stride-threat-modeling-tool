@@ -225,8 +225,10 @@ public class MainController {
                 editTextTextField.textProperty().unbindBidirectional(oldVal.textProperty());
                 nodeTypeLabel.textProperty().unbindBidirectional(oldVal.typeProperty());
             }
-            editTextTextField.textProperty().bindBidirectional(newVal.textProperty());
-            nodeTypeLabel.textProperty().bindBidirectional(newVal.typeProperty());
+            if (newVal != null) {
+                editTextTextField.textProperty().bindBidirectional(newVal.textProperty());
+                nodeTypeLabel.textProperty().bindBidirectional(newVal.typeProperty());
+            }
         });
     }
 
@@ -275,5 +277,10 @@ public class MainController {
     @FXML
     public void redo() {
         dfdSkinController.redo();
+    }
+
+    @FXML
+    public void deleteElement() {
+        dfdSkinController.deleteElement();
     }
 }

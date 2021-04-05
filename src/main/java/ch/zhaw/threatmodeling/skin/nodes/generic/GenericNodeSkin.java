@@ -41,10 +41,13 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
     protected final Rectangle selectionHalo = new Rectangle();
     private final StringProperty text = new SimpleStringProperty();
     private final StringProperty type = new SimpleStringProperty();
+    private final GNode node;
+
 
 
     protected GenericNodeSkin(GNode node) {
         super(node);
+        this.node = node;
         initEventListener();
     }
 
@@ -200,6 +203,10 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
         Label label = new Label(getText());
         label.textProperty().bindBidirectional(textProperty());
         return label;
+    }
+
+    public GNode getNode(){
+        return this.node;
     }
 
     protected double getMinorOffsetX(final GConnector connector) {

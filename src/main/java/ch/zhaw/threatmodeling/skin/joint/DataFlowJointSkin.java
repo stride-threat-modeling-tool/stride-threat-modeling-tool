@@ -23,6 +23,7 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     private final StringProperty text = new SimpleStringProperty();
     private final StringProperty type = new SimpleStringProperty();
     private final Label label = new Label();
+    private final GJoint joint;
 
     public StringProperty typeProperty(){
         return type;
@@ -49,6 +50,7 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
      */
     public DataFlowJointSkin(GJoint joint) {
         super(joint);
+        this.joint = joint;
         setText(ELEMENT_TYPE);
         type.set(ELEMENT_TYPE);
         StackPane pane = new StackPane();
@@ -64,6 +66,10 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
         getRoot().getChildren().add(pane);
         getRoot().getStyleClass().add(DATAFLOW_JOINT_CLASS);
 
+    }
+
+    public GJoint getJoint(){
+        return joint;
     }
 
     @Override
