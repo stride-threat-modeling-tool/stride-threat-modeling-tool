@@ -283,4 +283,9 @@ public class MainController {
     public void deleteElement() {
         dfdSkinController.deleteElement();
     }
+
+    @FXML
+    public void clearAll(ActionEvent actionEvent) {
+        dfdSkinController.clearAll();
+    }
 }

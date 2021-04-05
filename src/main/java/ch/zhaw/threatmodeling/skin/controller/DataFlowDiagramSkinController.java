@@ -303,4 +303,8 @@ public class DataFlowDiagramSkinController implements SkinController {
         }
         currentElement.set(null);
     }
+
+    public void clearAll() {
+        Commands.clear(graphEditor.getModel());
+    }
 }
