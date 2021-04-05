@@ -285,4 +285,10 @@ public class DataFlowDiagramSkinController implements SkinController {
         });
     }
 
+    public void undo() {
+        Commands.undo(graphEditor.getModel());
+    }
+    public void redo() {
+        Commands.redo(graphEditor.getModel());
+    }
 }

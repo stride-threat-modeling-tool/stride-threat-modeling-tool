@@ -17,6 +17,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
@@ -264,5 +265,15 @@ public class MainController {
     @FXML
     public void addMultipleProcess() {
         dfdSkinController.addMultipleProcess(graphEditor.getView().getLocalToSceneTransform().getMxx());
+    }
+
+    @FXML
+    public void undo() {
+        dfdSkinController.undo();
+    }
+
+    @FXML
+    public void redo() {
+        dfdSkinController.redo();
     }
 }

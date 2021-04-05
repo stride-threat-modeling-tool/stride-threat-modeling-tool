@@ -14,6 +14,10 @@
             <MenuItem onAction="#addExternalEntity" text="Add external entity" />
             <MenuItem onAction="#analyseDiagram" text="Analyse Diagram" />
         </Menu>
+        <Menu text="Edit">
+            <MenuItem onAction="#undo" text="Undo"/>
+            <MenuItem onAction="#redo" text="Redo"/>
+        </Menu>
         <StackPane.margin>
             <Insets left="-20.0" right="-20.0" top="-30.0" />
         </StackPane.margin>
