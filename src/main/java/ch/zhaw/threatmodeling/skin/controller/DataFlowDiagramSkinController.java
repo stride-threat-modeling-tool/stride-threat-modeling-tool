@@ -16,7 +16,6 @@ import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.multipleprocess.MultipleProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
-import ch.zhaw.threatmodeling.skin.utils.ConnectionCommands;
 import de.tesis.dynaware.grapheditor.Commands;
 import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
@@ -24,6 +23,7 @@ import de.tesis.dynaware.grapheditor.GJointSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.GTailSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
+import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.GConnection;
@@ -35,17 +35,16 @@ import de.tesis.dynaware.grapheditor.model.GraphFactory;
 import de.tesis.dynaware.grapheditor.model.GraphPackage;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableSet;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
-import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
-import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.edit.command.AddCommand;
-import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
@@ -67,7 +66,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container, final ThreatGenerator threatGenerator) {
         this.graphEditor = graphEditor;
-        this.selectionCopier = new SelectionCopier(graphEditor.getSkinLookup(), graphEditor.getSelectionManager(), this);
+        this.selectionCopier = new SelectionCopier(graphEditor.getSkinLookup(), getSelectionManager(), this);
         selectionCopier.initialize(graphEditor.getModel());
         this.graphEditorContainer = container;
         this.threatGenerator = threatGenerator;
@@ -227,18 +226,17 @@ public class DataFlowDiagramSkinController implements SkinController {
         return mouseEvent -> {
             if (MouseButton.PRIMARY.equals(mouseEvent.getButton())) {
                 this.currentElement.set(element);
+                if(element instanceof DataFlowJointSkin){
+                    getSelectionManager().clearSelection();
+                    getSelectionManager().select(((DataFlowJointSkin) element).getJoint());
+                }
             }
             mouseEvent.consume();
         };
     }
 
-    private EventHandler<MouseEvent> createClickDataFlowNodeHandler(DataFlowElement element) {
-        return mouseEvent -> {
-            if (MouseButton.PRIMARY.equals(mouseEvent.getButton())) {
-                this.currentElement.set(element);
-            }
-            mouseEvent.consume();
-        };
+    private SelectionManager getSelectionManager() {
+        return getGraphEditor().getSelectionManager();
     }
 
     public GNodeSkin createDataStoreSkin(final GNode node) {
@@ -283,7 +281,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
 
     private GenericNodeSkin initNodeEventListeners(GNode gNode, GenericNodeSkin skin) {
-        skin.setHasBeenSelectedHandler(createClickDataFlowNodeHandler(skin));
+        skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
         addTextPropertyChangeListener(skin, gNode);
         return skin;
     }
@@ -317,19 +315,19 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void paste() {
         graphEditor.setNodeSkinFactory(this::createMultipleProcessSkin);
-        selectionCopier.paste(this::pasteWithNames);
-    }
-
-    private void pasteWithNames(List<GNode> gNodes, CompoundCommand compoundCommand) {
-        gNodes.forEach(gNode -> {
-                ((GenericNodeSkin)graphEditor.getSkinLookup().lookupNode(gNode)).initialize();
-                LOGGER.info(((GenericNodeSkin)graphEditor.getSkinLookup().lookupNode(gNode)).typeProperty().get());
-            }
-        );
+        selectionCopier.paste(null);
     }
 
     public void deleteSelection() {
-        graphEditor.delete(graphEditor.getSelectionManager().getSelectedItems());
+        List<GConnection> connections = new ArrayList<>();
+        ObservableSet<EObject> selectedItems =  getSelectionManager().getSelectedItems();
+        selectedItems.forEach(elem -> {
+            if (elem instanceof GJoint) {
+                connections.add(((GJoint)elem).getConnection());
+            }
+        });
+        selectedItems.addAll(connections);
+        graphEditor.delete(getSelectionManager().getSelectedItems());
     }
 
     public void clearAll() {
