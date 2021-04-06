@@ -280,12 +280,22 @@ public class MainController {
     }
 
     @FXML
-    public void deleteElement() {
-        dfdSkinController.deleteElement();
+    public void copy() {
+        dfdSkinController.copy();
     }
 
     @FXML
-    public void clearAll(ActionEvent actionEvent) {
+    public void paste() {
+        dfdSkinController.paste();
+    }
+
+    @FXML
+    public void deleteSelection() {
+        dfdSkinController.deleteSelection();
+    }
+
+    @FXML
+    public void clearAll() {
         dfdSkinController.clearAll();
     }
 }

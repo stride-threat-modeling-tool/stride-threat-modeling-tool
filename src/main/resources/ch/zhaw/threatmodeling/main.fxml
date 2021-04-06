@@ -10,14 +10,17 @@
     </padding>
     <MenuBar fx:id="menuBar" StackPane.alignment="TOP_LEFT">
         <Menu text="File">
-            <MenuItem text="Clear All" onAction="#clearAll"/>
+            <MenuItem onAction="#clearAll" text="Clear All" />
             <MenuItem onAction="#analyseDiagram" text="Analyse Diagram" />
         </Menu>
         <Menu text="Edit">
-            <MenuItem onAction="#undo" text="Undo" accelerator="Shortcut + Z"/>
-            <MenuItem onAction="#redo" text="Redo" accelerator="Shortcut + Y"/>
-            <SeparatorMenuItem/>
-            <MenuItem onAction="#deleteElement" text="Delete" accelerator="Delete"/>
+            <MenuItem accelerator="Shortcut + C" onAction="#copy" text="Copy" />
+            <MenuItem accelerator="Shortcut + V" onAction="#paste" text="Paste" />
+            <SeparatorMenuItem />
+            <MenuItem accelerator="Shortcut + Z" onAction="#undo" text="Undo" />
+            <MenuItem accelerator="Shortcut + Y" onAction="#redo" text="Redo" />
+            <SeparatorMenuItem />
+            <MenuItem accelerator="Delete" onAction="#deleteSelection" text="Delete" />
         </Menu>
         <StackPane.margin>
             <Insets left="-20.0" right="-20.0" top="-30.0" />
@@ -50,7 +53,7 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </padding>
                             <children>
-                                <Label fx:id="nodeTypeLabel" text="NODE_TYPE" />
+                                <Label fx:id="nodeTypeLabel" text="node type" />
                                 <HBox prefWidth="200.0" spacing="10.0">
                                     <children>
                                         <Label text="Text:" />
@@ -70,7 +73,7 @@
             <Insets top="15.0" />
         </padding>
     </HBox>
-    <TitledPane StackPane.alignment="BOTTOM_CENTER">
+    <TitledPane expanded="false" StackPane.alignment="BOTTOM_CENTER">
         <StackPane.margin>
             <Insets />
         </StackPane.margin>

@@ -76,6 +76,10 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
         return text;
     }
 
+    public String getType() {
+        return type.get();
+    }
+
     @Override
     public void setHasBeenSelectedHandler(EventHandler<MouseEvent> hasBeenSelectedHandler) {
         getRoot().setOnMouseClicked(hasBeenSelectedHandler);

@@ -3,6 +3,7 @@ package ch.zhaw.threatmodeling.skin.controller;
 import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.model.Threat;
 import ch.zhaw.threatmodeling.model.ThreatGenerator;
+import ch.zhaw.threatmodeling.selections.SelectionCopier;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.SkinController;
@@ -38,12 +39,17 @@ import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.edit.command.AddCommand;
+import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.logging.Logger;
@@ -57,9 +63,12 @@ public class DataFlowDiagramSkinController implements SkinController {
     protected final GraphEditorContainer graphEditorContainer;
     private final ObjectProperty<DataFlowElement> currentElement = new SimpleObjectProperty<>();
     private final ThreatGenerator threatGenerator;
+    private final SelectionCopier selectionCopier;
 
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container, final ThreatGenerator threatGenerator) {
         this.graphEditor = graphEditor;
+        this.selectionCopier = new SelectionCopier(graphEditor.getSkinLookup(), graphEditor.getSelectionManager(), this);
+        selectionCopier.initialize(graphEditor.getModel());
         this.graphEditorContainer = container;
         this.threatGenerator = threatGenerator;
         graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
@@ -100,24 +109,28 @@ public class DataFlowDiagramSkinController implements SkinController {
 
 
     public void addDataStore(double currentZoomFactor) {
-        graphEditor.setNodeSkinFactory(this::createDataStoreSkin);
+        setNodeSkinFactory(this::createDataStoreSkin);
         addNode(currentZoomFactor, DataStoreNodeSkin.TITLE_TEXT);
     }
 
     public void addExternalEntity(double currentZoomFactor) {
-        graphEditor.setNodeSkinFactory(this::createExternalEntitySkin);
+        setNodeSkinFactory(this::createExternalEntitySkin);
         addNode(currentZoomFactor, ExternalEntityNodeSkin.TITLE_TEXT);
 
     }
 
+    public void setNodeSkinFactory(Callback<GNode, GNodeSkin> callback) {
+        graphEditor.setNodeSkinFactory(callback);
+    }
+
     public void addProcess(double currentZoomFactor) {
-        graphEditor.setNodeSkinFactory(this::createProcessSkin);
+        setNodeSkinFactory(this::createProcessSkin);
         addNode(currentZoomFactor, ProcessNodeSkin.TITLE_TEXT);
 
     }
 
     public void addMultipleProcess(double currentZoomFactor) {
-        graphEditor.setNodeSkinFactory(this::createMultipleProcessSkin);
+        setNodeSkinFactory(this::createMultipleProcessSkin);
         addNode(currentZoomFactor, MultipleProcessNodeSkin.TITLE_TEXT);
 
     }
@@ -196,6 +209,10 @@ public class DataFlowDiagramSkinController implements SkinController {
         return count;
     }
 
+    public GraphEditor getGraphEditor() {
+        return graphEditor;
+    }
+
     @Override
     public void clearConnectors() {
 
@@ -224,24 +241,24 @@ public class DataFlowDiagramSkinController implements SkinController {
         };
     }
 
-    private GNodeSkin createDataStoreSkin(final GNode node) {
+    public GNodeSkin createDataStoreSkin(final GNode node) {
         DataStoreNodeSkin skin = new DataStoreNodeSkin(node);
         return initNodeEventListeners(node, skin);
     }
 
-    private GNodeSkin createExternalEntitySkin(final GNode node) {
+    public GNodeSkin createExternalEntitySkin(final GNode node) {
         ExternalEntityNodeSkin skin = new ExternalEntityNodeSkin(node);
         return initNodeEventListeners(node, skin);
     }
 
 
-    private GNodeSkin createProcessSkin(GNode gNode) {
+    public GNodeSkin createProcessSkin(GNode gNode) {
         ProcessNodeSkin skin = new ProcessNodeSkin(gNode);
         return initNodeEventListeners(gNode, skin);
     }
 
 
-    private GNodeSkin createMultipleProcessSkin(GNode gNode) {
+    public GNodeSkin createMultipleProcessSkin(GNode gNode) {
         MultipleProcessNodeSkin skin = new MultipleProcessNodeSkin(gNode);
         return initNodeEventListeners(gNode, skin);
     }
@@ -294,17 +311,29 @@ public class DataFlowDiagramSkinController implements SkinController {
         Commands.redo(graphEditor.getModel());
     }
 
-    public void deleteElement() {
-        DataFlowElement element = currentElement.get();
-        if (!element.typeProperty().get().equals(DataFlowJointSkin.ELEMENT_TYPE)) {
-            Commands.removeNode(graphEditor.getModel(), ((GenericNodeSkin) element).getNode());
-        } else {
-            ConnectionCommands.removeConnection(graphEditor.getModel(), ((DataFlowJointSkin)element).getJoint().getConnection(), null);
-        }
-        currentElement.set(null);
+    public void copy() {
+        selectionCopier.copy();
+    }
+
+    public void paste() {
+        graphEditor.setNodeSkinFactory(this::createMultipleProcessSkin);
+        selectionCopier.paste(this::pasteWithNames);
+    }
+
+    private void pasteWithNames(List<GNode> gNodes, CompoundCommand compoundCommand) {
+        gNodes.forEach(gNode -> {
+                ((GenericNodeSkin)graphEditor.getSkinLookup().lookupNode(gNode)).initialize();
+                LOGGER.info(((GenericNodeSkin)graphEditor.getSkinLookup().lookupNode(gNode)).typeProperty().get());
+            }
+        );
+    }
+
+    public void deleteSelection() {
+        graphEditor.delete(graphEditor.getSelectionManager().getSelectedItems());
     }
 
     public void clearAll() {
         Commands.clear(graphEditor.getModel());
     }
+
 }
