@@ -3,8 +3,6 @@ package ch.zhaw.threatmodeling.selections;
 import ch.zhaw.threatmodeling.selections.utils.ConnectionMaps;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
-import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
-import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 
 import java.util.ArrayList;
@@ -13,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import ch.zhaw.threatmodeling.skin.nodes.multipleprocess.MultipleProcessNodeSkin;
-import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
@@ -268,7 +264,7 @@ public class SelectionCopier {
         final EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
         Command command;
         for (final GNode pastedNode : pastedNodes) {
-            activateCorrespondingFactory(pastedNode);
+            controller.activateCorrespondingNodeFactory(nodeToClassMapping.get(pastedNode).getKey());
             command = AddCommand.create(editingDomain, model, NODES, pastedNode);
             if (command.canExecute()) {
                 editingDomain.getCommandStack().execute(command);
@@ -280,7 +276,7 @@ public class SelectionCopier {
         }
 
         for (final GConnection pastedConnection : pastedConnections) {
-            activateCorrespondingFactory(pastedConnection);
+            controller.activateCorrespondingConnectionFactory(connectionToClassMapping.getConnectionTypeTextMap().get(pastedConnection).getKey());
             command = AddCommand.create(editingDomain, model, CONNECTIONS, pastedConnection);
             if (command.canExecute()) {
                 editingDomain.getCommandStack().execute(command);
@@ -303,44 +299,6 @@ public class SelectionCopier {
                     .setText(connectionToClassMapping.getConnectionText(pastedConnection));
         }
 
-    }
-
-    private void activateCorrespondingFactory(GNode pastedNode) {
-        switch (nodeToClassMapping.get(pastedNode).getKey()) {
-            case DataStoreNodeSkin
-                    .TITLE_TEXT:
-                controller.setNodeSkinFactory(controller::createDataStoreSkin);
-                break;
-            case ExternalEntityNodeSkin
-                    .TITLE_TEXT:
-                controller.setNodeSkinFactory(controller::createExternalEntitySkin);
-                break;
-            case ProcessNodeSkin
-                    .TITLE_TEXT:
-                controller.setNodeSkinFactory(controller::createProcessSkin);
-                break;
-            case MultipleProcessNodeSkin
-                    .TITLE_TEXT:
-                controller.setNodeSkinFactory(controller::createMultipleProcessSkin);
-                break;
-            default:
-                LOGGER.warning("Could not find type of node, fall back to default");
-                controller.setNodeSkinFactory(controller::createExternalEntitySkin);
-                break;
-
-        }
-    }
-
-    private void activateCorrespondingFactory(GConnection pastedConnection) {
-        //should be expanded if more connection types exist
-        switch (connectionToClassMapping.getConnectionTypeTextMap().get(pastedConnection).getKey()) {
-            default:
-                controller.setConnectionSkinFactory(controller::createConnectionSkin);
-                controller.setConnectorSkinFactory(controller::createConnectorSkin);
-                controller.setJointSkinFactory(controller::createJointSkin);
-                break;
-
-        }
     }
 
     /**
