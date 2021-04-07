@@ -13,6 +13,7 @@ public class App extends Application {
     private static final String GENERAL_STYLESHEET = "styles.css";
     private static final String DATA_STORE_STYLESHEET = "DataStore.css";
     private static final String EXTERNAL_ENTITY_STYLESHEET = "ExternalEntity.css";
+    private static final String TRUST_BOUNDARY_STYLESHEET = "TrustBoundary.css";
     public static final int MIN_WIDTH = 800;
     public static final int MIN_HEIGHT = 600;
     public static final int PREF_WIDTH = 1200;
@@ -26,7 +27,9 @@ public class App extends Application {
         Scene scene = new Scene(root, PREF_WIDTH, PREF_HEIGHT);
         addStyleSheetToScene(scene, DATA_STORE_STYLESHEET);
         addStyleSheetToScene(scene, EXTERNAL_ENTITY_STYLESHEET);
+        addStyleSheetToScene(scene, TRUST_BOUNDARY_STYLESHEET);
         addStyleSheetToScene(scene, GENERAL_STYLESHEET);
+
         stage.setScene(scene);
         stage.setMinHeight(MIN_HEIGHT);
         stage.setMinWidth(MIN_WIDTH);

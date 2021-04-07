@@ -3,6 +3,7 @@ package ch.zhaw.threatmodeling.skin.nodes.datastore;
 import ch.zhaw.threatmodeling.skin.nodes.generic.rectangle.GenericRectangleNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class DataStoreNodeSkin extends GenericRectangleNodeSkin {
@@ -23,7 +24,6 @@ public class DataStoreNodeSkin extends GenericRectangleNodeSkin {
         Rectangle border = new Rectangle();
         border.widthProperty().bind(getRoot().widthProperty());
         border.heightProperty().bind(getRoot().heightProperty());
-
         getRoot().getChildren().add(border);
         getRoot().setMinSize(MIN_WIDTH, MIN_HEIGHT);
 

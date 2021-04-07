@@ -12,6 +12,8 @@ public class DataFlowSkinConstants {
     private DataFlowSkinConstants(){}
 
     public static final String DFD_NODE = "dfd-node";
+    public static final String DFD_TRUST_BOUNDARY_NODE = "dfd-trust-boundary-node";
+
     public static final String DFD_LEFT_CENTER_CONNECTOR = "dfd-left-center";
     public static final String DFD_RIGHT_CENTER_CONNECTOR = "dfd-right-center";
     public static final String DFD_TOP_LEFT_CONNECTOR = "dfd-upper-left-corner";
@@ -21,6 +23,10 @@ public class DataFlowSkinConstants {
     public static final String DFD_BOTTOM_CENTER_CONNECTOR = "dfd-bottom-center";
     public static final String DFD_BOTTOM_RIGHT_CONNECTOR = "dfd-lower-right-corner";
 
+    public static final String DFD_TRUST_BOUNDARY_CONNECTOR = "dfd-trust-boundary-connector";
+    public static final String DFD_TRUST_BOUNDARY_CONNECTION = "dfd-trust-boundary-connector";
+    public static final String DFD_TRUST_BOUNDARY_JOINT = "dfd-trust-boundary-joint";
+    public static final double DFD_JOINT_SPAWN_OFFSET = 22.5;
 
     public static final PseudoClass PSEUDO_CLASS_ALLOWED = PseudoClass.getPseudoClass("allowed");
     public static final PseudoClass PSEUDO_CLASS_FORBIDDEN = PseudoClass.getPseudoClass("forbidden");
