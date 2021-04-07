@@ -1,20 +1,24 @@
 package ch.zhaw.threatmodeling.selections;
 
+import ch.zhaw.threatmodeling.selections.utils.ConnectionMaps;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
-import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
-import ch.zhaw.threatmodeling.skin.nodes.externalentity.ExternalEntityNodeSkin;
+import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import ch.zhaw.threatmodeling.skin.nodes.multipleprocess.MultipleProcessNodeSkin;
-import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
-import de.tesis.dynaware.grapheditor.core.connections.ConnectionCopier;
-import de.tesis.dynaware.grapheditor.model.*;
+import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GJoint;
+import de.tesis.dynaware.grapheditor.model.GModel;
+import de.tesis.dynaware.grapheditor.model.GNode;
+import de.tesis.dynaware.grapheditor.model.GraphPackage;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -53,8 +57,7 @@ public class SelectionCopier {
 
     private final List<GNode> copiedNodes = new ArrayList<>();
     private final Map<GNode, Pair<String, String>> nodeToClassMapping = new HashMap<>();
-    private final List<GConnection> copiedConnections = new ArrayList<>();
-
+    private ConnectionMaps connectionToClassMapping = new ConnectionMaps();
     private Parent parentAtTimeOfCopy;
     private double parentSceneXAtTimeOfCopy;
     private double parentSceneYAtTimeOfCopy;
@@ -91,7 +94,7 @@ public class SelectionCopier {
         if (selectionManager.getSelectedItems().isEmpty()) {
             return;
         }
-       clearMemory();
+        clearMemory();
 
         final Map<GNode, GNode> copyStorage = new HashMap<>();
 
@@ -105,8 +108,7 @@ public class SelectionCopier {
                 copyStorage.put(node, copiedNode);
             }
         }
-
-        copiedConnections.addAll(ConnectionCopier.copyConnections(copyStorage));
+        DataFlowConnectionCopier.copyConnections(copyStorage, connectionToClassMapping, skinLookup);
         saveParentPositionInScene();
     }
 
@@ -150,8 +152,8 @@ public class SelectionCopier {
      */
     public void clearMemory() {
         copiedNodes.clear();
-        copiedConnections.clear();
         nodeToClassMapping.clear();
+        connectionToClassMapping = new ConnectionMaps();
     }
 
     /**
@@ -172,7 +174,8 @@ public class SelectionCopier {
             pastedNodes.add(pastedNode);
             pasteStorage.put(copiedNode, pastedNode);
         }
-        pastedConnections.addAll(ConnectionCopier.copyConnections(pasteStorage));
+        DataFlowConnectionCopier.copyConnections(pasteStorage, connectionToClassMapping, skinLookup);
+        pastedConnections.addAll(connectionToClassMapping.getConnectionTypeTextMap().keySet());
     }
 
     /**
@@ -261,50 +264,41 @@ public class SelectionCopier {
         final EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
         Command command;
         for (final GNode pastedNode : pastedNodes) {
-            activateCorrespondingFactory(pastedNode);
+            controller.activateCorrespondingNodeFactory(nodeToClassMapping.get(pastedNode).getKey());
             command = AddCommand.create(editingDomain, model, NODES, pastedNode);
             if (command.canExecute()) {
                 editingDomain.getCommandStack().execute(command);
-                GenericNodeSkin nodeSkin = (GenericNodeSkin) skinLookup.lookupNode(pastedNode);
-                nodeSkin.setText(nodeToClassMapping.get(pastedNode).getValue());
+                setNodeText(pastedNode);
+
             } else {
                 LOGGER.warning("Could not paste node of type" + pastedNode.getType());
             }
         }
 
         for (final GConnection pastedConnection : pastedConnections) {
+            controller.activateCorrespondingConnectionFactory(connectionToClassMapping.getConnectionTypeTextMap().get(pastedConnection).getKey());
             command = AddCommand.create(editingDomain, model, CONNECTIONS, pastedConnection);
             if (command.canExecute()) {
                 editingDomain.getCommandStack().execute(command);
+                setConnectionText(pastedConnection);
+            } else {
+                LOGGER.warning("Could not paste connection of type" + pastedConnection.getType());
             }
         }
 
     }
 
-    private void activateCorrespondingFactory(GNode pastedNode) {
-        switch (nodeToClassMapping.get(pastedNode).getKey()) {
-            case DataStoreNodeSkin
-                    .TITLE_TEXT:
-                controller.setNodeSkinFactory(controller::createDataStoreSkin);
-                break;
-            case ExternalEntityNodeSkin
-                    .TITLE_TEXT:
-                controller.setNodeSkinFactory(controller::createExternalEntitySkin);
-                break;
-            case ProcessNodeSkin
-                    .TITLE_TEXT:
-                controller.setNodeSkinFactory(controller::createProcessSkin);
-                break;
-            case MultipleProcessNodeSkin
-                    .TITLE_TEXT:
-                controller.setNodeSkinFactory(controller::createMultipleProcessSkin);
-                break;
-            default:
-                LOGGER.warning("Could not find type of node, fall back to default");
-                controller.setNodeSkinFactory(controller::createExternalEntitySkin);
-                break;
+    private void setNodeText(GNode node) {
+        GenericNodeSkin nodeSkin = (GenericNodeSkin) skinLookup.lookupNode(node);
+        nodeSkin.setText(nodeToClassMapping.get(node).getValue());
+    }
 
+    private void setConnectionText(GConnection pastedConnection) {
+        if (connectionToClassMapping.getConnectionType(pastedConnection).equals(DataFlowJointSkin.ELEMENT_TYPE)) {
+            ((DataFlowJointSkin) skinLookup.lookupJoint(pastedConnection.getJoints().get(0)))
+                    .setText(connectionToClassMapping.getConnectionText(pastedConnection));
         }
+
     }
 
     /**

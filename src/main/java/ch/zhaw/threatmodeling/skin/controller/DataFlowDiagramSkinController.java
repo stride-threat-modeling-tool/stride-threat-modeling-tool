@@ -1,6 +1,5 @@
 package ch.zhaw.threatmodeling.skin.controller;
 
-import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
 import ch.zhaw.threatmodeling.model.Threat;
 import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import ch.zhaw.threatmodeling.selections.SelectionCopier;
@@ -32,14 +31,9 @@ import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.core.connections.ConnectionEventManager;
+import ch.zhaw.threatmodeling.skin.utils.DataFlowCommands;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
-import de.tesis.dynaware.grapheditor.model.GConnection;
-import de.tesis.dynaware.grapheditor.model.GConnector;
-import de.tesis.dynaware.grapheditor.model.GJoint;
-import de.tesis.dynaware.grapheditor.model.GModel;
-import de.tesis.dynaware.grapheditor.model.GNode;
-import de.tesis.dynaware.grapheditor.model.GraphFactory;
-import de.tesis.dynaware.grapheditor.model.GraphPackage;
+import de.tesis.dynaware.grapheditor.model.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableSet;
@@ -49,16 +43,19 @@ import javafx.geometry.Side;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
+import javafx.util.Pair;
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.edit.command.AddCommand;
+import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -68,7 +65,6 @@ public class DataFlowDiagramSkinController implements SkinController {
     private static final int MAX_CONNECTOR_COUNT = 5;
     private static final int TRUST_BOUNDARY_NODE_SIZE = 15;
     private static final int TRUST_BOUNDARY_CONNECTION_OFFSET = 300;
-
     private static final Logger LOGGER = Logger.getLogger("Data Flow Controller");
 
     protected final DataFlowGraphEditor graphEditor;
@@ -76,6 +72,7 @@ public class DataFlowDiagramSkinController implements SkinController {
     private final ObjectProperty<DataFlowElement> currentElement = new SimpleObjectProperty<>();
     private final ThreatGenerator threatGenerator;
     private final SelectionCopier selectionCopier;
+    private final Stack<Pair<String, String>> typeNameDeletedItems = new Stack<>();
 
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container, final ThreatGenerator threatGenerator) {
         this.graphEditor = (DataFlowGraphEditor) graphEditor;
@@ -147,6 +144,18 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void setNodeSkinFactory(Callback<GNode, GNodeSkin> callback) {
         graphEditor.setNodeSkinFactory(callback);
+    }
+
+    public void setConnectionSkinFactory(Callback<GConnection, GConnectionSkin> callback) {
+        graphEditor.setConnectionSkinFactory(callback);
+    }
+
+    public void setConnectorSkinFactory(Callback<GConnector, GConnectorSkin> callback) {
+        graphEditor.setConnectorSkinFactory(callback);
+    }
+
+    public void setJointSkinFactory(Callback<GJoint, GJointSkin> callback) {
+        graphEditor.setJointSkinFactory(callback);
     }
 
     public void addProcess(double currentZoomFactor) {
@@ -241,60 +250,8 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     @Override
     public void addConnector(Side position, boolean input) {
-        final String type = getType(position);
-
-        final GModel model = graphEditor.getModel();
-        final SkinLookup skinLookup = graphEditor.getSkinLookup();
-        final CompoundCommand command = new CompoundCommand();
-        final EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
-
-        for (final GNode node : model.getNodes()) {
-
-            if (skinLookup.lookupNode(node).isSelected()) {
-                if (countConnectors(node, position) < MAX_CONNECTOR_COUNT) {
-
-                    final GConnector connector = GraphFactory.eINSTANCE.createGConnector();
-                    connector.setType(type);
-
-                    final EReference connectors = GraphPackage.Literals.GNODE__CONNECTORS;
-                    command.append(AddCommand.create(editingDomain, node, connectors, connector));
-                }
-            }
-
-        }
-
-        if (command.canExecute()) {
-            editingDomain.getCommandStack().execute(command);
-        }
-
     }
 
-    private String getType(Side position) {
-        switch (position) {
-            case TOP:
-                return DataFlowConnectorTypes.TOP;
-            case RIGHT:
-                return DataFlowConnectorTypes.RIGHT;
-            case BOTTOM:
-                return DataFlowConnectorTypes.BOTTOM;
-            case LEFT:
-                return DataFlowConnectorTypes.LEFT;
-        }
-        return null;
-    }
-
-    private int countConnectors(final GNode node, final Side side) {
-
-        int count = 0;
-
-        for (final GConnector connector : node.getConnectors()) {
-            if (side.equals(DataFlowConnectorTypes.getSide(connector.getType()))) {
-                count++;
-            }
-        }
-
-        return count;
-    }
 
     public GraphEditor getGraphEditor() {
         return graphEditor;
@@ -314,7 +271,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         return mouseEvent -> {
             if (MouseButton.PRIMARY.equals(mouseEvent.getButton())) {
                 this.currentElement.set(element);
-                if(element instanceof DataFlowJointSkin){
+                if (element instanceof DataFlowJointSkin) {
                     getSelectionManager().clearSelection();
                     getSelectionManager().select(((DataFlowJointSkin) element).getJoint());
                 }
@@ -349,13 +306,13 @@ public class DataFlowDiagramSkinController implements SkinController {
         return initNodeEventListeners(gNode, skin);
     }
 
-    private GJointSkin createJointSkin(final GJoint joint) {
+    public GJointSkin createJointSkin(final GJoint joint) {
         DataFlowJointSkin skin = new DataFlowJointSkin(joint);
         skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
         return skin;
     }
 
-    private GConnectorSkin createConnectorSkin(final GConnector connector) {
+    public GConnectorSkin createConnectorSkin(final GConnector connector) {
         return new DataFlowConnectorSkin(connector);
     }
 
@@ -363,7 +320,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         return new DataFlowTailSkin(connector);
     }
 
-    private GConnectionSkin createConnectionSkin(GConnection gConnection) {
+    public GConnectionSkin createConnectionSkin(GConnection gConnection) {
         return new DataFlowConnectionSkin(gConnection);
     }
 
@@ -407,7 +364,37 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void undo() {
-        Commands.undo(graphEditor.getModel());
+        GModel model = graphEditor.getModel();
+        EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
+        CommandStack commandStack = editingDomain.getCommandStack();
+        if (commandStack.canUndo()) {
+            Command command = commandStack.getUndoCommand();
+            if (command instanceof CompoundCommand) {
+                LOGGER.info("cmd amount " + ((CompoundCommand) command).getCommandList().size());
+                ((CompoundCommand) command).getCommandList().forEach(cmd -> {
+                    LOGGER.info("one cmd");
+                    undoCommand(cmd, commandStack);
+                    cmd.undo();
+                });
+            }
+            commandStack.undo();
+        }
+
+
+    }
+
+    private void undoCommand(Command cmd, CommandStack commandStack) {
+        if (cmd instanceof RemoveCommand && !(cmd.getAffectedObjects().toArray()[0] instanceof GConnector)) {
+            Pair<String, String> pair = typeNameDeletedItems.pop();
+            String type = pair.getKey();
+            String name = pair.getValue();
+            LOGGER.info("type" + type);
+            if (type.equals(DataFlowJointSkin.ELEMENT_TYPE)) {
+                activateCorrespondingConnectionFactory(type);
+            } else {
+                activateCorrespondingNodeFactory(type);
+            }
+        }
     }
 
     public void redo() {
@@ -419,24 +406,77 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void paste() {
-        graphEditor.setNodeSkinFactory(this::createMultipleProcessSkin);
         selectionCopier.paste(null);
     }
 
     public void deleteSelection() {
         List<GConnection> connections = new ArrayList<>();
-        ObservableSet<EObject> selectedItems =  getSelectionManager().getSelectedItems();
+        GModel model = graphEditor.getModel();
+        EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
+        ObservableSet<EObject> selectedItems = getSelectionManager().getSelectedItems();
         selectedItems.forEach(elem -> {
             if (elem instanceof GJoint) {
-                connections.add(((GJoint)elem).getConnection());
+                connections.add(((GJoint) elem).getConnection());
             }
         });
         selectedItems.addAll(connections);
-        graphEditor.delete(getSelectionManager().getSelectedItems());
+        SkinLookup skinLookup = graphEditor.getSkinLookup();
+        for (final GNode node : model.getNodes()) {
+            if (graphEditor.getSelectionManager().isSelected(node)) {
+                GenericNodeSkin nodeSkin = (GenericNodeSkin) skinLookup.lookupNode(node);
+                typeNameDeletedItems.push(new Pair<>(nodeSkin.getType(), nodeSkin.getText()));
+            }
+        }
+        for (final GConnection con : model.getConnections()) {
+            if (graphEditor.getSelectionManager().isSelected(con)) {
+                DataFlowJointSkin jointSkin = (DataFlowJointSkin) skinLookup.lookupJoint(con.getJoints().get(0));
+                typeNameDeletedItems.push(new Pair<>(DataFlowJointSkin.ELEMENT_TYPE, jointSkin.getText()));
+            }
+        }
+        DataFlowCommands.remove(graphEditor.getSelectionManager().getSelectedItems(), editingDomain, model);
     }
 
     public void clearAll() {
         Commands.clear(graphEditor.getModel());
+    }
+
+    public void activateCorrespondingNodeFactory(String type) {
+        switch (type) {
+            case DataStoreNodeSkin
+                    .TITLE_TEXT:
+                setNodeSkinFactory(this::createDataStoreSkin);
+                break;
+            case ExternalEntityNodeSkin
+                    .TITLE_TEXT:
+                setNodeSkinFactory(this::createExternalEntitySkin);
+                break;
+            case ProcessNodeSkin
+                    .TITLE_TEXT:
+                setNodeSkinFactory(this::createProcessSkin);
+                break;
+            case MultipleProcessNodeSkin
+                    .TITLE_TEXT:
+                setNodeSkinFactory(this::createMultipleProcessSkin);
+                break;
+            default:
+                LOGGER.warning("Could not find type of node, fall back to default");
+                setNodeSkinFactory(this::createExternalEntitySkin);
+                break;
+
+        }
+    }
+
+    public void activateCorrespondingConnectionFactory(String type) {
+        //should be expanded if more connection types exist
+        //do not forget tail skin if that changed as well
+        switch (type) {
+            default:
+                setConnectionSkinFactory(this::createConnectionSkin);
+                setConnectorSkinFactory(this::createConnectorSkin);
+                setJointSkinFactory(this::createJointSkin);
+                break;
+
+        }
     }
 
 }
