@@ -1,4 +1,4 @@
-.connector {
+.data-flow-connector {
     -fx-border-color: -border-color;
     -fx-border-width: 1;
     -fx-stroke-type: inside;
@@ -7,17 +7,17 @@
     -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
 }
 
-.connector:selected {
+.data-flow-connector:selected {
     -fx-background-color: derive(white, -4%);
     -fx-opacity: 0.6;
 }
 
-.connector:hover, .connector:allowed, .connector:forbidden, .connector:selected:hover {
+.data-flow-connector:hover, .data-flow-connector:allowed, .data-flow-connector:forbidden, .data-flow-connector:selected:hover {
     -fx-background-color: white;
     -fx-opacity: 0.6;
 }
 
-.connector:pressed {
+.data-flow-connector:pressed {
     -fx-background-color: derive(white, -2%);
     -fx-opacity: 0.6;
 }
@@ -37,14 +37,8 @@
     -fx-stroke-width: 1;
 }
 
-.curved-connection-hover-effect {
-    -fx-stroke-width: 1;
-    -fx-stroke: -border-color;
-    -fx-stroke-dash-array: 8 4;
-    -fx-stroke-dash-offset: 4;
-    -fx-stroke-type: inside;
-    -fx-stroke-line-cap: butt;
-    -fx-fill: transparent;
+.curved-connection:hover, .curved-connection:selected {
+    -fx-stroke-width: 3;
 }
 
 .data-flow-joint {
@@ -55,17 +49,7 @@
 }
 
 .data-flow-joint:pressed, .data-flow-joint:selected, .data-flow-joint:selected:pressed {
-    -fx-border-color: -border-color;
-    -fx-background-color: derive(white, -4%);
-    -fx-opacity: 0.6;
-    -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
-}
-
-.data-flow-joint:hover, .R:selected:hover {
-    -fx-border-color: -border-color;
-    -fx-background-color: white;
-    -fx-opacity: 0.6;
-    -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
+    -fx-font-weight: bold;
 }
 
 .node-selection-halo {
@@ -76,6 +60,7 @@
     -fx-fill: null;
 }
 
+/* not used apparently */
 .root {
     -background-color: rgba(240, 235, 242, 0.9);
     -border-color: rgba(160, 160, 160, 0.8);

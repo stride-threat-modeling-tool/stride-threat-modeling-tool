@@ -6,10 +6,10 @@ import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
+import ch.zhaw.threatmodeling.skin.DataFlowGraphEditor;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
-import de.tesis.dynaware.grapheditor.core.DefaultGraphEditor;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
@@ -39,7 +39,7 @@ public class MainController {
     public static final String CONNECTION_LAYER_CSS_NAME = "graph-editor-connection-layer";
     private static final Logger LOGGER = Logger.getLogger("Main controller");
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
-    private final GraphEditor graphEditor = new DefaultGraphEditor();
+    private final GraphEditor graphEditor = new DataFlowGraphEditor();
     private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
     @FXML
     public VBox graphEditorParent;
@@ -297,5 +297,9 @@ public class MainController {
     @FXML
     public void clearAll() {
         dfdSkinController.clearAll();
+    }
+
+    public void addTrustBoundary() {
+        dfdSkinController.addTrustBoundary(graphEditor.getView().getLocalToSceneTransform().getMxx());
     }
 }

@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class DataFlowConnectorSkin extends GConnectorSkin {
 
     private static final Logger LOGGER = Logger.getLogger("Data Flow Connector skin");
-    private static final String STYLE_CLASS = "connector";
+    private static final String STYLE_CLASS = "data-flow-connector";
     private static final String STYLE_CLASS_FORBIDDEN_GRAPHIC = "data-flow-forbidden-graphic";
 
     public static final double SIZE = 15;
