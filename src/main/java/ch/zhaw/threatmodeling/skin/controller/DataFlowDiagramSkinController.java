@@ -70,10 +70,10 @@ public class DataFlowDiagramSkinController implements SkinController {
         selectionCopier.initialize(graphEditor.getModel());
         this.graphEditorContainer = container;
         this.threatGenerator = threatGenerator;
-        graphEditor.setConnectorSkinFactory(this::createConnectorSkin);
         graphEditor.setTailSkinFactory(this::createTailSkin);
         graphEditor.setJointSkinFactory(this::createJointSkin);
-        graphEditor.setConnectionSkinFactory(this::createConnectionSkin);
+        setConnectorSkinFactory(this::createConnectorSkin);
+        setConnectionSkinFactory(this::createConnectionSkin);
 
     }
 
@@ -120,6 +120,17 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void setNodeSkinFactory(Callback<GNode, GNodeSkin> callback) {
         graphEditor.setNodeSkinFactory(callback);
+    }
+
+    public void setConnectionSkinFactory(Callback<GConnection, GConnectionSkin> callback) {
+        graphEditor.setConnectionSkinFactory(callback);
+    }
+    public void setConnectorSkinFactory(Callback<GConnector, GConnectorSkin> callback) {
+        graphEditor.setConnectorSkinFactory(callback);
+    }
+
+    public void setJointSkinFactory(Callback<GJoint, GJointSkin> callback) {
+        graphEditor.setJointSkinFactory(callback);
     }
 
     public void addProcess(double currentZoomFactor) {
@@ -261,13 +272,13 @@ public class DataFlowDiagramSkinController implements SkinController {
         return initNodeEventListeners(gNode, skin);
     }
 
-    private GJointSkin createJointSkin(final GJoint joint) {
+    public GJointSkin createJointSkin(final GJoint joint) {
         DataFlowJointSkin skin = new DataFlowJointSkin(joint);
         skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
         return skin;
     }
 
-    private GConnectorSkin createConnectorSkin(final GConnector connector) {
+    public GConnectorSkin createConnectorSkin(final GConnector connector) {
         return new DataFlowConnectorSkin(connector);
     }
 
@@ -275,7 +286,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         return new DataFlowTailSkin(connector);
     }
 
-    private GConnectionSkin createConnectionSkin(GConnection gConnection) {
+    public GConnectionSkin createConnectionSkin(GConnection gConnection) {
         return new DataFlowConnectionSkin(gConnection);
     }
 
@@ -314,7 +325,6 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void paste() {
-        graphEditor.setNodeSkinFactory(this::createMultipleProcessSkin);
         selectionCopier.paste(null);
     }
 
