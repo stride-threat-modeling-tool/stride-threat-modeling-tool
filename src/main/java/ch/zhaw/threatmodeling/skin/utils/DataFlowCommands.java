@@ -17,13 +17,14 @@ public class DataFlowCommands {
 
     private DataFlowCommands(){}
 
-    public static void remove(Collection<EObject> pToRemove, EditingDomain editingDomain, GModel model) {
+    public static int remove(Collection<EObject> pToRemove, EditingDomain editingDomain, GModel model) {
         if (pToRemove != null && !pToRemove.isEmpty()) {
             RemoveContext editContext = new RemoveContext();
             List<EObject> delete = new ArrayList<>(pToRemove.size());
             Iterator<EObject> var5 = pToRemove.iterator();
-
+            int deletedElements = 0;
             while(true) {
+
                 EObject obj;
                 while(var5.hasNext()) {
                     obj = var5.next();
@@ -53,13 +54,17 @@ public class DataFlowCommands {
                     obj = var5.next();
                     if (obj instanceof GNode) {
                         editingDomain.getCommandStack().execute(RemoveCommand.create(editingDomain, model, GraphPackage.Literals.GMODEL__NODES, obj));
+                        deletedElements++;
+
                     } else if (obj instanceof GConnection) {
                         remove((GConnection)obj, editingDomain, model);
+                        deletedElements++;
                     }
                 }
-                return;
+                return deletedElements;
             }
         }
+        return -1;
     }
 
     private static void remove( final GConnection pToDelete, EditingDomain editingDomain, GModel model)
