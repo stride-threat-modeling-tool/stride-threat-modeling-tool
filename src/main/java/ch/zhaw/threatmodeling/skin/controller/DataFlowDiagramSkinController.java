@@ -389,6 +389,7 @@ public class DataFlowDiagramSkinController implements SkinController {
             String type = pair.getKey();
             String name = pair.getValue();
             LOGGER.info("type" + type);
+            LOGGER.info("name" + name);
             if (type.equals(DataFlowJointSkin.ELEMENT_TYPE)) {
                 activateCorrespondingConnectionFactory(type);
             } else {
@@ -429,8 +430,12 @@ public class DataFlowDiagramSkinController implements SkinController {
         }
         for (final GConnection con : model.getConnections()) {
             if (graphEditor.getSelectionManager().isSelected(con)) {
-                DataFlowJointSkin jointSkin = (DataFlowJointSkin) skinLookup.lookupJoint(con.getJoints().get(0));
-                typeNameDeletedItems.push(new Pair<>(DataFlowJointSkin.ELEMENT_TYPE, jointSkin.getText()));
+                GJointSkin jointSkin = skinLookup.lookupJoint(con.getJoints().get(0));
+                if (jointSkin.getClass().equals(DataFlowJointSkin.class)) {
+                    typeNameDeletedItems.push(new Pair<>(DataFlowJointSkin.ELEMENT_TYPE, ((DataFlowJointSkin) jointSkin).getText()));
+                } else {
+                    typeNameDeletedItems.push(new Pair<>(TrustBoundaryJointSkin.ELEMENT_TYPE, ((TrustBoundaryJointSkin) jointSkin).getText()));
+                }
             }
         }
         DataFlowCommands.remove(graphEditor.getSelectionManager().getSelectedItems(), editingDomain, model);
@@ -441,6 +446,7 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void activateCorrespondingNodeFactory(String type) {
+        setDataFlowSkinFactories();
         switch (type) {
             case DataStoreNodeSkin
                     .TITLE_TEXT:
@@ -458,6 +464,12 @@ public class DataFlowDiagramSkinController implements SkinController {
                     .TITLE_TEXT:
                 setNodeSkinFactory(this::createMultipleProcessSkin);
                 break;
+
+            case TrustBoundaryNodeSkin
+                    .TITLE_TEXT:
+                setTrustBoundarySkinFactories();
+                break;
+
             default:
                 LOGGER.warning("Could not find type of node, fall back to default");
                 setNodeSkinFactory(this::createExternalEntitySkin);
@@ -467,13 +479,12 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void activateCorrespondingConnectionFactory(String type) {
-        //should be expanded if more connection types exist
-        //do not forget tail skin if that changed as well
         switch (type) {
+            case TrustBoundaryNodeSkin.TITLE_TEXT:
+                setTrustBoundarySkinFactories();
+                break;
             default:
-                setConnectionSkinFactory(this::createConnectionSkin);
-                setConnectorSkinFactory(this::createConnectorSkin);
-                setJointSkinFactory(this::createJointSkin);
+                setDataFlowSkinFactories();
                 break;
 
         }

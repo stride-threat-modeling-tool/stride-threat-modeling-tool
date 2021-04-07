@@ -1,5 +1,6 @@
 package ch.zhaw.threatmodeling.skin.connection;
 
+import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.GJointSkin;
 import de.tesis.dynaware.grapheditor.core.skins.defaults.connection.SimpleConnectionSkin;
@@ -29,6 +30,7 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
     protected final Group root = new Group();
     protected final Path path = new Path();
     protected final QuadCurveTo curve = new QuadCurveTo();
+    private static final String type = DataFlowSkinConstants.DFD_TRUST_BOUNDARY_CONNECTION;
 
     private static final String STYLE_CLASS = "trust-boundary-connection";
 
@@ -51,6 +53,10 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
         root.getChildren().add(path);
         path.setMouseTransparent(false); // allows connection to be highlighted on hover and select
         path.getStyleClass().setAll(STYLE_CLASS);
+    }
+
+    public static String getType() {
+        return type;
     }
 
     @Override

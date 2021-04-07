@@ -23,8 +23,9 @@ public class DataFlowSkinConstants {
     public static final String DFD_BOTTOM_CENTER_CONNECTOR = "dfd-bottom-center";
     public static final String DFD_BOTTOM_RIGHT_CONNECTOR = "dfd-lower-right-corner";
 
+    public static final String DFD_CONNECTION = "dfd-connection";
     public static final String DFD_TRUST_BOUNDARY_CONNECTOR = "dfd-trust-boundary-connector";
-    public static final String DFD_TRUST_BOUNDARY_CONNECTION = "dfd-trust-boundary-connector";
+    public static final String DFD_TRUST_BOUNDARY_CONNECTION = "dfd-trust-boundary-connection";
     public static final String DFD_TRUST_BOUNDARY_JOINT = "dfd-trust-boundary-joint";
     public static final double DFD_JOINT_SPAWN_OFFSET = 22.5;
 

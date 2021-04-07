@@ -1,7 +1,12 @@
 package ch.zhaw.threatmodeling.selections;
 
 import ch.zhaw.threatmodeling.selections.utils.ConnectionMaps;
+import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
+import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
+import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
+import de.tesis.dynaware.grapheditor.GConnectionSkin;
+import de.tesis.dynaware.grapheditor.GJointSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GConnector;
@@ -11,6 +16,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class DataFlowConnectionCopier {
     private DataFlowConnectionCopier() {
@@ -69,14 +75,25 @@ public class DataFlowConnectionCopier {
 
     private static String getConnectionType(GConnection connection, SkinLookup skinLookup) {
         //should be expanded if more connection types exist
-        return DataFlowJointSkin.ELEMENT_TYPE;
+        GConnectionSkin connectionSkin = skinLookup.lookupConnection(connection);
+        if (connectionSkin.getClass().equals(DataFlowConnectionSkin.class)) {
+            return DataFlowJointSkin.ELEMENT_TYPE;
+        } else {
+            return TrustBoundaryJointSkin.ELEMENT_TYPE;
+        }
     }
 
     private static String getConnectionText(GConnection connection, SkinLookup skinLookup) {
         //should be expanded if more connection types exist
         GJoint joint = connection.getJoints().get(0);
-        DataFlowJointSkin jointSkin = (DataFlowJointSkin) skinLookup.lookupJoint(joint);
-        return jointSkin.getText();
+        String text;
+        GJointSkin jointSkin = skinLookup.lookupJoint(joint);
+        if (jointSkin.getClass().equals(DataFlowJointSkin.class)) {
+            text = ((DataFlowJointSkin) jointSkin).getText();
+        } else {
+            text = ((TrustBoundaryJointSkin) jointSkin).getText();
+        }
+        return text;
     }
 
     private static GNode getOpposingNode(GConnector connector, GConnection connection) {
