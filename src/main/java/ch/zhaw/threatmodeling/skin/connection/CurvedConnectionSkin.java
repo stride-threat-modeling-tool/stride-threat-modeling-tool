@@ -143,7 +143,11 @@ public class CurvedConnectionSkin extends GConnectionSkin {
         final double deltaY = endY - controlPoint.getY();
         final double angle = Math.atan2(deltaX, deltaY);
 
-        arrowHead.setCenter(endX, endY);
+        // Set arrow head's position at half of its length away from the connector along the curve
+        final double arrowOffsetX = Math.sin(angle) * ARROW_LENGTH / 2;
+        final double arrowOffsetY = Math.cos(angle) * ARROW_LENGTH / 2;
+
+        arrowHead.setCenter(endX - arrowOffsetX, endY - arrowOffsetY);
         arrowHead.setAngle(Math.toDegrees(-angle));
         arrowHead.draw();
 
