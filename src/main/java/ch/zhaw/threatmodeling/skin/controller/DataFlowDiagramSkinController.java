@@ -499,9 +499,9 @@ public class DataFlowDiagramSkinController implements SkinController {
                     .TITLE_TEXT:
                 setNodeSkinFactory(this::createMultipleProcessSkin);
                 break;
-            case DataFlowSkinConstants.DFD_TRUST_BOUNDARY_NODE:
+            case TrustBoundaryNodeSkin
+                    .TITLE_TEXT:
                 setTrustBoundarySkinFactories();
-                setNodeSkinFactory(this::createTrustBoundaryNodeSkin);
                 break;
             default:
                 LOGGER.warning("Could not find type of node, fall back to default: " + type);

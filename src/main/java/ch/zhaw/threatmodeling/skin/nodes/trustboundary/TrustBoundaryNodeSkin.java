@@ -20,10 +20,8 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
     public TrustBoundaryNodeSkin(GNode node) {
         super(node);
         typeProperty().set(TITLE_TEXT);
-        textProperty().set(TITLE_TEXT);
 
         Rectangle border = new Rectangle();
-        typeProperty().set(DataFlowSkinConstants.DFD_TRUST_BOUNDARY_NODE);
         border.setFill(Color.TRANSPARENT);
         border.setWidth(SIZE);
         border.setHeight(SIZE);
