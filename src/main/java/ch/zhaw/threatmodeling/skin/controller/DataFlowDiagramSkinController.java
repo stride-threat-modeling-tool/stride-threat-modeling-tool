@@ -20,7 +20,6 @@ import ch.zhaw.threatmodeling.skin.nodes.multipleprocess.MultipleProcessNodeSkin
 import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.trustboundary.TrustBoundaryNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
-import ch.zhaw.threatmodeling.skin.utils.ConnectionCommands;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowCommands;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
 import de.tesis.dynaware.grapheditor.Commands;
@@ -48,6 +47,7 @@ import javafx.util.Pair;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.edit.command.AddCommand;
 import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -69,7 +69,9 @@ public class DataFlowDiagramSkinController implements SkinController {
     private final ThreatGenerator threatGenerator;
     private final SelectionCopier selectionCopier;
     private final Stack<Integer> lastCommandDeletedCount = new Stack<>();
-    private final Map<Command, Pair<String, String>> commandToTypeTextMapping = new HashMap<>();
+    private final Stack<Integer> lastCommandUndoCount = new Stack<>();
+    private final Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping = new HashMap<>();
+    private final Map<Command, String> createCommandToTypeMapping = new HashMap<>();
 
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container, final ThreatGenerator threatGenerator) {
         this.graphEditor = (DataFlowGraphEditor) graphEditor;
@@ -110,7 +112,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         node.setX(NODE_INITIAL_X + windowXOffset);
         node.setId(allocateNewId());
 
-        if (!type.equals(DataFlowSkinConstants.DFD_TRUST_BOUNDARY_NODE)) {
+        if (!type.equals(TrustBoundaryNodeSkin.TITLE_TEXT)) {
             for (String currentType : DataFlowSkinConstants.DFD_CONNECTOR_LAYOUT_ORDER) {
                 addConnectorToNode(node, currentType);
             }
@@ -119,6 +121,9 @@ public class DataFlowDiagramSkinController implements SkinController {
             addConnectorToNode(node, DataFlowSkinConstants.DFD_TRUST_BOUNDARY_CONNECTOR);
         }
         Commands.addNode(graphEditor.getModel(), node);
+        createCommandToTypeMapping.put(
+                AdapterFactoryEditingDomain.getEditingDomainFor(graphEditor.getModel()).getCommandStack().getMostRecentCommand(),
+                type);
     }
 
     private void addConnectorToNode(GNode node, String type) {
@@ -182,10 +187,11 @@ public class DataFlowDiagramSkinController implements SkinController {
         // Set SkinFactories to the TrustBoundary skins
         setTrustBoundarySkinFactories();
 
-        addNode(currentZoomFactor, DataFlowSkinConstants.DFD_TRUST_BOUNDARY_NODE);
-        addNode(currentZoomFactor, DataFlowSkinConstants.DFD_TRUST_BOUNDARY_NODE);
+        addNode(currentZoomFactor, TrustBoundaryNodeSkin.TITLE_TEXT);
+        lastCommandUndoCount.push(3);
+        addNode(currentZoomFactor, TrustBoundaryNodeSkin.TITLE_TEXT);
 
-        List<GNode> trustBoundaryNodes = graphEditor.getModel().getNodes().stream().filter(gNode -> gNode.getType().equals(DataFlowSkinConstants.DFD_TRUST_BOUNDARY_NODE)).collect(Collectors.toList());
+        List<GNode> trustBoundaryNodes = graphEditor.getModel().getNodes().stream().filter(gNode -> gNode.getType().equals(TrustBoundaryNodeSkin.TITLE_TEXT)).collect(Collectors.toList());
 
         if (trustBoundaryNodes.isEmpty()) {
             LOGGER.warning("No Trust Boundary nodes were found. Could not add Trust Boundary.");
@@ -220,7 +226,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     private void addTrustBoundaryConnection(GConnector startConnector, GConnector endConnector, Point2D jointPosition) {
         GModel model = graphEditor.getModel();
-        final String connectionType = DataFlowSkinConstants.DFD_TRUST_BOUNDARY_CONNECTION;
+        final String connectionType = TrustBoundaryJointSkin.ELEMENT_TYPE;
         ConnectionEventManager connectionEventManager = graphEditor.getConnectionEventManager();
 
         final List<GJoint> joints = new ArrayList<>();
@@ -230,7 +236,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         joint.setType(DataFlowSkinConstants.DFD_TRUST_BOUNDARY_JOINT);
         joints.add(joint);
 
-        ConnectionCommands.addConnection(model, startConnector, endConnector, connectionType, joints, connectionEventManager);
+        DataFlowConnectionCommands.addConnection(model, startConnector, endConnector, connectionType, joints, connectionEventManager, createCommandToTypeMapping);
     }
 
     private String allocateNewId() {
@@ -368,28 +374,78 @@ public class DataFlowDiagramSkinController implements SkinController {
         EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(graphEditor.getModel());
         CommandStack commandStack = editingDomain.getCommandStack();
         boolean isRemoveCommand = false;
+        boolean isAddCommand = false;
         int toUndoCount = -1;
         do {
             if (commandStack.canUndo()) {
                 Command currentCommand = commandStack.getUndoCommand();
                 isRemoveCommand =  undoSingleCommand(currentCommand, commandStack);
+                isAddCommand = currentCommand instanceof AddCommand;
 
-                if (isRemoveCommand && toUndoCount == -1 && null != commandToTypeTextMapping.get(currentCommand)) {
+                if ((isRemoveCommand || isAddCommand)&& toUndoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
                     toUndoCount = lastCommandDeletedCount.pop();
+                    lastCommandUndoCount.push(toUndoCount);
                 }
             }
             toUndoCount = toUndoCount - 1;
-        } while (toUndoCount > 0 && isRemoveCommand);
+        } while (toUndoCount > 0 && (isRemoveCommand || isAddCommand));
 
 
+    }
+
+    public void redo(){
+        EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(graphEditor.getModel());
+        CommandStack commandStack = editingDomain.getCommandStack();
+        boolean isRemoveCommand = false;
+        int toRedoCount = -1;
+        do {
+            if (commandStack.canRedo()) {
+                Command currentCommand = commandStack.getRedoCommand();
+                isRemoveCommand =  redoSingleCommand(currentCommand, commandStack);
+
+                if (isRemoveCommand && toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
+                    toRedoCount = lastCommandUndoCount.empty() ? toRedoCount : lastCommandUndoCount.pop();
+                }
+            }
+            toRedoCount = toRedoCount - 1;
+        } while (toRedoCount > 0 && isRemoveCommand);
+    }
+
+    private boolean redoSingleCommand(Command command, CommandStack stack){
+        boolean isCreate = command instanceof AddCommand;
+        String type = createCommandToTypeMapping.get(command);
+        if(isCreate && null != type){
+            if (DataFlowConnectionCommands.isConnectionType(type)) {
+                activateCorrespondingConnectionFactory(type);
+            } else {
+                activateCorrespondingNodeFactory(type);
+            }
+        }
+        stack.redo();
+        return isCreate;
+    }
+
+    private void resetNodeAndConnectionNames(String text,  List<GNode> oldNodes, List<GConnection> oldConnections) {
+        GModel model = graphEditor.getModel();
+        model.getConnections().forEach(connection -> {
+            if (!oldConnections.contains(connection)) {
+                resetRemovedJointName(text, connection);
+            }
+        });
+        model.getNodes().forEach(gNode ->
+        {
+            if (!oldNodes.contains(gNode)) {
+                resetRemoveNodeName(text, gNode);
+            }
+        });
     }
 
     private boolean undoSingleCommand(Command command, CommandStack stack) {
         boolean isRemove = command instanceof RemoveCommand;
         GModel model = graphEditor.getModel();
-        List<GNode> oldNodes = new ArrayList<>(model.getNodes());
-        List<GConnection> oldConnections = new ArrayList<>(model.getConnections());
-        Pair<String, String> typeTextPair = commandToTypeTextMapping.get(command);
+        final List<GNode> oldNodes = new ArrayList<>(model.getNodes());
+        final List<GConnection> oldConnections = new ArrayList<>(model.getConnections());
+        Pair<String, String> typeTextPair = deleteCommandToTypeTextMapping.get(command);
         if (isRemove && null != typeTextPair) {
             String type = typeTextPair.getKey();
             if (DataFlowConnectionCommands.isConnectionType(type)) {
@@ -401,17 +457,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         }
         stack.undo();
         if (isRemove && null != typeTextPair) {
-            model.getConnections().forEach(connection -> {
-                if (!oldConnections.contains(connection)) {
-                    resetRemovedJointName(typeTextPair.getKey(), typeTextPair.getValue(), connection);
-                }
-            });
-            model.getNodes().forEach(gNode ->
-            {
-                if (!oldNodes.contains(gNode)) {
-                    resetRemoveNodeName(typeTextPair.getValue(), gNode);
-                }
-            });
+           resetNodeAndConnectionNames(typeTextPair.getValue(), oldNodes, oldConnections);
 
         }
         return isRemove;
@@ -424,25 +470,10 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     }
 
-    private void resetRemovedJointName(String type, String name, GConnection connection) {
+    private void resetRemovedJointName(String name, GConnection connection) {
         //expand for other connection types
-        SkinLookup skinLookup = graphEditor.getSkinLookup();
-        if (type.equals(DataFlowJointSkin.ELEMENT_TYPE)) {
-            DataFlowJointSkin jointSkin = (DataFlowJointSkin) skinLookup.lookupJoint(connection.getJoints().get(0));
-            if (jointSkin != null) {
-                jointSkin.setText(name);
-            }
-        } else if(type.equals(TrustBoundaryJointSkin.ELEMENT_TYPE)){
-            TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(connection.getJoints().get(0));
-            if (jointSkin != null) {
-                jointSkin.setText(name);
-            }
-        }
+       DataFlowConnectionCommands.setJointLabel(connection, name, graphEditor.getSkinLookup());
 
-    }
-
-    public void redo() {
-        Commands.redo(graphEditor.getModel());
     }
 
     public void copy() {
@@ -468,12 +499,11 @@ public class DataFlowDiagramSkinController implements SkinController {
 
         lastCommandDeletedCount.push(
                 DataFlowCommands.remove(
-                        commandToTypeTextMapping,
+                        deleteCommandToTypeTextMapping,
                         skinLookup,
                         graphEditor.getSelectionManager().getSelectedItems(),
                         editingDomain,
                         model));
-        LOGGER.info("last deleted count: " + lastCommandDeletedCount.peek());
     }
 
     public void clearAll() {
@@ -513,7 +543,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void activateCorrespondingConnectionFactory(String type) {
         switch (type) {
-            case TrustBoundaryNodeSkin.TITLE_TEXT:
+            case TrustBoundaryJointSkin.ELEMENT_TYPE:
                 setTrustBoundarySkinFactories();
                 break;
             default:

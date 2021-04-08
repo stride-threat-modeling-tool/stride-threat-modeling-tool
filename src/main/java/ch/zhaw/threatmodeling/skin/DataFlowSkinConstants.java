@@ -13,9 +13,6 @@ import java.util.List;
 public class DataFlowSkinConstants {
     private DataFlowSkinConstants(){}
 
-    public static final String DFD_NODE = "dfd-node";
-    public static final String DFD_TRUST_BOUNDARY_NODE = "dfd-trust-boundary-node";
-
     public static final String DFD_LEFT_CENTER_CONNECTOR = "dfd-left-center";
     public static final String DFD_RIGHT_CENTER_CONNECTOR = "dfd-right-center";
     public static final String DFD_TOP_LEFT_CONNECTOR = "dfd-upper-left-corner";
