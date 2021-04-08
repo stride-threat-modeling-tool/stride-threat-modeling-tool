@@ -2,15 +2,8 @@ package ch.zhaw.threatmodeling.selections;
 
 import ch.zhaw.threatmodeling.selections.utils.ConnectionMaps;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
-import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
+import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
@@ -32,7 +25,12 @@ import org.eclipse.emf.edit.command.AddCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.logging.Logger;
 
 /**
  * Manages cut, copy, & paste actions on the current selection.
@@ -294,11 +292,7 @@ public class SelectionCopier {
     }
 
     private void setConnectionText(GConnection pastedConnection) {
-        if (connectionToClassMapping.getConnectionType(pastedConnection).equals(DataFlowJointSkin.ELEMENT_TYPE)) {
-            ((DataFlowJointSkin) skinLookup.lookupJoint(pastedConnection.getJoints().get(0)))
-                    .setText(connectionToClassMapping.getConnectionText(pastedConnection));
-        }
-
+        DataFlowConnectionCommands.setJointLabel(pastedConnection, connectionToClassMapping.getConnectionText(pastedConnection), skinLookup);
     }
 
     /**
