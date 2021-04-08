@@ -73,6 +73,7 @@ public class DataFlowDiagramSkinController implements SkinController {
     private final ThreatGenerator threatGenerator;
     private final SelectionCopier selectionCopier;
     private final Stack<Pair<String, String>> typeNameDeletedItems = new Stack<>();
+    private final Stack<Integer> lastCommandDeletedCount = new Stack<>();
 
     public DataFlowDiagramSkinController(final GraphEditor graphEditor, final GraphEditorContainer container, final ThreatGenerator threatGenerator) {
         this.graphEditor = (DataFlowGraphEditor) graphEditor;
@@ -367,35 +368,94 @@ public class DataFlowDiagramSkinController implements SkinController {
         GModel model = graphEditor.getModel();
         EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
         CommandStack commandStack = editingDomain.getCommandStack();
-        if (commandStack.canUndo()) {
-            Command command = commandStack.getUndoCommand();
-            if (command instanceof CompoundCommand) {
-                LOGGER.info("cmd amount " + ((CompoundCommand) command).getCommandList().size());
-                ((CompoundCommand) command).getCommandList().forEach(cmd -> {
-                    LOGGER.info("one cmd");
-                    undoCommand(cmd, commandStack);
-                    cmd.undo();
-                });
+
+        Command command;
+        boolean isRemoveCompoundCommand = false;
+        boolean isRemoveCommand = false;
+        int toUndoCount = -1;
+
+        do {
+            if (commandStack.canUndo()) {
+                command = commandStack.getUndoCommand();
+                isRemoveCommand = command instanceof RemoveCommand;
+                if (command instanceof CompoundCommand) {
+                    for (Command subCommand : ((CompoundCommand) command).getCommandList()) {
+                        isRemoveCompoundCommand = checkForRemoveCommand(subCommand) || isRemoveCompoundCommand;
+                    }
+                }
+                if (isRemoveCommand || isRemoveCompoundCommand) {
+                    if (toUndoCount == -1) {
+                        toUndoCount = lastCommandDeletedCount.pop();
+                    }
+                    checkForRemoveCommand(command);
+
+                }
+                List<GNode> oldNodes = new ArrayList<>(model.getNodes());
+                List<GConnection> oldConnections = new ArrayList<>(model.getConnections());
+                commandStack.undo();
+
+                if (isRemoveCompoundCommand) {
+                    //assumes that compound commands are only used for connections
+                    final Pair<String, String> typeNamePair = typeNameDeletedItems.pop();
+                    model.getConnections().forEach(connection -> {
+                        if(!oldConnections.contains(connection)){
+                            resetRemovedJointName(typeNamePair.getKey(), typeNamePair.getValue(), connection);
+                        }
+                    });
+
+                } else if(isRemoveCommand){
+                    final Pair<String, String> typeNamePair = typeNameDeletedItems.pop();
+                    model.getNodes().forEach(gNode ->
+                    {
+                        if(!oldNodes.contains(gNode)){
+                            LOGGER.info("ha gottee");
+                            resetRemoveNodeName(typeNamePair.getValue(), gNode);
+                        }
+                    });
+
+                }
             }
-            commandStack.undo();
-        }
+            toUndoCount = toUndoCount - 1;
+        } while (toUndoCount > 0 && (isRemoveCommand || isRemoveCompoundCommand));
 
 
     }
 
-    private void undoCommand(Command cmd, CommandStack commandStack) {
-        if (cmd instanceof RemoveCommand && !(cmd.getAffectedObjects().toArray()[0] instanceof GConnector)) {
-            Pair<String, String> pair = typeNameDeletedItems.pop();
-            String type = pair.getKey();
-            String name = pair.getValue();
-            LOGGER.info("type" + type);
-            LOGGER.info("name" + name);
-            if (type.equals(DataFlowJointSkin.ELEMENT_TYPE)) {
-                activateCorrespondingConnectionFactory(type);
-            } else {
-                activateCorrespondingNodeFactory(type);
+    private void resetRemoveNodeName(String name, GNode node) {
+        LOGGER.info("is reset node name " + name);
+        SkinLookup skinLookup = graphEditor.getSkinLookup();
+        GenericNodeSkin nodeSkin = (GenericNodeSkin) skinLookup.lookupNode(node);
+        nodeSkin.setText(name);
+
+    }
+
+    private void resetRemovedJointName(String type, String name, GConnection connection){
+        //expand for other connection types
+        SkinLookup skinLookup = graphEditor.getSkinLookup();
+        if (type.equals(DataFlowJointSkin.ELEMENT_TYPE)) {
+            DataFlowJointSkin jointSkin = (DataFlowJointSkin) skinLookup.lookupJoint(connection.getJoints().get(0));
+            if(jointSkin != null) {
+                jointSkin.setText(name);
             }
         }
+    }
+    private boolean checkForRemoveCommand(Command cmd) {
+        boolean containsRemoveCommand = false;
+        if (cmd instanceof RemoveCommand) {
+            String type = typeNameDeletedItems.peek().getKey();
+            if (cmd.getAffectedObjects().toArray()[0] instanceof GConnector) {
+                //From here on its clear that its a compound command AND that the deleted element is a connection
+                //together with references to the 2 attach connectors
+                activateCorrespondingConnectionFactory(type);
+            } else {
+                //otherwise its a single remove command of e.g. a node.
+                activateCorrespondingNodeFactory(type);
+            }
+            LOGGER.info(type);
+            containsRemoveCommand = true;
+
+        }
+        return containsRemoveCommand;
     }
 
     public void redo() {
@@ -422,7 +482,23 @@ public class DataFlowDiagramSkinController implements SkinController {
         });
         selectedItems.addAll(connections);
         SkinLookup skinLookup = graphEditor.getSkinLookup();
-        for (final GNode node : model.getNodes()) {
+
+        for(final EObject object : graphEditor.getSelectionManager().getSelectedItems()){
+            if(object instanceof GNode) {
+                GenericNodeSkin nodeSkin = (GenericNodeSkin) skinLookup.lookupNode((GNode) object);
+                typeNameDeletedItems.push(new Pair<>(nodeSkin.getType(), nodeSkin.getText()));
+            } else if(object instanceof GConnection){
+                GJointSkin jointSkin = skinLookup.lookupJoint(((GConnection) object).getJoints().get(0));
+                if (jointSkin.getClass().equals(DataFlowJointSkin.class)) {
+                    typeNameDeletedItems.push(new Pair<>(DataFlowJointSkin.ELEMENT_TYPE, ((DataFlowJointSkin) jointSkin).getText()));
+                } else {
+                    typeNameDeletedItems.push(new Pair<>(TrustBoundaryJointSkin.ELEMENT_TYPE, ((TrustBoundaryJointSkin) jointSkin).getText()));
+                }
+
+            }
+
+        }
+        /*for (final GNode node : model.getNodes()) {
             if (graphEditor.getSelectionManager().isSelected(node)) {
                 GenericNodeSkin nodeSkin = (GenericNodeSkin) skinLookup.lookupNode(node);
                 typeNameDeletedItems.push(new Pair<>(nodeSkin.getType(), nodeSkin.getText()));
@@ -437,8 +513,12 @@ public class DataFlowDiagramSkinController implements SkinController {
                     typeNameDeletedItems.push(new Pair<>(TrustBoundaryJointSkin.ELEMENT_TYPE, ((TrustBoundaryJointSkin) jointSkin).getText()));
                 }
             }
-        }
-        DataFlowCommands.remove(graphEditor.getSelectionManager().getSelectedItems(), editingDomain, model);
+        }*/
+        lastCommandDeletedCount.push(
+                DataFlowCommands.remove(
+                        graphEditor.getSelectionManager().getSelectedItems(),
+                        editingDomain,
+                        model));
     }
 
     public void clearAll() {
@@ -471,7 +551,7 @@ public class DataFlowDiagramSkinController implements SkinController {
                 break;
 
             default:
-                LOGGER.warning("Could not find type of node, fall back to default");
+                LOGGER.warning("Could not find type of node, fall back to default: " + type);
                 setNodeSkinFactory(this::createExternalEntitySkin);
                 break;
 
