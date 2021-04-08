@@ -1,5 +1,6 @@
 package ch.zhaw.threatmodeling.skin.nodes.trustboundary;
 
+import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.EditorElement;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
@@ -18,6 +19,7 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
     public TrustBoundaryNodeSkin(GNode node) {
         super(node);
         Rectangle border = new Rectangle();
+        typeProperty().set(DataFlowSkinConstants.DFD_TRUST_BOUNDARY_NODE);
         border.setFill(Color.TRANSPARENT);
         border.setWidth(SIZE);
         border.setHeight(SIZE);

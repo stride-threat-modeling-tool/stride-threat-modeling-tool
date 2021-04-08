@@ -1,5 +1,7 @@
 package ch.zhaw.threatmodeling.skin;
 
+import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
+import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import javafx.css.PseudoClass;
 
 import java.util.Arrays;
@@ -24,7 +26,7 @@ public class DataFlowSkinConstants {
     public static final String DFD_BOTTOM_RIGHT_CONNECTOR = "dfd-lower-right-corner";
 
     public static final String DFD_TRUST_BOUNDARY_CONNECTOR = "dfd-trust-boundary-connector";
-    public static final String DFD_TRUST_BOUNDARY_CONNECTION = "dfd-trust-boundary-connector";
+    public static final String DFD_TRUST_BOUNDARY_CONNECTION = "dfd-trust-boundary-connection";
     public static final String DFD_TRUST_BOUNDARY_JOINT = "dfd-trust-boundary-joint";
     public static final double DFD_JOINT_SPAWN_OFFSET = 22.5;
 
@@ -44,4 +46,8 @@ public class DataFlowSkinConstants {
             DFD_LEFT_CENTER_CONNECTOR,
             DFD_TOP_LEFT_CONNECTOR,
             DFD_TOP_CENTER_CONNECTOR);
+    public static final List<String> DFD_CONNECTION_TYPES = Arrays.asList(
+            DataFlowJointSkin.ELEMENT_TYPE,
+            TrustBoundaryJointSkin.ELEMENT_TYPE
+            );
 }
