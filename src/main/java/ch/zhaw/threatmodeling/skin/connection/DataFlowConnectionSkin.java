@@ -1,6 +1,7 @@
 package ch.zhaw.threatmodeling.skin.connection;
 
 import ch.zhaw.threatmodeling.connections.CurvedConnections;
+import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import de.tesis.dynaware.grapheditor.GJointSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.skins.defaults.connection.SimpleConnectionSkin;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 public class DataFlowConnectionSkin extends CurvedConnectionSkin {
 
     private static final Logger LOGGER = Logger.getLogger("Data Flow Connection Skin");
+    private static final String type = DataFlowSkinConstants.DFD_CONNECTION;
 
     /**
      * Creates a new data flow connection skin instance.
@@ -31,6 +33,10 @@ public class DataFlowConnectionSkin extends CurvedConnectionSkin {
         super(connection);
 
         performChecks();
+    }
+
+    public static String getType() {
+        return type;
     }
 
     @Override

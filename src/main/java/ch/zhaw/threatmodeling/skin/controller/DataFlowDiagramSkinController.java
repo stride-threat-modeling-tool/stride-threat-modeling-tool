@@ -486,7 +486,6 @@ public class DataFlowDiagramSkinController implements SkinController {
             case DataStoreNodeSkin
                     .TITLE_TEXT:
                 setNodeSkinFactory(this::createDataStoreSkin);
-
                 break;
             case ExternalEntityNodeSkin
                     .TITLE_TEXT:
@@ -513,10 +512,8 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void activateCorrespondingConnectionFactory(String type) {
-        //should be expanded if more connection types exist
-        //do not forget tail skin if that changed as well
         switch (type) {
-            case TrustBoundaryJointSkin.ELEMENT_TYPE:
+            case TrustBoundaryNodeSkin.TITLE_TEXT:
                 setTrustBoundarySkinFactories();
                 break;
             default:
