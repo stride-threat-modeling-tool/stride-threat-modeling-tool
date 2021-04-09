@@ -22,6 +22,7 @@ import ch.zhaw.threatmodeling.skin.nodes.trustboundary.TrustBoundaryNodeSkin;
 import ch.zhaw.threatmodeling.skin.tail.DataFlowTailSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowCommands;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
+import ch.zhaw.threatmodeling.skin.utils.DataFlowNodeCommands;
 import de.tesis.dynaware.grapheditor.Commands;
 import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
@@ -31,9 +32,13 @@ import de.tesis.dynaware.grapheditor.GTailSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
-import de.tesis.dynaware.grapheditor.core.connections.ConnectionEventManager;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
-import de.tesis.dynaware.grapheditor.model.*;
+import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GConnector;
+import de.tesis.dynaware.grapheditor.model.GJoint;
+import de.tesis.dynaware.grapheditor.model.GModel;
+import de.tesis.dynaware.grapheditor.model.GNode;
+import de.tesis.dynaware.grapheditor.model.GraphFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableSet;
@@ -46,15 +51,20 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
+import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.command.AddCommand;
 import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalInt;
+import java.util.Stack;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class DataFlowDiagramSkinController implements SkinController {
     protected static final int NODE_INITIAL_X = 19;
@@ -80,7 +90,6 @@ public class DataFlowDiagramSkinController implements SkinController {
         this.graphEditorContainer = container;
         this.threatGenerator = threatGenerator;
         setDataFlowSkinFactories();
-
     }
 
     private void setDataFlowSkinFactories() {
@@ -103,6 +112,14 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     @Override
     public void addNode(double currentZoomFactor, String type) {
+        GNode node = initNode(currentZoomFactor, type);
+        Commands.addNode(graphEditor.getModel(), node);
+        createCommandToTypeMapping.put(
+                AdapterFactoryEditingDomain.getEditingDomainFor(graphEditor.getModel()).getCommandStack().getMostRecentCommand(),
+                type);
+    }
+
+    private GNode initNode(double currentZoomFactor, String type){
         final double windowXOffset = graphEditorContainer.getContentX() / currentZoomFactor;
         final double windowYOffset = graphEditorContainer.getContentY() / currentZoomFactor;
         final GNode node = GraphFactory.eINSTANCE.createGNode();
@@ -120,10 +137,7 @@ public class DataFlowDiagramSkinController implements SkinController {
             // Trust Boundary nodes only have one connector
             addConnectorToNode(node, DataFlowSkinConstants.DFD_TRUST_BOUNDARY_CONNECTOR);
         }
-        Commands.addNode(graphEditor.getModel(), node);
-        createCommandToTypeMapping.put(
-                AdapterFactoryEditingDomain.getEditingDomainFor(graphEditor.getModel()).getCommandStack().getMostRecentCommand(),
-                type);
+        return node;
     }
 
     private void addConnectorToNode(GNode node, String type) {
@@ -187,56 +201,51 @@ public class DataFlowDiagramSkinController implements SkinController {
         // Set SkinFactories to the TrustBoundary skins
         setTrustBoundarySkinFactories();
 
-        addNode(currentZoomFactor, TrustBoundaryNodeSkin.TITLE_TEXT);
-        lastCommandUndoCount.push(3);
-        addNode(currentZoomFactor, TrustBoundaryNodeSkin.TITLE_TEXT);
+        // The last two added nodes have to be retrieved to create a connection between them
+        GNode startNode = initNode(currentZoomFactor, TrustBoundaryNodeSkin.TITLE_TEXT);
+        GNode endNode = initNode(currentZoomFactor, TrustBoundaryNodeSkin.TITLE_TEXT);
 
-        List<GNode> trustBoundaryNodes = graphEditor.getModel().getNodes().stream().filter(gNode -> gNode.getType().equals(TrustBoundaryNodeSkin.TITLE_TEXT)).collect(Collectors.toList());
+        GConnector startConnector = startNode.getConnectors().get(0);
+        GConnector endConnector = endNode.getConnectors().get(0);
 
-        if (trustBoundaryNodes.isEmpty()) {
-            LOGGER.warning("No Trust Boundary nodes were found. Could not add Trust Boundary.");
-        } else {
-            final int length = trustBoundaryNodes.size();
-            // The last two added nodes have to be retrieved to create a connection between them
-            GNode startNode = trustBoundaryNodes.get(length - 1);
-            GNode endNode = trustBoundaryNodes.get(length - 2);
+        // Offset second node to the right so that the trust boundary becomes visible
+        endNode.setX(endNode.getX() + TRUST_BOUNDARY_CONNECTION_OFFSET);
 
-            GConnector startConnector = startNode.getConnectors().get(0);
-            GConnector endConnector = endNode.getConnectors().get(0);
+        // Change default size of nodes (151 px / 100 px)
+        startNode.setHeight(TRUST_BOUNDARY_NODE_SIZE);
+        startNode.setWidth(TRUST_BOUNDARY_NODE_SIZE);
+        endNode.setHeight(TRUST_BOUNDARY_NODE_SIZE);
+        endNode.setWidth(TRUST_BOUNDARY_NODE_SIZE);
+        final List<GJoint> joints = new ArrayList<>();
+        final Point2D startPoint = new Point2D(NODE_INITIAL_X + startNode.getWidth() / 2, NODE_INITIAL_Y + startNode.getHeight() / 2);
+        final Point2D endPoint = new Point2D(NODE_INITIAL_X + endNode.getWidth() / 2 + TRUST_BOUNDARY_CONNECTION_OFFSET, NODE_INITIAL_Y + endNode.getHeight() / 2);
+        final Point2D jointPosition = startPoint.midpoint(endPoint).add(DataFlowSkinConstants.DFD_JOINT_SPAWN_OFFSET, DataFlowSkinConstants.DFD_JOINT_SPAWN_OFFSET);
 
-            // Offset second node to the right so that the trust boundary becomes visible
-            endNode.setX(endNode.getX() + TRUST_BOUNDARY_CONNECTION_OFFSET);
+        initTrustBoundaryJoints(jointPosition, joints);
 
-            // Change default size of nodes (151 px / 100 px)
-            startNode.setHeight(TRUST_BOUNDARY_NODE_SIZE);
-            startNode.setWidth(TRUST_BOUNDARY_NODE_SIZE);
-            endNode.setHeight(TRUST_BOUNDARY_NODE_SIZE);
-            endNode.setWidth(TRUST_BOUNDARY_NODE_SIZE);
+        CompoundCommand addTrustBoundaryCommand = DataFlowNodeCommands.addTrustBoundary(
+                startNode,
+                endNode,
+                graphEditor.getModel(),
+                startConnector,
+                endConnector,
+                TrustBoundaryNodeSkin.TITLE_TEXT,
+                joints,
+                graphEditor.getConnectionEventManager()
+                );
 
-            final Point2D startPoint = new Point2D(NODE_INITIAL_X + startNode.getWidth() / 2, NODE_INITIAL_Y + startNode.getHeight() / 2);
-            final Point2D endPoint = new Point2D(NODE_INITIAL_X + endNode.getWidth() / 2 + TRUST_BOUNDARY_CONNECTION_OFFSET, NODE_INITIAL_Y + endNode.getHeight() / 2);
-            final Point2D jointPosition = startPoint.midpoint(endPoint).add(DataFlowSkinConstants.DFD_JOINT_SPAWN_OFFSET, DataFlowSkinConstants.DFD_JOINT_SPAWN_OFFSET);
-
-            addTrustBoundaryConnection(startConnector, endConnector, jointPosition);
-        }
+        createCommandToTypeMapping.put(addTrustBoundaryCommand, TrustBoundaryNodeSkin.TITLE_TEXT);
 
         // Set SkinFactories back to the normal DataFlow element skins
         setDataFlowSkinFactories();
     }
 
-    private void addTrustBoundaryConnection(GConnector startConnector, GConnector endConnector, Point2D jointPosition) {
-        GModel model = graphEditor.getModel();
-        final String connectionType = TrustBoundaryJointSkin.ELEMENT_TYPE;
-        ConnectionEventManager connectionEventManager = graphEditor.getConnectionEventManager();
-
-        final List<GJoint> joints = new ArrayList<>();
+    private void initTrustBoundaryJoints(Point2D jointPosition, List<GJoint> joints) {
         final GJoint joint = GraphFactory.eINSTANCE.createGJoint();
         joint.setX(jointPosition.getX());
         joint.setY(jointPosition.getY());
         joint.setType(DataFlowSkinConstants.DFD_TRUST_BOUNDARY_JOINT);
         joints.add(joint);
-
-        DataFlowConnectionCommands.addConnection(model, startConnector, endConnector, connectionType, joints, connectionEventManager, createCommandToTypeMapping);
     }
 
     private String allocateNewId() {
@@ -404,7 +413,9 @@ public class DataFlowDiagramSkinController implements SkinController {
                 isRemoveCommand =  redoSingleCommand(currentCommand, commandStack);
 
                 if (isRemoveCommand && toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
-                    toRedoCount = lastCommandUndoCount.empty() ? toRedoCount : lastCommandUndoCount.pop();
+                    toRedoCount = lastCommandUndoCount.pop();
+                    lastCommandDeletedCount.push(toRedoCount);
+
                 }
             }
             toRedoCount = toRedoCount - 1;
@@ -412,17 +423,23 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     private boolean redoSingleCommand(Command command, CommandStack stack){
-        boolean isCreate = command instanceof AddCommand;
+        boolean isRemove = command instanceof RemoveCommand;
         String type = createCommandToTypeMapping.get(command);
-        if(isCreate && null != type){
-            if (DataFlowConnectionCommands.isConnectionType(type)) {
-                activateCorrespondingConnectionFactory(type);
+        if(null != type){
+            if(command instanceof CompoundCommand){
+                //redo trust boundary
+                setTrustBoundarySkinFactories();
             } else {
-                activateCorrespondingNodeFactory(type);
+                if (DataFlowConnectionCommands.isConnectionType(type)) {
+                    activateCorrespondingConnectionFactory(type);
+                } else {
+                    activateCorrespondingNodeFactory(type);
+                }
             }
         }
         stack.redo();
-        return isCreate;
+        setDataFlowSkinFactories();
+        return isRemove;
     }
 
     private void resetNodeAndConnectionNames(String text,  List<GNode> oldNodes, List<GConnection> oldConnections) {

@@ -1,6 +1,5 @@
 package ch.zhaw.threatmodeling.skin.nodes.trustboundary;
 
-import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.EditorElement;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
