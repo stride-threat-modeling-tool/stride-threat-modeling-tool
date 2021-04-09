@@ -502,6 +502,10 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     private void flushCommandStack(){
         AdapterFactoryEditingDomain.getEditingDomainFor(graphEditor.getModel()).getCommandStack().flush();
+        createCommandToTypeMapping.clear();
+        deleteCommandToTypeTextMapping.clear();
+        lastCommandDeletedCount.clear();
+        lastCommandUndoCount.clear();
     }
 
     public void copy() {
