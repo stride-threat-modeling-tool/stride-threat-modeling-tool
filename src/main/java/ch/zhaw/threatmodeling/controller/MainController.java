@@ -6,6 +6,7 @@ import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
+import ch.zhaw.threatmodeling.persistence.DataFlowPersistence;
 import ch.zhaw.threatmodeling.skin.DataFlowGraphEditor;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
@@ -17,7 +18,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
@@ -41,6 +41,7 @@ public class MainController {
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DataFlowGraphEditor();
     private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
+    private final DataFlowPersistence persistence = new DataFlowPersistence();
     @FXML
     public VBox graphEditorParent;
     private ThreatGenerator threatGenerator;
@@ -245,12 +246,12 @@ public class MainController {
 
     @FXML
     public void addDataStore() {
-        dfdSkinController.addDataStore(graphEditor.getView().getLocalToSceneTransform().getMxx());
+        dfdSkinController.addDataStore(getCurrentZoomFactor());
     }
 
     @FXML
     public void addExternalEntity() {
-        dfdSkinController.addExternalEntity(graphEditor.getView().getLocalToSceneTransform().getMxx());
+        dfdSkinController.addExternalEntity(getCurrentZoomFactor());
     }
 
     @FXML
@@ -261,12 +262,16 @@ public class MainController {
 
     @FXML
     public void addProcess() {
-        dfdSkinController.addProcess(graphEditor.getView().getLocalToSceneTransform().getMxx());
+        dfdSkinController.addProcess(getCurrentZoomFactor());
     }
 
     @FXML
     public void addMultipleProcess() {
-        dfdSkinController.addMultipleProcess(graphEditor.getView().getLocalToSceneTransform().getMxx());
+        dfdSkinController.addMultipleProcess(getCurrentZoomFactor());
+    }
+
+    private double getCurrentZoomFactor() {
+        return graphEditor.getView().getLocalToSceneTransform().getMxx();
     }
 
     @FXML
@@ -300,6 +305,17 @@ public class MainController {
     }
 
     public void addTrustBoundary() {
-        dfdSkinController.addTrustBoundary(graphEditor.getView().getLocalToSceneTransform().getMxx());
+        dfdSkinController.addTrustBoundary(getCurrentZoomFactor());
     }
+
+    @FXML
+    public void saveDiagram() {
+        persistence.saveToFile(graphEditor);
+    }
+
+    @FXML
+    public void loadDiagram() {
+        dfdSkinController.restoreModel(persistence.loadFromFile(graphEditor), getCurrentZoomFactor());
+    }
+
 }

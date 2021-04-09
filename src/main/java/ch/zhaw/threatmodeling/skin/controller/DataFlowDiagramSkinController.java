@@ -2,6 +2,9 @@ package ch.zhaw.threatmodeling.skin.controller;
 
 import ch.zhaw.threatmodeling.model.Threat;
 import ch.zhaw.threatmodeling.model.ThreatGenerator;
+import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowConnectionObject;
+import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowNodeObject;
+import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowPositionedObject;
 import ch.zhaw.threatmodeling.selections.SelectionCopier;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.DataFlowGraphEditor;
@@ -58,12 +61,13 @@ import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 public class DataFlowDiagramSkinController implements SkinController {
@@ -78,8 +82,8 @@ public class DataFlowDiagramSkinController implements SkinController {
     private final ObjectProperty<DataFlowElement> currentElement = new SimpleObjectProperty<>();
     private final ThreatGenerator threatGenerator;
     private final SelectionCopier selectionCopier;
-    private final Stack<Integer> lastCommandDeletedCount = new Stack<>();
-    private final Stack<Integer> lastCommandUndoCount = new Stack<>();
+    private final Deque<Integer> lastCommandDeletedCount = new ArrayDeque<>();
+    private final Deque<Integer> lastCommandUndoCount = new ArrayDeque<>();
     private final Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping = new HashMap<>();
     private final Map<Command, String> createCommandToTypeMapping = new HashMap<>();
 
@@ -112,7 +116,10 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     @Override
     public void addNode(double currentZoomFactor, String type) {
-        GNode node = initNode(currentZoomFactor, type);
+        executeAddNodeCommand(initNode(currentZoomFactor, type), type);
+    }
+
+    private void executeAddNodeCommand(GNode node, String type){
         Commands.addNode(graphEditor.getModel(), node);
         createCommandToTypeMapping.put(
                 AdapterFactoryEditingDomain.getEditingDomainFor(graphEditor.getModel()).getCommandStack().getMostRecentCommand(),
@@ -241,10 +248,10 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     private void initTrustBoundaryJoints(Point2D jointPosition, List<GJoint> joints) {
-        final GJoint joint = GraphFactory.eINSTANCE.createGJoint();
+        final GJoint joint = createJoint();
         joint.setX(jointPosition.getX());
         joint.setY(jointPosition.getY());
-        joint.setType(DataFlowSkinConstants.DFD_TRUST_BOUNDARY_JOINT);
+        joint.setType(TrustBoundaryJointSkin.ELEMENT_TYPE);
         joints.add(joint);
     }
 
@@ -493,6 +500,10 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     }
 
+    private void flushCommandStack(){
+        AdapterFactoryEditingDomain.getEditingDomainFor(graphEditor.getModel()).getCommandStack().flush();
+    }
+
     public void copy() {
         selectionCopier.copy();
     }
@@ -525,6 +536,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void clearAll() {
         Commands.clear(graphEditor.getModel());
+        flushCommandStack();
     }
 
     public void activateCorrespondingNodeFactory(String type) {
@@ -570,4 +582,67 @@ public class DataFlowDiagramSkinController implements SkinController {
         }
     }
 
+    public void restoreModel(Pair<List<DataFlowNodeObject>, List<DataFlowConnectionObject>> loadedObjects, double currentZoomFactor) {
+        clearAll();
+        loadedObjects.getKey().forEach(dataFlowNodeObject -> restoreNode(dataFlowNodeObject, currentZoomFactor));
+        loadedObjects.getValue().forEach(this::restoreConnection);
+        flushCommandStack();
+    }
+
+    private void restoreConnection(DataFlowConnectionObject connectionObject) {
+        activateCorrespondingConnectionFactory(connectionObject.getType());
+        final GModel model = graphEditor.getModel();
+        final List<GNode> nodes = model.getNodes();
+
+        final GNode srcNode = nodes.get(connectionObject.getSourceNodeIndex());
+        final GNode destNode =  nodes.get(connectionObject.getTargetNodeIndex());
+        final GConnector srcConnector = srcNode.getConnectors().get(connectionObject.getSourceConnectorIndex());
+        final GConnector destConnector = destNode.getConnectors().get(connectionObject.getTargetConnectorIndex());
+
+        final List<GJoint> joints = new ArrayList<>();
+        final String type = connectionObject.getType();
+        final DataFlowPositionedObject jointObject = connectionObject.getJoint();
+        joints.add(restoreJoint(jointObject, type));
+
+        DataFlowConnectionCommands.addConnection(
+                graphEditor.getModel(),
+                srcConnector,
+                destConnector,
+                type,
+                joints,
+                graphEditor.getConnectionEventManager(),
+                null);
+
+       DataFlowConnectionCommands.setJointLabel(joints.get(0).getConnection(), jointObject.getText(), graphEditor.getSkinLookup());
+    }
+
+    private GJoint restoreJoint(DataFlowPositionedObject jointObject, String type){
+        final GJoint joint = createJoint();
+        joint.setType(type);
+        joint.setX(jointObject.getX());
+        joint.setY(jointObject.getY());
+        return joint;
+    }
+
+
+    private GJoint createJoint() {
+        return GraphFactory.eINSTANCE.createGJoint();
+    }
+
+    private void restoreNode(DataFlowNodeObject nodeObject, double currentZoomFactor) {
+        String type = nodeObject.getType();
+        String text = nodeObject.getText();
+        activateCorrespondingNodeFactory(type);
+        GNode newNode = initNode(currentZoomFactor, type);
+        newNode.setX(nodeObject.getX());
+        newNode.setY(nodeObject.getY());
+        newNode.setHeight(nodeObject.getHeight());
+        newNode.setWidth(nodeObject.getWidth());
+        executeAddNodeCommand(newNode, type);
+
+        GenericNodeSkin skin = (GenericNodeSkin) graphEditor.getSkinLookup().lookupNode(newNode);
+        if(null != text){
+            skin.setText(text);
+        }
+    }
 }

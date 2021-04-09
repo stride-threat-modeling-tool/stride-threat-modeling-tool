@@ -107,7 +107,9 @@ public class DataFlowConnectionCommands {
             // attributes that involve other members of the model, are modified through commands:
             Command creationCommand = AddCommand.create(editingDomain, model, GraphPackage.Literals.GMODEL__CONNECTIONS, connection);
             editingDomain.getCommandStack().execute(creationCommand);
-            createCommandToTypeTextMapping.put(creationCommand, type);
+            if(createCommandToTypeTextMapping != null){
+                createCommandToTypeTextMapping.put(creationCommand, type);
+            }
             editingDomain.getCommandStack().execute(AddCommand.create(editingDomain, source, GraphPackage.Literals.GCONNECTOR__CONNECTIONS, connection));
             editingDomain.getCommandStack().execute(AddCommand.create(editingDomain, target, GraphPackage.Literals.GCONNECTOR__CONNECTIONS, connection));
 

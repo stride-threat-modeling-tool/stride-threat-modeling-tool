@@ -10,8 +10,12 @@
     </padding>
     <MenuBar fx:id="menuBar" StackPane.alignment="TOP_LEFT">
         <Menu text="File">
-            <MenuItem onAction="#clearAll" text="Clear All" />
+            <MenuItem onAction="#saveDiagram" text="Save diagram" accelerator="Shortcut + S"/>
+            <MenuItem onAction="#loadDiagram" text="Load diagram" accelerator="Shortcut + L"/>
+            <SeparatorMenuItem />
             <MenuItem onAction="#analyseDiagram" text="Analyse Diagram" />
+            <SeparatorMenuItem />
+            <MenuItem onAction="#clearAll" text="Clear all" />
         </Menu>
         <Menu text="Edit">
             <MenuItem accelerator="Shortcut + C" onAction="#copy" text="Copy" />
