@@ -76,8 +76,6 @@ public class DataFlowPersistence {
                             loadedNodes.add(GSON.fromJson(line, DataFlowNodeObject.class));
                         }
                         loadingNodes = line.equals(NODES_START) || loadingNodes;
-                        LOGGER.info(line);
-
                     }
                 }
             } catch (IOException e) {

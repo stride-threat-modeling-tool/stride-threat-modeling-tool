@@ -591,6 +591,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         loadedObjects.getKey().forEach(dataFlowNodeObject -> restoreNode(dataFlowNodeObject, currentZoomFactor));
         loadedObjects.getValue().forEach(this::restoreConnection);
         flushCommandStack();
+        setDataFlowSkinFactories();
     }
 
     private void restoreConnection(DataFlowConnectionObject connectionObject) {
