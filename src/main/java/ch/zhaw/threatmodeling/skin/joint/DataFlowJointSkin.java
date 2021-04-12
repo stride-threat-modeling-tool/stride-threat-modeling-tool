@@ -1,20 +1,29 @@
 package ch.zhaw.threatmodeling.skin.joint;
 
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
+import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
+import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
 import de.tesis.dynaware.grapheditor.GJointSkin;
+import de.tesis.dynaware.grapheditor.SkinLookup;
+import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GJoint;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Path;
 
 import java.util.logging.Logger;
 
 public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     private static final Logger LOGGER = Logger.getLogger("Data Flow Joint Skin");
 
+    protected static final PseudoClass PSEUDO_CLASS_HOVERED = PseudoClass.getPseudoClass("hover");
     public static final String DATAFLOW_JOINT_CLASS = "data-flow-joint";
     public static final int WIDTH_OFFSET = 10;
     public static final int MAX_LENGTH = 45;
@@ -66,6 +75,60 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
         getRoot().getChildren().add(pane);
         getRoot().getStyleClass().add(DATAFLOW_JOINT_CLASS);
 
+        initEventListener();
+    }
+
+    private void initEventListener() {
+        // Change style of dataflow on mouseover
+        getRoot().setOnMouseEntered(mouseEvent -> highlightDataflow());
+        getRoot().setOnMouseExited(mouseEvent -> unhighlightDataflow());
+    }
+
+    private void highlightDataflow() {
+        // Highlight the connection, joint, connectors
+        SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+
+        // Joint
+        getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, true);
+
+        // Connection
+        final GConnection connection = joint.getConnection();
+        setConnectionStyle(skinLookup, connection, true);
+
+        // Connectors
+        setConnectorsStyle(skinLookup, connection, true);
+
+    }
+
+    private void unhighlightDataflow() {
+        // Unhighlight the connection, joint, connectors
+        SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+
+        // Joint
+        getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, false);
+
+        // Connection
+        final GConnection connection = joint.getConnection();
+        setConnectionStyle(skinLookup, connection, false);
+
+        // Connectors
+        setConnectorsStyle(skinLookup, connection, false);
+    }
+
+    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, boolean isHovered) {
+        final DataFlowConnectionSkin connectionSkin = (DataFlowConnectionSkin) skinLookup.lookupConnection(connection);
+        Group connectionSkinRoot = (Group) connectionSkin.getRoot();
+        Path path = (Path) connectionSkinRoot.getChildren().get(0);
+        path.pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
+    }
+
+    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, boolean isHovered) {
+        final GConnector sourceConnector = connection.getSource();
+        final GConnector targetConnector = connection.getTarget();
+        final DataFlowConnectorSkin sourceConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(sourceConnector);
+        final DataFlowConnectorSkin targetConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(targetConnector);
+        sourceConnectorSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
+        targetConnectorSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
     }
 
     public GJoint getJoint(){
@@ -95,4 +158,5 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     public String toString() {
         return label.getText();
     }
+
 }

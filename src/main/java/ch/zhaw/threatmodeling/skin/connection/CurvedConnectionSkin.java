@@ -1,11 +1,16 @@
 package ch.zhaw.threatmodeling.skin.connection;
 
+import ch.zhaw.threatmodeling.skin.connector.DataFlowConnectorSkin;
+import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.GJointSkin;
+import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.utils.ArrowHead;
 import de.tesis.dynaware.grapheditor.utils.DraggableBox;
 import de.tesis.dynaware.grapheditor.utils.GeometryUtils;
+import javafx.css.PseudoClass;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -34,7 +39,9 @@ public class CurvedConnectionSkin extends GConnectionSkin {
     private static final double ARROW_LENGTH = 16;
     private static final double ARROW_WIDTH = 10;
 
+    protected static final PseudoClass PSEUDO_CLASS_HOVERED = PseudoClass.getPseudoClass("hover");
     private static final String STYLE_CLASS = "curved-connection";
+    private static final String STYLE_CLASS_ARROW = "curved-connection-arrow";
 
     private List<GJointSkin> jointSkins;
 
@@ -56,11 +63,58 @@ public class CurvedConnectionSkin extends GConnectionSkin {
         arrowHead.setWidth(ARROW_WIDTH);
         arrowHead.setMouseTransparent(true);
 
+        path.setMouseTransparent(false); // allows connection to be highlighted on hover and select
+        path.getStyleClass().setAll(STYLE_CLASS);
+
         root.getChildren().add(path);
         root.getChildren().add(arrowHead);
-        path.setMouseTransparent(false); // allows connection to be highlighted on hover and select
 
-        path.getStyleClass().setAll(STYLE_CLASS);
+        initEventListener();
+    }
+
+    private void initEventListener() {
+        // Change style of dataflow on mouseover
+        path.setOnMouseEntered(mouseEvent -> highlightDataflow());
+        path.setOnMouseExited(mouseEvent -> unhighlightDataflow());
+    }
+
+
+    private void highlightDataflow() {
+       // Highlight the connection, joint, connectors
+        SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+
+        // Connection
+        path.pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, true);
+
+        // Joint
+        final DataFlowJointSkin jointSkin = (DataFlowJointSkin) jointSkins.get(0);
+        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, true);
+
+        // Connectors
+        setConnectorsStyle(skinLookup, this.getItem(), true);
+    }
+
+    private void unhighlightDataflow() {
+        // Unhighlight the connection, joint, connectors
+        SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+
+        // Connection
+        path.pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, false);
+
+        // Joint
+        final DataFlowJointSkin jointSkin = (DataFlowJointSkin) jointSkins.get(0);
+        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, false);
+
+        setConnectorsStyle(skinLookup, this.getItem(), false);
+    }
+
+    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, boolean isHovered) {
+        final GConnector sourceConnector = connection.getSource();
+        final GConnector targetConnector = connection.getTarget();
+        final DataFlowConnectorSkin sourceConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(sourceConnector);
+        final DataFlowConnectorSkin targetConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(targetConnector);
+        sourceConnectorSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
+        targetConnectorSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
     }
 
     @Override

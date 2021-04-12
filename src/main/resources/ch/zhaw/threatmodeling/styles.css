@@ -41,11 +41,19 @@
     -fx-stroke-width: 3;
 }
 
+.curved-connection-arrow:hover, .curved-connection:selected {
+    -fx-stroke-width: 3;
+}
+
 .data-flow-joint {
     -fx-background-color: rgba(208, 255, 180, 0.5);
     -fx-border-color: black;
     -fx-border-width: 1;
     -fx-stroke-type: inside;
+}
+
+.data-flow-joint:hover {
+    -fx-font-weight: bold;
 }
 
 .data-flow-joint:pressed, .data-flow-joint:selected, .data-flow-joint:selected:pressed {
