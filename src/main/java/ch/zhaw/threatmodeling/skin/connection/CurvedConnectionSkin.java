@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_SELECTED;
+import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_HOVER;
+
 /**
  * A simple curved connection skin.
  *
@@ -39,7 +42,6 @@ public class CurvedConnectionSkin extends GConnectionSkin {
     private static final double ARROW_LENGTH = 16;
     private static final double ARROW_WIDTH = 10;
 
-    protected static final PseudoClass PSEUDO_CLASS_HOVERED = PseudoClass.getPseudoClass("hover");
     private static final String STYLE_CLASS = "curved-connection";
     private static final String STYLE_CLASS_ARROW = "curved-connection-arrow";
 
@@ -84,14 +86,14 @@ public class CurvedConnectionSkin extends GConnectionSkin {
         SkinLookup skinLookup = getGraphEditor().getSkinLookup();
 
         // Connection
-        path.pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, true);
+        path.pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
 
         // Joint
         final DataFlowJointSkin jointSkin = (DataFlowJointSkin) jointSkins.get(0);
-        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, true);
+        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
 
         // Connectors
-        setConnectorsStyle(skinLookup, this.getItem(), true);
+        setConnectorsStyle(skinLookup, this.getItem(), PSEUDO_CLASS_HOVER, true);
     }
 
     private void unhighlightDataflow() {
@@ -99,22 +101,22 @@ public class CurvedConnectionSkin extends GConnectionSkin {
         SkinLookup skinLookup = getGraphEditor().getSkinLookup();
 
         // Connection
-        path.pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, false);
+        path.pseudoClassStateChanged(PSEUDO_CLASS_HOVER, false);
 
         // Joint
         final DataFlowJointSkin jointSkin = (DataFlowJointSkin) jointSkins.get(0);
-        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, false);
+        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, false);
 
-        setConnectorsStyle(skinLookup, this.getItem(), false);
+        setConnectorsStyle(skinLookup, this.getItem(), PSEUDO_CLASS_HOVER, false);
     }
 
-    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, boolean isHovered) {
+    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
         final GConnector sourceConnector = connection.getSource();
         final GConnector targetConnector = connection.getTarget();
         final DataFlowConnectorSkin sourceConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(sourceConnector);
         final DataFlowConnectorSkin targetConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(targetConnector);
-        sourceConnectorSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
-        targetConnectorSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
+        sourceConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHover);
+        targetConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHover);
     }
 
     @Override
@@ -213,6 +215,15 @@ public class CurvedConnectionSkin extends GConnectionSkin {
     @Override
     protected void selectionChanged(boolean isSelected)
     {
-        // Not implemented
+        final DataFlowJointSkin jointSkin = (DataFlowJointSkin) jointSkins.get(0);
+        if (isSelected) {
+            path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+            setConnectorsStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, true);
+        } else {
+            path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+            setConnectorsStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, false);
+        }
     }
 }

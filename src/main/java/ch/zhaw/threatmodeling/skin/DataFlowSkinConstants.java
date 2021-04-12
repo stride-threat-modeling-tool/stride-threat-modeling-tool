@@ -31,6 +31,7 @@ public class DataFlowSkinConstants {
     public static final PseudoClass PSEUDO_CLASS_ALLOWED = PseudoClass.getPseudoClass("allowed");
     public static final PseudoClass PSEUDO_CLASS_FORBIDDEN = PseudoClass.getPseudoClass("forbidden");
     public static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
+    public static final PseudoClass PSEUDO_CLASS_HOVER = PseudoClass.getPseudoClass("hover");
 
     /*
     defines the order in which the connectors are laid out, changing it can have unexpected consequences.

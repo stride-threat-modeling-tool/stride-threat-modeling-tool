@@ -20,10 +20,12 @@ import javafx.scene.shape.Path;
 
 import java.util.logging.Logger;
 
+import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_HOVER;
+import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_SELECTED;
+
 public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     private static final Logger LOGGER = Logger.getLogger("Data Flow Joint Skin");
 
-    protected static final PseudoClass PSEUDO_CLASS_HOVERED = PseudoClass.getPseudoClass("hover");
     public static final String DATAFLOW_JOINT_CLASS = "data-flow-joint";
     public static final int WIDTH_OFFSET = 10;
     public static final int MAX_LENGTH = 45;
@@ -89,14 +91,14 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
         SkinLookup skinLookup = getGraphEditor().getSkinLookup();
 
         // Joint
-        getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, true);
+        getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
 
         // Connection
         final GConnection connection = joint.getConnection();
-        setConnectionStyle(skinLookup, connection, true);
+        setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
 
         // Connectors
-        setConnectorsStyle(skinLookup, connection, true);
+        setConnectorsStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
 
     }
 
@@ -105,30 +107,30 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
         SkinLookup skinLookup = getGraphEditor().getSkinLookup();
 
         // Joint
-        getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, false);
+        getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, false);
 
         // Connection
         final GConnection connection = joint.getConnection();
-        setConnectionStyle(skinLookup, connection, false);
+        setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
 
         // Connectors
-        setConnectorsStyle(skinLookup, connection, false);
+        setConnectorsStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
     }
 
-    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, boolean isHovered) {
+    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean isHovered) {
         final DataFlowConnectionSkin connectionSkin = (DataFlowConnectionSkin) skinLookup.lookupConnection(connection);
         Group connectionSkinRoot = (Group) connectionSkin.getRoot();
         Path path = (Path) connectionSkinRoot.getChildren().get(0);
-        path.pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
+        path.pseudoClassStateChanged(pseudoClass, isHovered);
     }
 
-    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, boolean isHovered) {
+    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
         final GConnector sourceConnector = connection.getSource();
         final GConnector targetConnector = connection.getTarget();
         final DataFlowConnectorSkin sourceConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(sourceConnector);
         final DataFlowConnectorSkin targetConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(targetConnector);
-        sourceConnectorSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
-        targetConnectorSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVERED, isHovered);
+        sourceConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHover);
+        targetConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHover);
     }
 
     public GJoint getJoint(){
@@ -147,6 +149,16 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
 
     @Override
     protected void selectionChanged(boolean isSelected) {
+        final GConnection connection = joint.getConnection();
+        if (isSelected) {
+            getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+            setConnectionStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, true);
+            setConnectorsStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, true);
+        } else {
+            getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+            setConnectionStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, false);
+            setConnectorsStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, false);
+        }
     }
 
     @Override

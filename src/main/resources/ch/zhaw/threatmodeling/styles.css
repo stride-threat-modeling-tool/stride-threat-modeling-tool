@@ -52,11 +52,7 @@
     -fx-stroke-type: inside;
 }
 
-.data-flow-joint:hover {
-    -fx-font-weight: bold;
-}
-
-.data-flow-joint:pressed, .data-flow-joint:selected, .data-flow-joint:selected:pressed {
+.data-flow-joint:hover, .data-flow-joint:pressed, .data-flow-joint:selected, .data-flow-joint:selected:pressed {
     -fx-font-weight: bold;
 }
 
