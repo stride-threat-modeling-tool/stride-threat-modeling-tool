@@ -126,11 +126,11 @@ public class SelectionCopier {
 
         final List<GNode> pastedNodes = new ArrayList<>();
         final List<GConnection> pastedConnections = new ArrayList<>();
-
-        preparePastedElements(pastedNodes, pastedConnections);
-        addPasteOffset(pastedNodes, pastedConnections);
-        checkWithinBounds(pastedNodes, pastedConnections);
-        addPastedElements(pastedNodes, pastedConnections);
+        if(!copiedNodes.isEmpty()) {
+            preparePastedElements(pastedNodes, pastedConnections);
+            addPasteOffset(pastedNodes, pastedConnections);
+            checkWithinBounds(pastedNodes, pastedConnections);
+            addPastedElements(pastedNodes, pastedConnections);
 
         for (final GNode pastedNode : pastedNodes) {
             selectionManager.select(pastedNode);
@@ -141,7 +141,8 @@ public class SelectionCopier {
                 selectionManager.select(pastedJoint);
             }
         }
-
+            clearMemory();
+        }
         return pastedNodes;
     }
 
