@@ -14,10 +14,14 @@ import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
@@ -28,6 +32,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -102,6 +107,14 @@ public class MainController {
     @FXML
     private TextArea justificationTextArea;
 
+    private final ChangeListener<STRIDECategory> categoryChangeListener = (o, s, t) -> handleThreatFieldsModified();
+
+    private final ChangeListener<ThreatPriority> threatPriorityChangeListener = (o,s,t) -> handleThreatFieldsModified();
+
+    private final ChangeListener<State> stateChangeListener = (o,s,t) -> handleThreatFieldsModified();
+
+    private final EventHandler<KeyEvent> threatTextFieldsHandler = keyEvent -> handleThreatFieldsModified();
+
     public void initialize() {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
         threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
@@ -138,28 +151,41 @@ public class MainController {
     }
 
     private void initThreatModifiedListener() {
-        descriptionTextArea.textProperty().addListener((observableValue, oldVal, newVal) -> setCurrentThreatModified());
-        editTitleTextField.textProperty().addListener((observableValue, s, t1) -> setCurrentThreatModified());
-        justificationTextArea.textProperty().addListener((observableValue, s, t1) -> setCurrentThreatModified());
     }
 
     private void setCurrentThreatModified() {
         Threat threat = currentThreat.get();
         if (threat != null) {
             threat.setModified(true);
+            LOGGER.info("modified threat" + threat.getTitle());
         }
     }
 
     private void initThreatTableUpdates() {
-        descriptionTextArea.setOnKeyTyped(keyEvent -> threatTable.refresh());
-        justificationTextArea.setOnKeyTyped(keyEvent -> threatTable.refresh());
+        descriptionTextArea.setOnKeyTyped(threatTextFieldsHandler);
+        justificationTextArea.setOnKeyTyped(threatTextFieldsHandler);
 
-        editTextTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
-        editTitleTextField.setOnKeyTyped(keyEvent -> threatTable.refresh());
+        editTextTextField.setOnKeyTyped(threatTextFieldsHandler);
+        editTitleTextField.setOnKeyTyped(threatTextFieldsHandler);
+        setChoiceBoxListeners();
 
-        categoryChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, s, t) -> threatTable.refresh());
-        stateChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, s, t) -> threatTable.refresh());
-        priorityChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, p, t) -> threatTable.refresh());
+    }
+
+    private void setChoiceBoxListeners() {
+        categoryChoiceBox.valueProperty().addListener(categoryChangeListener);
+        stateChoiceBox.valueProperty().addListener(stateChangeListener);
+        priorityChoiceBox.valueProperty().addListener(threatPriorityChangeListener);
+    }
+
+    private void removeChoiceBoxListeners() {
+        categoryChoiceBox.valueProperty().removeListener(categoryChangeListener);
+        stateChoiceBox.valueProperty().removeListener(stateChangeListener);
+        priorityChoiceBox.valueProperty().removeListener(threatPriorityChangeListener);
+    }
+
+    private void handleThreatFieldsModified(){
+        threatTable.refresh();
+        setCurrentThreatModified();
     }
 
     private void initChoiceBoxesValues() {
@@ -210,11 +236,14 @@ public class MainController {
 
         threatTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldThreat, newThreat) -> {
             LOGGER.info("changed selected item " + newThreat.getTitle());
+            removeChoiceBoxListeners();
             if (currentThreat.get() != null) {
+
                 unbindFieldsToCurrentThreat();
             }
             currentThreat.set(newThreat);
             bindFieldsToCurrentThreat();
+            setChoiceBoxListeners();
         });
 
         threatTable.itemsProperty().bindBidirectional(threatGenerator.getThreatsProperty());
