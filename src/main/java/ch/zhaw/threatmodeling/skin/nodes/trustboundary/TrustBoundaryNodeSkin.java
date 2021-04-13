@@ -1,14 +1,25 @@
 package ch.zhaw.threatmodeling.skin.nodes.trustboundary;
 
+import ch.zhaw.threatmodeling.skin.connection.TrustBoundaryConnectionSkin;
+import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.EditorElement;
 import de.tesis.dynaware.grapheditor.GConnectorSkin;
+import de.tesis.dynaware.grapheditor.SkinLookup;
+import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GConnector;
+import de.tesis.dynaware.grapheditor.model.GJoint;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.DraggableBox;
+import javafx.css.PseudoClass;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+
+import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_HOVER;
 
 public class TrustBoundaryNodeSkin extends GenericNodeSkin {
 
@@ -31,6 +42,65 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
         border.getStyleClass().setAll(STYLE_CLASS);
         getRoot().getChildren().add(border);
         addSelectionHalo();
+
+        initEventListener();
+    }
+
+    private void initEventListener() {
+        // Change style of TrustBoundary on mouseover
+        getRoot().setOnMouseEntered(mouseEvent -> highlightTrustBoundary());
+        getRoot().setOnMouseExited(mouseEvent -> unhighlightTrustBoundary());
+    }
+
+    private void highlightTrustBoundary() {
+        // Highlight the connection, joint, nodes
+        SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+
+        // Connection
+        final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
+        setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
+
+        // Joint
+        final GJoint joint = connection.getJoints().get(0);
+        final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(joint);
+        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
+
+        // TrustBoundary nodes
+        setNodesStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
+    }
+
+    private void unhighlightTrustBoundary() {
+        // Unhighlight the connection, joint, nodes
+        SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+
+        // Connection
+        final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
+        setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
+
+        // Joint
+        final GJoint joint = connection.getJoints().get(0);
+        final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(joint);
+        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, false);
+
+        // TrustBoundary nodes
+        setNodesStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
+    }
+
+
+    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean isHovered) {
+        final TrustBoundaryConnectionSkin connectionSkin = (TrustBoundaryConnectionSkin) skinLookup.lookupConnection(connection);
+        Group connectionSkinRoot = (Group) connectionSkin.getRoot();
+        Path path = (Path) connectionSkinRoot.getChildren().get(0);
+        path.pseudoClassStateChanged(pseudoClass, isHovered);
+    }
+
+    private void setNodesStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
+        final GConnector sourceConnector = connection.getSource();
+        final GConnector targetConnector = connection.getTarget();
+        final TrustBoundaryNodeSkin sourceNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(sourceConnector.getParent());
+        final TrustBoundaryNodeSkin targetNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(targetConnector.getParent());
+        sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, isHover);
+        targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, isHover);
     }
 
     @Override

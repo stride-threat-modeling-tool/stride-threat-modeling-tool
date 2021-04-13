@@ -1,16 +1,27 @@
 package ch.zhaw.threatmodeling.skin.joint;
 
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
+import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
+import ch.zhaw.threatmodeling.skin.connection.TrustBoundaryConnectionSkin;
+import ch.zhaw.threatmodeling.skin.nodes.trustboundary.TrustBoundaryNodeSkin;
 import de.tesis.dynaware.grapheditor.GJointSkin;
+import de.tesis.dynaware.grapheditor.SkinLookup;
+import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GConnector;
 import de.tesis.dynaware.grapheditor.model.GJoint;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Path;
 
 import java.util.logging.Logger;
+
+import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_HOVER;
 
 public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElement {
     private static final Logger LOGGER = Logger.getLogger("Trust Boundary Joint Skin");
@@ -63,7 +74,59 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
         getRoot().resize(pane.getWidth(), pane.getHeight());
         getRoot().getChildren().add(pane);
         getRoot().getStyleClass().add(TRUST_BOUNDARY_JOINT_CLASS);
+        initEventListener();
+    }
 
+    private void initEventListener() {
+        // Change style of TrustBoundary on mouseover
+        getRoot().setOnMouseEntered(mouseEvent -> highlightTrustBoundary());
+        getRoot().setOnMouseExited(mouseEvent -> unhighlightTrustBoundary());
+    }
+
+    private void highlightTrustBoundary() {
+        // Highlight the connection, joint, nodes
+        SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+
+        // Joint
+       getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
+
+        // Connection
+        final GConnection connection = getItem().getConnection();
+        setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
+
+        // TrustBoundary nodes
+        setNodesStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
+    }
+
+    private void unhighlightTrustBoundary() {
+        // Unhighlight the connection, joint, nodes
+        SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+
+        // Joint
+        getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, false);
+
+        // Connection
+        final GConnection connection = getItem().getConnection();
+        setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
+
+        // TrustBoundary nodes
+        setNodesStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
+    }
+
+    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean isHovered) {
+        final TrustBoundaryConnectionSkin connectionSkin = (TrustBoundaryConnectionSkin) skinLookup.lookupConnection(connection);
+        Group connectionSkinRoot = (Group) connectionSkin.getRoot();
+        Path path = (Path) connectionSkinRoot.getChildren().get(0);
+        path.pseudoClassStateChanged(pseudoClass, isHovered);
+    }
+
+    private void setNodesStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
+        final GConnector sourceConnector = connection.getSource();
+        final GConnector targetConnector = connection.getTarget();
+        final TrustBoundaryNodeSkin sourceNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(sourceConnector.getParent());
+        final TrustBoundaryNodeSkin targetNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(targetConnector.getParent());
+        sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, isHover);
+        targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, isHover);
     }
 
     @Override

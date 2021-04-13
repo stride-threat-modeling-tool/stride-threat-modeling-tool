@@ -5,7 +5,7 @@
     -fx-stroke-type: inside;
 }
 
-.trust-boundary-joint:pressed, .trust-boundary-joint:selected, .trust-boundary-joint:selected:pressed {
+.trust-boundary-joint:hover, .trust-boundary-joint:pressed, .trust-boundary-joint:selected, .trust-boundary-joint:selected:pressed {
     -fx-font-weight: bold;
 }
 
