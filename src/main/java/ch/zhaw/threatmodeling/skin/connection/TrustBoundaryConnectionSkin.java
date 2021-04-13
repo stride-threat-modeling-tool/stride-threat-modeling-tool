@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_HOVER;
+import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_SELECTED;
 
 /**
  * The DataFlow connection skin.
@@ -187,6 +188,15 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
 
     @Override
     protected void selectionChanged(boolean isSelected) {
-        // Not implemented
+        final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) jointSkins.get(0);
+        if (isSelected) {
+            path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+            setNodesStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, true);
+        } else {
+            path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+            setNodesStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, false);
+        }
     }
 }

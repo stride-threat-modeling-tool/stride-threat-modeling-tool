@@ -94,6 +94,12 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
         path.pseudoClassStateChanged(pseudoClass, isHovered);
     }
 
+    private void setJointStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean isHovered) {
+        final GJoint joint = connection.getJoints().get(0);
+        final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(joint);
+        jointSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHovered);
+    }
+
     private void setNodesStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
         final GConnector sourceConnector = connection.getSource();
         final GConnector targetConnector = connection.getTarget();
@@ -132,14 +138,16 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
 
     @Override
     protected void selectionChanged(final boolean isSelected) {
+        final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
+        final SkinLookup skinLookup = getGraphEditor().getSkinLookup();
         if (isSelected) {
-            layoutSelectionHalo();
-            selectionHalo.setVisible(true);
-            contentRoot.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
-            getRoot().toFront();
+            setJointStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
+            setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
+            setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
         } else {
-            selectionHalo.setVisible(false);
-            contentRoot.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+            setJointStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
+            setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
+            setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
         }
     }
 

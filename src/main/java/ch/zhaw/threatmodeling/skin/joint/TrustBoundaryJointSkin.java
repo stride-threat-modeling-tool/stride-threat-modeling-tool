@@ -1,7 +1,6 @@
 package ch.zhaw.threatmodeling.skin.joint;
 
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
-import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.connection.TrustBoundaryConnectionSkin;
 import ch.zhaw.threatmodeling.skin.nodes.trustboundary.TrustBoundaryNodeSkin;
 import de.tesis.dynaware.grapheditor.GJointSkin;
@@ -22,6 +21,7 @@ import javafx.scene.shape.Path;
 import java.util.logging.Logger;
 
 import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_HOVER;
+import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_SELECTED;
 
 public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElement {
     private static final Logger LOGGER = Logger.getLogger("Trust Boundary Joint Skin");
@@ -34,6 +34,7 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
     private final StringProperty text = new SimpleStringProperty();
     private final StringProperty type = new SimpleStringProperty();
     private final Label label = new Label();
+    private final GJoint joint;
 
     public StringProperty typeProperty(){
         return type;
@@ -60,6 +61,7 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
      */
     public TrustBoundaryJointSkin(GJoint joint) {
         super(joint);
+        this.joint = joint;
         setText(ELEMENT_TYPE);
         type.set(ELEMENT_TYPE);
         StackPane pane = new StackPane();
@@ -74,6 +76,7 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
         getRoot().resize(pane.getWidth(), pane.getHeight());
         getRoot().getChildren().add(pane);
         getRoot().getStyleClass().add(TRUST_BOUNDARY_JOINT_CLASS);
+
         initEventListener();
     }
 
@@ -141,6 +144,17 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
 
     @Override
     protected void selectionChanged(boolean isSelected) {
+        final GConnection connection = joint.getConnection();
+        final SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+        if (isSelected) {
+            getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+            setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
+            setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
+        } else {
+            getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+            setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
+            setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
+        }
     }
 
     @Override
