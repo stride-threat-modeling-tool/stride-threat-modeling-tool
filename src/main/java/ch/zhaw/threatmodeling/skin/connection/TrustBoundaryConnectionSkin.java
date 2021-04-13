@@ -99,13 +99,13 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
         setNodesStyle(skinLookup, this.getItem(), PSEUDO_CLASS_HOVER, false);
     }
 
-    private void setNodesStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
+    private void setNodesStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean active) {
         final GConnector sourceConnector = connection.getSource();
         final GConnector targetConnector = connection.getTarget();
         final TrustBoundaryNodeSkin sourceNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(sourceConnector.getParent());
         final TrustBoundaryNodeSkin targetNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(targetConnector.getParent());
-        sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, isHover);
-        targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, isHover);
+        sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
+        targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
     }
 
     public static String getType() {

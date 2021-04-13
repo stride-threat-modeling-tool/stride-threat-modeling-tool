@@ -117,20 +117,20 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
         setConnectorsStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
     }
 
-    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean isHovered) {
+    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean active) {
         final DataFlowConnectionSkin connectionSkin = (DataFlowConnectionSkin) skinLookup.lookupConnection(connection);
         Group connectionSkinRoot = (Group) connectionSkin.getRoot();
         Path path = (Path) connectionSkinRoot.getChildren().get(0);
-        path.pseudoClassStateChanged(pseudoClass, isHovered);
+        path.pseudoClassStateChanged(pseudoClass, active);
     }
 
-    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
+    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean active) {
         final GConnector sourceConnector = connection.getSource();
         final GConnector targetConnector = connection.getTarget();
         final DataFlowConnectorSkin sourceConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(sourceConnector);
         final DataFlowConnectorSkin targetConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(targetConnector);
-        sourceConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHover);
-        targetConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHover);
+        sourceConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, active);
+        targetConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, active);
     }
 
     public GJoint getJoint(){

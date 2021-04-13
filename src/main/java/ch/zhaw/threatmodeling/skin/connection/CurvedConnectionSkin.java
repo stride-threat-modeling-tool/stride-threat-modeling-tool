@@ -110,13 +110,13 @@ public class CurvedConnectionSkin extends GConnectionSkin {
         setConnectorsStyle(skinLookup, this.getItem(), PSEUDO_CLASS_HOVER, false);
     }
 
-    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
+    private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean active) {
         final GConnector sourceConnector = connection.getSource();
         final GConnector targetConnector = connection.getTarget();
         final DataFlowConnectorSkin sourceConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(sourceConnector);
         final DataFlowConnectorSkin targetConnectorSkin = (DataFlowConnectorSkin) skinLookup.lookupConnector(targetConnector);
-        sourceConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHover);
-        targetConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHover);
+        sourceConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, active);
+        targetConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, active);
     }
 
     @Override

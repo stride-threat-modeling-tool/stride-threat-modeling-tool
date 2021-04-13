@@ -87,26 +87,26 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
     }
 
 
-    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean isHovered) {
+    private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean active) {
         final TrustBoundaryConnectionSkin connectionSkin = (TrustBoundaryConnectionSkin) skinLookup.lookupConnection(connection);
         Group connectionSkinRoot = (Group) connectionSkin.getRoot();
         Path path = (Path) connectionSkinRoot.getChildren().get(0);
-        path.pseudoClassStateChanged(pseudoClass, isHovered);
+        path.pseudoClassStateChanged(pseudoClass, active);
     }
 
-    private void setJointStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean isHovered) {
+    private void setJointStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean active) {
         final GJoint joint = connection.getJoints().get(0);
         final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(joint);
-        jointSkin.getRoot().pseudoClassStateChanged(pseudoClass, isHovered);
+        jointSkin.getRoot().pseudoClassStateChanged(pseudoClass, active);
     }
 
-    private void setNodesStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean isHover) {
+    private void setNodesStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean active) {
         final GConnector sourceConnector = connection.getSource();
         final GConnector targetConnector = connection.getTarget();
         final TrustBoundaryNodeSkin sourceNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(sourceConnector.getParent());
         final TrustBoundaryNodeSkin targetNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(targetConnector.getParent());
-        sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, isHover);
-        targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, isHover);
+        sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
+        targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
     }
 
     @Override
