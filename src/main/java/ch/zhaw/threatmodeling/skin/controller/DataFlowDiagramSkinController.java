@@ -297,6 +297,9 @@ public class DataFlowDiagramSkinController implements SkinController {
                 if (element instanceof DataFlowJointSkin) {
                     getSelectionManager().clearSelection();
                     getSelectionManager().select(((DataFlowJointSkin) element).getJoint());
+                } else if (element instanceof TrustBoundaryJointSkin) {
+                    getSelectionManager().clearSelection();
+                    getSelectionManager().select(((TrustBoundaryJointSkin) element).getJoint());
                 }
             }
             mouseEvent.consume();
