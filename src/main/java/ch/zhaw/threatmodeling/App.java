@@ -41,6 +41,10 @@ public class App extends Application {
         scene.getStylesheets().add(getClass().getResource(filename).toExternalForm());
     }
 
+    public MainController getController(){
+        return controller;
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
