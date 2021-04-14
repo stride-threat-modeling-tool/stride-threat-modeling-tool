@@ -8,17 +8,18 @@ module STRIDEModel {
     requires org.eclipse.emf.edit;
     requires java.logging;
     requires com.google.gson;
+    requires org.apache.commons.text;
 
 
-    exports ch.zhaw.threatmodeling  to javafx.graphics, javafx.fxml;
-    exports ch.zhaw.threatmodeling.controller to javafx.graphics, javafx.fxml;
-    exports ch.zhaw.threatmodeling.skin to javafx.graphics, javafx.fxml;
-    opens ch.zhaw.threatmodeling to javafx.fxml;
-    opens ch.zhaw.threatmodeling.controller to javafx.fxml;
-    opens ch.zhaw.threatmodeling.skin to javafx.fxml;
-    opens ch.zhaw.threatmodeling.persistence.utils.objects to com.google.gson;
+    exports ch.zhaw.threatmodeling;
+    exports ch.zhaw.threatmodeling.controller;
+    exports ch.zhaw.threatmodeling.skin;
+    opens ch.zhaw.threatmodeling;
+    opens ch.zhaw.threatmodeling.controller;
+    opens ch.zhaw.threatmodeling.skin;
+    opens ch.zhaw.threatmodeling.persistence.utils.objects;
 
 
-    opens ch.zhaw.threatmodeling.model to javafx.base;
+    opens ch.zhaw.threatmodeling.model;
 
 }
