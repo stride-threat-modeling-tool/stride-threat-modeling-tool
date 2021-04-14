@@ -166,8 +166,8 @@ public class CurvedConnectionSkin extends GConnectionSkin {
 
         // points[1] is the old control point which we ignore since the new control point is only decided by the
         // joint position
-
         final Point2D endPoint = points[points.length-1];
+
         final double endX = endPoint.getX();
         final double endY = endPoint.getY();
 
@@ -188,24 +188,27 @@ public class CurvedConnectionSkin extends GConnectionSkin {
         // Set the QuadCurveTo parameters
         curve.setControlX(controlPoint.getX());
         curve.setControlY(controlPoint.getY());
-        curve.setX(endX);
-        curve.setY(endY);
-
-        // Initial MoveTo is needed to start the path
-        final MoveTo moveTo = new MoveTo(GeometryUtils.moveOffPixel(startX), GeometryUtils.moveOffPixel(startY));
 
         // Calculate angle of the arrow so that the arrow always points towards the connector
         final double deltaX = endX - controlPoint.getX();
         final double deltaY = endY - controlPoint.getY();
         final double angle = Math.atan2(deltaX, deltaY);
 
-        // Set arrow head's position at half of its length away from the connector along the curve
-        final double arrowOffsetX = Math.sin(angle) * ARROW_LENGTH / 2;
-        final double arrowOffsetY = Math.cos(angle) * ARROW_LENGTH / 2;
+        // The curve ends a bit before the connector coordinates as we finish off the curve with an arrow head
+        final double endOffset = ARROW_LENGTH / 2;
 
-        arrowHead.setCenter(endX - arrowOffsetX, endY - arrowOffsetY);
+        final double endXOffset = endX - endOffset * Math.sin(angle);
+        final double endYOffset = endY - endOffset * Math.cos(angle);
+
+        curve.setX(endXOffset);
+        curve.setY(endYOffset);
+
+        arrowHead.setCenter(endXOffset, endYOffset);
         arrowHead.setAngle(Math.toDegrees(-angle));
         arrowHead.draw();
+
+        // Initial MoveTo is needed to start the path
+        final MoveTo moveTo = new MoveTo(GeometryUtils.moveOffPixel(startX), GeometryUtils.moveOffPixel(startY));
 
         path.getElements().clear();
         path.getElements().add(moveTo);
