@@ -14,14 +14,11 @@ import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
@@ -32,7 +29,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -48,7 +44,7 @@ public class MainController {
     private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
     private final DataFlowPersistence persistence = new DataFlowPersistence();
     @FXML
-    public VBox graphEditorParent;
+    private VBox graphEditorParent;
     private ThreatGenerator threatGenerator;
     private DataFlowDiagramSkinController dfdSkinController;
     @FXML
@@ -113,7 +109,11 @@ public class MainController {
 
     private final ChangeListener<State> stateChangeListener = (o,s,t) -> handleThreatFieldsModified();
 
-    private final EventHandler<KeyEvent> threatTextFieldsHandler = keyEvent -> handleThreatFieldsModified();
+    private final ChangeListener<String> threatTextFieldsChangeListener = (o, s, t) -> handleThreatFieldsModified();
+
+    private final ChangeListener<String> titleTextFieldChangeListener = (observableValue, oldTitle, newTitle) -> {
+        currentThreat.get().updateThreatElementNames(oldTitle, newTitle);
+    };
 
     public void initialize() {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
@@ -134,11 +134,9 @@ public class MainController {
 
         bringConnectionsToForeGround();
         bindTextFieldsToCurrentElement();
-        initThreatTableUpdates();
+        setThreatFieldsListeners();
         initThreatListTable();
         initChoiceBoxesValues();
-        initThreatModifiedListener();
-
     }
 
     private void bringConnectionsToForeGround() {
@@ -150,9 +148,6 @@ public class MainController {
         );
     }
 
-    private void initThreatModifiedListener() {
-    }
-
     private void setCurrentThreatModified() {
         Threat threat = currentThreat.get();
         if (threat != null) {
@@ -161,23 +156,25 @@ public class MainController {
         }
     }
 
-    private void initThreatTableUpdates() {
-        descriptionTextArea.setOnKeyTyped(threatTextFieldsHandler);
-        justificationTextArea.setOnKeyTyped(threatTextFieldsHandler);
+    private void setThreatFieldsListeners() {
+        descriptionTextArea.textProperty().addListener(threatTextFieldsChangeListener);
+        justificationTextArea.textProperty().addListener(threatTextFieldsChangeListener);
+        editTitleTextField.textProperty().addListener(threatTextFieldsChangeListener);
+        editTitleTextField.textProperty().addListener(titleTextFieldChangeListener);
+        editTextTextField.textProperty().addListener(threatTextFieldsChangeListener);
 
-        editTextTextField.setOnKeyTyped(threatTextFieldsHandler);
-        editTitleTextField.setOnKeyTyped(threatTextFieldsHandler);
-        setChoiceBoxListeners();
-
-    }
-
-    private void setChoiceBoxListeners() {
         categoryChoiceBox.valueProperty().addListener(categoryChangeListener);
         stateChoiceBox.valueProperty().addListener(stateChangeListener);
         priorityChoiceBox.valueProperty().addListener(threatPriorityChangeListener);
     }
 
-    private void removeChoiceBoxListeners() {
+    private void removeThreatFieldsListeners() {
+        descriptionTextArea.textProperty().removeListener(threatTextFieldsChangeListener);
+        justificationTextArea.textProperty().removeListener(threatTextFieldsChangeListener);
+        editTitleTextField.textProperty().removeListener(threatTextFieldsChangeListener);
+        editTitleTextField.textProperty().removeListener(titleTextFieldChangeListener);
+        editTextTextField.textProperty().removeListener(threatTextFieldsChangeListener);
+
         categoryChoiceBox.valueProperty().removeListener(categoryChangeListener);
         stateChoiceBox.valueProperty().removeListener(stateChangeListener);
         priorityChoiceBox.valueProperty().removeListener(threatPriorityChangeListener);
@@ -235,15 +232,13 @@ public class MainController {
         colInteraction.setCellValueFactory(new PropertyValueFactory<>("interaction"));
 
         threatTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldThreat, newThreat) -> {
-            LOGGER.info("changed selected item " + newThreat.getTitle());
-            removeChoiceBoxListeners();
+            removeThreatFieldsListeners();
             if (currentThreat.get() != null) {
-
                 unbindFieldsToCurrentThreat();
             }
             currentThreat.set(newThreat);
             bindFieldsToCurrentThreat();
-            setChoiceBoxListeners();
+            setThreatFieldsListeners();
         });
 
         threatTable.itemsProperty().bindBidirectional(threatGenerator.getThreatsProperty());
@@ -305,12 +300,12 @@ public class MainController {
 
     @FXML
     public void undo() {
-        dfdSkinController.undo();
+        dfdSkinController.getDoController().undo();
     }
 
     @FXML
     public void redo() {
-        dfdSkinController.redo();
+        dfdSkinController.getDoController().redo();
     }
 
     @FXML
@@ -347,4 +342,37 @@ public class MainController {
         dfdSkinController.restoreModel(persistence.loadFromFile(graphEditor), getCurrentZoomFactor());
     }
 
+    public GraphEditor getGraphEditor(){return graphEditor;}
+
+    public DataFlowDiagramSkinController getDfdSkinController() {
+        return dfdSkinController;
+    }
+
+    public TableView<Threat> getThreatTable() {
+        return threatTable;
+    }
+
+    public TextArea getDescriptionTextArea() {
+        return descriptionTextArea;
+    }
+
+    public ChoiceBox<STRIDECategory> getCategoryChoiceBox() {
+        return categoryChoiceBox;
+    }
+
+    public ChoiceBox<ThreatPriority> getPriorityChoiceBox() {
+        return priorityChoiceBox;
+    }
+
+    public ChoiceBox<State> getStateChoiceBox() {
+        return stateChoiceBox;
+    }
+
+    public TextField getEditTitleTextField() {
+        return editTitleTextField;
+    }
+
+    public TextArea getJustificationTextArea() {
+        return justificationTextArea;
+    }
 }

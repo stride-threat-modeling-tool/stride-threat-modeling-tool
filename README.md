@@ -18,5 +18,6 @@ jars (with shifts pressed):
 4. Plugins -> javafx -> javafx:run
 
 ## How to run test
-
-2. Plugins -> surefire -> surefire:test
+1. Plugins -> javafx -> javafx:compile
+2. Build project (Ctrl + F9)
+3. Plugins -> surefire -> surefire:test

@@ -93,14 +93,15 @@
             <version>4.0.15-alpha</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.5.2</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.9.0</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
+    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -108,10 +109,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <release>11</release>
+                    <source>1.11</source>
+                    <target>1.11</target>
                     <compilerArgs>
                         <arg>--add-exports</arg>
                         <arg>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</arg>
+                        <verbose>true</verbose>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -121,6 +124,10 @@
                 <version>0.0.3</version>
                 <configuration>
                     <mainClass>ch.zhaw.threatmodeling.App</mainClass>
+                    <options>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
         </plugins>
