@@ -132,6 +132,10 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
         targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
     }
 
+    public GJoint getJoint() {
+        return joint;
+    }
+
     @Override
     public double getWidth() {
         return MAX_LENGTH;

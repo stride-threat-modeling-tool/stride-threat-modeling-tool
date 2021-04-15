@@ -1,6 +1,7 @@
 package ch.zhaw.threatmodeling.skin.tail;
 
 import ch.zhaw.threatmodeling.connectors.DataFlowConnectorTypes;
+import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
 import ch.zhaw.threatmodeling.skin.utils.ArrowUtils;
 import de.tesis.dynaware.grapheditor.GTailSkin;
 import de.tesis.dynaware.grapheditor.model.GConnector;
@@ -84,7 +85,7 @@ public class DataFlowTailSkin extends GTailSkin {
         Point2D midPoint = startPoint.midpoint(endPoint);
 
         // For some reason this joint position is offset by -22.5 pixels in each direction, which we have to correct.
-        midPoint = midPoint.add(22.5, 22.5);
+        midPoint = midPoint.add(DataFlowSkinConstants.DFD_JOINT_SPAWN_OFFSET, DataFlowSkinConstants.DFD_JOINT_SPAWN_OFFSET);
 
         // The first joint position should be the mid point of the Bezier curve
         jointPositions.add(midPoint);
