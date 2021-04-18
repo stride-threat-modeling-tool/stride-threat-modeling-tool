@@ -11,9 +11,9 @@ public class ArrowUtils {
     /**
      * Draws the given arrow from the start to end points with the given offset from either end.
      *
-     * @param arrow an {@link Arrow} to be drawn
-     * @param start the start position
-     * @param end the end position
+     * @param arrow  an {@link Arrow} to be drawn
+     * @param start  the start position
+     * @param end    the end position
      * @param offset an offset from start and end positions
      */
     public static void draw(final Arrow arrow, final Point2D start, final Point2D end, final double offset) {

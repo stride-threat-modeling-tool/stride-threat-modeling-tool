@@ -1,6 +1,6 @@
 package ch.zhaw.threatmodeling.persistence.utils.objects;
 
-public abstract class  DataFlowObject {
+public abstract class DataFlowObject {
     private final String type;
 
     protected DataFlowObject(String type) {

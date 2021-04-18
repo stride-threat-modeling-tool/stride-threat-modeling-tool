@@ -34,7 +34,6 @@ public class DataStoreNodeSkin extends GenericRectangleNodeSkin {
     }
 
 
-
     /**
      * Creates the content of the node skin - header, title, close button, etc.
      */

@@ -44,7 +44,6 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
     private final GNode node;
 
 
-
     protected GenericNodeSkin(GNode node) {
         super(node);
         this.node = node;
@@ -209,7 +208,7 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
         return label;
     }
 
-    public GNode getNode(){
+    public GNode getNode() {
         return this.node;
     }
 

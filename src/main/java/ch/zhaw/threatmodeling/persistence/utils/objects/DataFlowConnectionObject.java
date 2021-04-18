@@ -4,7 +4,7 @@ package ch.zhaw.threatmodeling.persistence.utils.objects;
 /**
  * Helper class to prepare connections to be translated into JSON
  */
-public class DataFlowConnectionObject extends DataFlowObject{
+public class DataFlowConnectionObject extends DataFlowObject {
     private final int sourceNodeIndex;
     private final int targetNodeIndex;
     private final int sourceConnectorIndex;

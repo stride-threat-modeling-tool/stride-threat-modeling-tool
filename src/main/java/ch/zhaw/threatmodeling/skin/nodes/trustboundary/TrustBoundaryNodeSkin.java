@@ -172,21 +172,17 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
      * @return {@link DraggableBox}
      */
     @Override
-    protected DraggableBox createContainer()
-    {
-        return new DraggableBox(EditorElement.NODE)
-        {
+    protected DraggableBox createContainer() {
+        return new DraggableBox(EditorElement.NODE) {
 
             @Override
-            protected void layoutChildren()
-            {
+            protected void layoutChildren() {
                 super.layoutChildren();
                 layoutConnectors();
             }
 
             @Override
-            public void positionMoved()
-            {
+            public void positionMoved() {
                 super.positionMoved();
                 TrustBoundaryNodeSkin.this.impl_positionMoved();
             }

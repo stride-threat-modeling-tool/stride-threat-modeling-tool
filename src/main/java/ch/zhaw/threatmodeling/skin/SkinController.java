@@ -23,7 +23,7 @@ public interface SkinController {
      * Adds a connector of the given type to all selected nodes.
      *
      * @param position the currently selected connector position
-     * @param input {@code true} for input, {@code false} for output
+     * @param input    {@code true} for input, {@code false} for output
      */
     void addConnector(Side position, boolean input);
 

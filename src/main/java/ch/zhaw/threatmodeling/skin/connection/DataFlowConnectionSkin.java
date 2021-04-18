@@ -53,10 +53,8 @@ public class DataFlowConnectionSkin extends CurvedConnectionSkin {
      * Checks that the connection has the correct values to be displayed using
      * this skin.
      */
-    private void performChecks()
-    {
-        if (!CurvedConnections.checkJointCount(getItem()))
-        {
+    private void performChecks() {
+        if (!CurvedConnections.checkJointCount(getItem())) {
             LOGGER.log(Level.INFO, "Joint count not compatible with source and target connector types.");
         }
     }

@@ -36,7 +36,7 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     private final Label label = new Label();
     private final GJoint joint;
 
-    public StringProperty typeProperty(){
+    public StringProperty typeProperty() {
         return type;
     }
 
@@ -133,7 +133,7 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
         targetConnectorSkin.getRoot().pseudoClassStateChanged(pseudoClass, active);
     }
 
-    public GJoint getJoint(){
+    public GJoint getJoint() {
         return joint;
     }
 

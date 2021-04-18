@@ -11,7 +11,8 @@ import java.util.List;
  * Some constants used by the grey skins.
  */
 public class DataFlowSkinConstants {
-    private DataFlowSkinConstants(){}
+    private DataFlowSkinConstants() {
+    }
 
     public static final String DFD_LEFT_CENTER_CONNECTOR = "dfd-left-center";
     public static final String DFD_RIGHT_CENTER_CONNECTOR = "dfd-right-center";
@@ -48,5 +49,5 @@ public class DataFlowSkinConstants {
     public static final List<String> DFD_CONNECTION_TYPES = Arrays.asList(
             DataFlowJointSkin.ELEMENT_TYPE,
             TrustBoundaryJointSkin.ELEMENT_TYPE
-            );
+    );
 }

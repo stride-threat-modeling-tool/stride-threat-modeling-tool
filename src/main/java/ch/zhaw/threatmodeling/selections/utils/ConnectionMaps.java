@@ -14,15 +14,15 @@ public class ConnectionMaps {
     }
 
 
-    public void putConnection(GConnection connection, String type, String text){
-        connectionTypeTextMap.put(connection , new Pair<>(type, text));
+    public void putConnection(GConnection connection, String type, String text) {
+        connectionTypeTextMap.put(connection, new Pair<>(type, text));
     }
 
-    public String getConnectionType(GConnection connection){
+    public String getConnectionType(GConnection connection) {
         return connectionTypeTextMap.get(connection).getKey();
     }
 
-    public String getConnectionText(GConnection connection){
+    public String getConnectionText(GConnection connection) {
         return connectionTypeTextMap.get(connection).getValue();
     }
 }

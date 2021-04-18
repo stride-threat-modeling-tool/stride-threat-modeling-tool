@@ -4,65 +4,71 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane fx:id="root" minHeight="600.0" minWidth="800.0" prefHeight="1000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.zhaw.threatmodeling.controller.MainController">
+<StackPane fx:id="root" minHeight="600.0" minWidth="800.0" prefHeight="1000.0" prefWidth="1200.0"
+           xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ch.zhaw.threatmodeling.controller.MainController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
+        <Insets bottom="20.0" left="20.0" right="20.0" top="30.0"/>
     </padding>
     <MenuBar fx:id="menuBar" StackPane.alignment="TOP_LEFT">
         <Menu text="File">
             <MenuItem onAction="#saveDiagram" text="Save diagram" accelerator="Shortcut + S"/>
             <MenuItem onAction="#loadDiagram" text="Load diagram" accelerator="Shortcut + L"/>
-            <SeparatorMenuItem />
-            <MenuItem onAction="#analyseDiagram" text="Analyse Diagram" />
-            <SeparatorMenuItem />
-            <MenuItem onAction="#clearAll" text="Clear all" />
+            <SeparatorMenuItem/>
+            <MenuItem onAction="#analyseDiagram" text="Analyse Diagram"/>
+            <SeparatorMenuItem/>
+            <MenuItem onAction="#clearAll" text="Clear all"/>
         </Menu>
         <Menu text="Edit">
-            <MenuItem accelerator="Shortcut + C" onAction="#copy" text="Copy" />
-            <MenuItem accelerator="Shortcut + V" onAction="#paste" text="Paste" />
-            <SeparatorMenuItem />
-            <MenuItem accelerator="Shortcut + Z" onAction="#undo" text="Undo" />
-            <MenuItem accelerator="Shortcut + Y" onAction="#redo" text="Redo" />
-            <SeparatorMenuItem />
-            <MenuItem accelerator="Delete" onAction="#deleteSelection" text="Delete" />
+            <MenuItem accelerator="Shortcut + C" onAction="#copy" text="Copy"/>
+            <MenuItem accelerator="Shortcut + V" onAction="#paste" text="Paste"/>
+            <SeparatorMenuItem/>
+            <MenuItem accelerator="Shortcut + Z" onAction="#undo" text="Undo"/>
+            <MenuItem accelerator="Shortcut + Y" onAction="#redo" text="Redo"/>
+            <SeparatorMenuItem/>
+            <MenuItem accelerator="Delete" onAction="#deleteSelection" text="Delete"/>
         </Menu>
         <StackPane.margin>
-            <Insets left="-20.0" right="-20.0" top="-30.0" />
+            <Insets left="-20.0" right="-20.0" top="-30.0"/>
         </StackPane.margin>
     </MenuBar>
     <HBox>
         <VBox fx:id="graphEditorParent">
         </VBox>
-        <VBox fillWidth="false" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="600" minWidth="266.66" prefHeight="1000" prefWidth="300">
+        <VBox fillWidth="false" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="600" minWidth="266.66"
+              prefHeight="1000" prefWidth="300">
             <children>
-                <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Stencils" VBox.vgrow="ALWAYS">
+                <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66"
+                            prefHeight="500.0" prefWidth="300.0" text="Stencils" VBox.vgrow="ALWAYS">
                     <content>
                         <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0">
                             <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                             <children>
-                                <Label onMouseClicked="#addDataStore" text="Data Store" />
-                                <Label onMouseClicked="#addExternalEntity" text="External Entity" />
-                                <Label onMouseClicked="#addProcess" text="Process" />
-                                <Label onMouseClicked="#addMultipleProcess" text="Multiple Process" />
-                                <Label onMouseClicked="#addTrustBoundary" text="Trust Boundary" />
+                                <Label onMouseClicked="#addDataStore" text="Data Store"/>
+                                <Label onMouseClicked="#addExternalEntity" text="External Entity"/>
+                                <Label onMouseClicked="#addProcess" text="Process"/>
+                                <Label onMouseClicked="#addMultipleProcess" text="Multiple Process"/>
+                                <Label onMouseClicked="#addTrustBoundary" text="Trust Boundary"/>
                             </children>
                         </VBox>
                     </content>
                 </TitledPane>
-                <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" text="Element Properties" VBox.vgrow="ALWAYS">
+                <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" minHeight="300.0" minWidth="266.66"
+                            prefHeight="500.0" prefWidth="300.0" text="Element Properties" VBox.vgrow="ALWAYS">
                     <content>
-                        <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                        <VBox minHeight="300.0" minWidth="266.66" prefHeight="500.0" prefWidth="300.0" spacing="10.0"
+                              VBox.vgrow="ALWAYS">
                             <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                             <children>
-                                <Label fx:id="nodeTypeLabel" text="node type" />
+                                <Label fx:id="nodeTypeLabel" text="node type"/>
                                 <HBox prefWidth="200.0" spacing="10.0">
                                     <children>
-                                        <Label text="Text:" />
-                                        <TextField fx:id="editTextTextField" />
+                                        <Label text="Text:"/>
+                                        <TextField fx:id="editTextTextField"/>
                                     </children>
                                 </HBox>
                             </children>
@@ -71,85 +77,91 @@
                 </TitledPane>
             </children>
             <HBox.margin>
-                <Insets left="20.0" />
+                <Insets left="20.0"/>
             </HBox.margin>
         </VBox>
         <padding>
-            <Insets top="15.0" />
+            <Insets top="15.0"/>
         </padding>
     </HBox>
     <TitledPane fx:id="expandableThreatPane" expanded="false" StackPane.alignment="BOTTOM_CENTER">
         <StackPane.margin>
-            <Insets />
+            <Insets/>
         </StackPane.margin>
         <content>
-            <VBox fx:id="threatPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" minHeight="300.0" prefHeight="700.0" prefWidth="100.0">
+            <VBox fx:id="threatPane" alignment="BOTTOM_CENTER" maxHeight="-Infinity" minHeight="300.0"
+                  prefHeight="700.0" prefWidth="100.0">
                 <children>
-                    <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" text="Threat List" VBox.vgrow="ALWAYS">
+                    <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" text="Threat List"
+                                VBox.vgrow="ALWAYS">
                         <padding>
-                            <Insets bottom="10.0" />
+                            <Insets bottom="10.0"/>
                         </padding>
                         <content>
                             <TableView fx:id="threatTable">
                                 <columns>
-                                   <TableColumn fx:id="colID" prefWidth="75.0" text="ID" />
-                                   <TableColumn fx:id="colState" prefWidth="75.0" text="State" />
-                                   <TableColumn fx:id="colTitle" prefWidth="75.0" text="Title" />
-                                   <TableColumn fx:id="colCategory" prefWidth="75.0" text="Category" />
-                                   <TableColumn fx:id="colDescription" prefWidth="350.0" text="Description" />
-                                   <TableColumn fx:id="colJustification" prefWidth="75.0" text="Justification" />
-                                   <TableColumn fx:id="colPriority" prefWidth="75.0" text="Priority" />
-                                    <TableColumn fx:id="colInteraction" prefWidth="75.0" text="Interaction" />
+                                    <TableColumn fx:id="colID" prefWidth="75.0" text="ID"/>
+                                    <TableColumn fx:id="colState" prefWidth="75.0" text="State"/>
+                                    <TableColumn fx:id="colTitle" prefWidth="75.0" text="Title"/>
+                                    <TableColumn fx:id="colCategory" prefWidth="75.0" text="Category"/>
+                                    <TableColumn fx:id="colDescription" prefWidth="350.0" text="Description"/>
+                                    <TableColumn fx:id="colJustification" prefWidth="75.0" text="Justification"/>
+                                    <TableColumn fx:id="colPriority" prefWidth="75.0" text="Priority"/>
+                                    <TableColumn fx:id="colInteraction" prefWidth="75.0" text="Interaction"/>
                                 </columns>
                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                 </padding>
                             </TableView>
                         </content>
                         <VBox.margin>
-                            <Insets />
+                            <Insets/>
                         </VBox.margin>
                     </TitledPane>
-                    <TitledPane alignment="TOP_LEFT" collapsible="false" maxHeight="1.7976931348623157E308" prefHeight="200.0" text="Threat Properties" VBox.vgrow="ALWAYS">
+                    <TitledPane alignment="TOP_LEFT" collapsible="false" maxHeight="1.7976931348623157E308"
+                                prefHeight="200.0" text="Threat Properties" VBox.vgrow="ALWAYS">
                         <VBox.margin>
-                            <Insets />
+                            <Insets/>
                         </VBox.margin>
                         <content>
-                            <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="250.0" spacing="10.0">
-                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                           <children>
-                              <Label prefWidth="75.0" text="State" />
-                              <ChoiceBox fx:id="stateChoiceBox" prefWidth="150.0" />
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                           <children>
-                              <Label prefWidth="75.0" text="Title:" />
-                              <TextField fx:id="editTitleTextField" HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                           <children>
-                              <Label prefWidth="75.0" text="Category" />
-                              <ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0" />
-                           </children>
-                        </HBox>
-                                <HBox maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
-                                    <Label prefWidth="75.0" text="Description:" />
-                                    <TextArea fx:id="descriptionTextArea" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="50.0" HBox.hgrow="ALWAYS" />
+                            <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308"
+                                  minHeight="250.0" spacing="10.0">
+                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                    <children>
+                                        <Label prefWidth="75.0" text="State"/>
+                                        <ChoiceBox fx:id="stateChoiceBox" prefWidth="150.0"/>
+                                    </children>
                                 </HBox>
-                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                           <children>
-                              <Label prefWidth="75.0" text="Justification:" />
-                              <TextArea fx:id="justificationTextArea" maxWidth="1.7976931348623157E308" prefHeight="200.0" HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                           <children>
-                              <Label prefWidth="75.0" text="Priority" />
-                              <ChoiceBox fx:id="priorityChoiceBox" prefWidth="150.0" />
-                           </children>
-                        </HBox>
+                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                    <children>
+                                        <Label prefWidth="75.0" text="Title:"/>
+                                        <TextField fx:id="editTitleTextField" HBox.hgrow="ALWAYS"/>
+                                    </children>
+                                </HBox>
+                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                    <children>
+                                        <Label prefWidth="75.0" text="Category"/>
+                                        <ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0"/>
+                                    </children>
+                                </HBox>
+                                <HBox maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
+                                    <Label prefWidth="75.0" text="Description:"/>
+                                    <TextArea fx:id="descriptionTextArea" maxHeight="-Infinity"
+                                              maxWidth="1.7976931348623157E308" prefHeight="50.0" HBox.hgrow="ALWAYS"/>
+                                </HBox>
+                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                    <children>
+                                        <Label prefWidth="75.0" text="Justification:"/>
+                                        <TextArea fx:id="justificationTextArea" maxWidth="1.7976931348623157E308"
+                                                  prefHeight="200.0" HBox.hgrow="ALWAYS"/>
+                                    </children>
+                                </HBox>
+                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                    <children>
+                                        <Label prefWidth="75.0" text="Priority"/>
+                                        <ChoiceBox fx:id="priorityChoiceBox" prefWidth="150.0"/>
+                                    </children>
+                                </HBox>
                             </VBox>
                         </content>
                     </TitledPane>

@@ -100,14 +100,14 @@ public class DataFlowDiagramSkinController implements SkinController {
         executeAddNodeCommand(initNode(currentZoomFactor, type), type);
     }
 
-    private void executeAddNodeCommand(GNode node, String type){
+    private void executeAddNodeCommand(GNode node, String type) {
         Commands.addNode(model, node);
         final Command mostRecent = doController.getMostRecentCommand();
         doController.mapCreateCommand(mostRecent, type);
 
     }
 
-    private GNode initNode(double currentZoomFactor, String type){
+    private GNode initNode(double currentZoomFactor, String type) {
         final double windowXOffset = graphEditorContainer.getContentX() / currentZoomFactor;
         final double windowYOffset = graphEditorContainer.getContentY() / currentZoomFactor;
         final GNode node = GraphFactory.eINSTANCE.createGNode();
@@ -220,7 +220,7 @@ public class DataFlowDiagramSkinController implements SkinController {
                 TrustBoundaryNodeSkin.TITLE_TEXT,
                 joints,
                 graphEditor.getConnectionEventManager()
-                );
+        );
 
         doController.mapCreateCommand(addTrustBoundaryCommand, TrustBoundaryNodeSkin.TITLE_TEXT);
 
@@ -372,8 +372,7 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
 
-
-    public void resetNodeAndConnectionNames(String text,  List<GNode> oldNodes, List<GConnection> oldConnections) {
+    public void resetNodeAndConnectionNames(String text, List<GNode> oldNodes, List<GConnection> oldConnections) {
         model.getConnections().forEach(connection -> {
             if (!oldConnections.contains(connection)) {
                 resetRemovedJointName(text, connection);
@@ -396,7 +395,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     private void resetRemovedJointName(String name, GConnection connection) {
         //expand for other connection types
-       DataFlowConnectionCommands.setJointLabel(connection, name, graphEditor.getSkinLookup());
+        DataFlowConnectionCommands.setJointLabel(connection, name, graphEditor.getSkinLookup());
 
     }
 
@@ -490,7 +489,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         final List<GNode> nodes = model.getNodes();
 
         final GNode srcNode = nodes.get(connectionObject.getSourceNodeIndex());
-        final GNode destNode =  nodes.get(connectionObject.getTargetNodeIndex());
+        final GNode destNode = nodes.get(connectionObject.getTargetNodeIndex());
         final GConnector srcConnector = srcNode.getConnectors().get(connectionObject.getSourceConnectorIndex());
         final GConnector destConnector = destNode.getConnectors().get(connectionObject.getTargetConnectorIndex());
 
@@ -508,10 +507,10 @@ public class DataFlowDiagramSkinController implements SkinController {
                 graphEditor.getConnectionEventManager(),
                 null);
 
-       DataFlowConnectionCommands.setJointLabel(joints.get(0).getConnection(), jointObject.getText(), graphEditor.getSkinLookup());
+        DataFlowConnectionCommands.setJointLabel(joints.get(0).getConnection(), jointObject.getText(), graphEditor.getSkinLookup());
     }
 
-    private GJoint restoreJoint(DataFlowPositionedObject jointObject, String type){
+    private GJoint restoreJoint(DataFlowPositionedObject jointObject, String type) {
         final GJoint joint = createJoint();
         joint.setType(type);
         joint.setX(jointObject.getX());
@@ -536,7 +535,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         executeAddNodeCommand(newNode, type);
 
         GenericNodeSkin skin = (GenericNodeSkin) graphEditor.getSkinLookup().lookupNode(newNode);
-        if(null != text){
+        if (null != text) {
             skin.setText(text);
         }
     }
@@ -545,8 +544,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         return doController;
     }
 
-    public ThreatGenerator getThreatGenerator()
-    {
+    public ThreatGenerator getThreatGenerator() {
         return threatGenerator;
     }
 }

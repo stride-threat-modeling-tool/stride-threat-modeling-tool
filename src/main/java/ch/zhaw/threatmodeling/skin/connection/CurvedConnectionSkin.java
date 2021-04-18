@@ -82,7 +82,7 @@ public class CurvedConnectionSkin extends GConnectionSkin {
 
 
     private void highlightDataflow() {
-       // Highlight the connection, joint, connectors
+        // Highlight the connection, joint, connectors
         SkinLookup skinLookup = getGraphEditor().getSkinLookup();
 
         // Connection
@@ -130,24 +130,19 @@ public class CurvedConnectionSkin extends GConnectionSkin {
     }
 
     @Override
-    public Point2D[] update()
-    {
+    public Point2D[] update() {
         final Point2D[] points = super.update();
         return points;
     }
 
     @Override
-    public void draw(final Map<GConnectionSkin, Point2D[]> allPoints)
-    {
+    public void draw(final Map<GConnectionSkin, Point2D[]> allPoints) {
         super.draw(allPoints);
 
         final Point2D[] points = allPoints == null ? null : allPoints.get(this);
-        if (points != null)
-        {
+        if (points != null) {
             drawCurve(points);
-        }
-        else
-        {
+        } else {
             path.getElements().clear();
         }
     }
@@ -158,15 +153,14 @@ public class CurvedConnectionSkin extends GConnectionSkin {
      *
      * @param points all points that the connection should pass through (both connector and joint positions)
      */
-    private void drawCurve(final Point2D[] points)
-    {
+    private void drawCurve(final Point2D[] points) {
         final Point2D startPoint = points[0];
         final double startX = startPoint.getX();
         final double startY = startPoint.getY();
 
         // points[1] is the old control point which we ignore since the new control point is only decided by the
         // joint position
-        final Point2D endPoint = points[points.length-1];
+        final Point2D endPoint = points[points.length - 1];
 
         final double endX = endPoint.getX();
         final double endY = endPoint.getY();
@@ -216,8 +210,7 @@ public class CurvedConnectionSkin extends GConnectionSkin {
     }
 
     @Override
-    protected void selectionChanged(boolean isSelected)
-    {
+    protected void selectionChanged(boolean isSelected) {
         final DataFlowJointSkin jointSkin = (DataFlowJointSkin) jointSkins.get(0);
         if (isSelected) {
             path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);

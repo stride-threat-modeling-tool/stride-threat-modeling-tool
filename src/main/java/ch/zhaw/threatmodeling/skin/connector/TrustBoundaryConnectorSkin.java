@@ -55,7 +55,8 @@ public class TrustBoundaryConnectorSkin extends GConnectorSkin {
     }
 
     @Override
-    public void applyStyle(final GConnectorStyle style) { }
+    public void applyStyle(final GConnectorStyle style) {
+    }
 
     @Override
     protected void selectionChanged(boolean isSelected) {

@@ -36,7 +36,7 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
     private final Label label = new Label();
     private final GJoint joint;
 
-    public StringProperty typeProperty(){
+    public StringProperty typeProperty() {
         return type;
     }
 
@@ -91,7 +91,7 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
         SkinLookup skinLookup = getGraphEditor().getSkinLookup();
 
         // Joint
-       getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
+        getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
 
         // Connection
         final GConnection connection = getItem().getConnection();

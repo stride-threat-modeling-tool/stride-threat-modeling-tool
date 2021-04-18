@@ -7,7 +7,7 @@ public enum ThreatPriority {
 
     private final String text;
 
-    private String getText(){
+    private String getText() {
         return text;
     }
 

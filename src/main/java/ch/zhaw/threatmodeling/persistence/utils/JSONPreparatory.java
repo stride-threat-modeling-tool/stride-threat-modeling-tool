@@ -14,13 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JSONPreparatory {
-    private JSONPreparatory(){}
+    private JSONPreparatory() {
+    }
 
     public static List<DataFlowObject> createSavableNodes(GModel model, SkinLookup skinLookup) {
         List<DataFlowObject> serializableObjects = new ArrayList<>();
         model.getNodes().forEach(node -> serializableObjects.add(translateToSavableNode(node, skinLookup)));
         return serializableObjects;
     }
+
     public static List<DataFlowObject> createSavableConnections(GModel model, SkinLookup skinLookup) {
         List<DataFlowObject> serializableObjects = new ArrayList<>();
         model.getConnections().forEach(con -> serializableObjects.add(translateToSavableConnection(con, skinLookup, model.getNodes())));
@@ -45,14 +47,14 @@ public class JSONPreparatory {
                 srcConnectorIndex,
                 destConnectorIndex,
                 joint
-                );
+        );
     }
 
     private static DataFlowPositionedObject translateToSavableJoint(Pair<String, String> typeTextPair, GJoint gJoint) {
         return new DataFlowPositionedObject(typeTextPair.getKey(), typeTextPair.getValue(), gJoint.getX(), gJoint.getY());
     }
 
-    private static DataFlowNodeObject translateToSavableNode(GNode node, SkinLookup skinLookup){
+    private static DataFlowNodeObject translateToSavableNode(GNode node, SkinLookup skinLookup) {
         GenericNodeSkin skin = (GenericNodeSkin) skinLookup.lookupNode(node);
         return new DataFlowNodeObject(skin.getType(), skin.getText(), node.getX(), node.getY(), node.getWidth(), node.getHeight());
     }

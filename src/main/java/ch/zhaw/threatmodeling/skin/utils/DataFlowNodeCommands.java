@@ -16,17 +16,19 @@ import java.util.List;
 
 public class DataFlowNodeCommands {
     private static final EReference NODES = GraphPackage.Literals.GMODEL__NODES;
-    private DataFlowNodeCommands(){}
 
-    public static String getTypeOfNode(GNode node, SkinLookup skinLookup){
+    private DataFlowNodeCommands() {
+    }
+
+    public static String getTypeOfNode(GNode node, SkinLookup skinLookup) {
         return ((GenericNodeSkin) skinLookup.lookupNode(node)).getType();
     }
 
-    public static String getTextOfNode(GNode node, SkinLookup skinLookup){
+    public static String getTextOfNode(GNode node, SkinLookup skinLookup) {
         return ((GenericNodeSkin) skinLookup.lookupNode(node)).getText();
     }
 
-    public static Pair<String, String> getTypeAndTextOfNode(GNode node, SkinLookup skinLookup){
+    public static Pair<String, String> getTypeAndTextOfNode(GNode node, SkinLookup skinLookup) {
         return new Pair<>(getTypeOfNode(node, skinLookup), getTextOfNode(node, skinLookup));
     }
 
@@ -39,7 +41,7 @@ public class DataFlowNodeCommands {
             final GConnector target,
             final String type,
             final List<GJoint> joints,
-            final ConnectionEventManager connectionEventManager){
+            final ConnectionEventManager connectionEventManager) {
         EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
         CompoundCommand addTrustBoundaryCommand = new CompoundCommand();
         if (editingDomain != null) {
@@ -59,8 +61,7 @@ public class DataFlowNodeCommands {
             addTrustBoundaryCommand.append(AddCommand.create(editingDomain, target, GraphPackage.Literals.GCONNECTOR__CONNECTIONS, connection));
 
             final Command onCreate;
-            if (connectionEventManager != null && (onCreate = connectionEventManager.notifyConnectionAdded(connection)) != null)
-            {
+            if (connectionEventManager != null && (onCreate = connectionEventManager.notifyConnectionAdded(connection)) != null) {
                 addTrustBoundaryCommand.append(onCreate);
             }
 

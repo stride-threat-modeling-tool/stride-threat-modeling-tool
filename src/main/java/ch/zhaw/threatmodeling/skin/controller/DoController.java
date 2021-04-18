@@ -25,14 +25,14 @@ public class DoController {
     private final CommandStack commandStack;
     private final DataFlowDiagramSkinController skinController;
 
-    public DoController(GModel model, DataFlowDiagramSkinController skinController)
-    {
+    public DoController(GModel model, DataFlowDiagramSkinController skinController) {
         this.model = model;
         this.editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
         this.commandStack = editingDomain.getCommandStack();
         this.skinController = skinController;
 
     }
+
     public void mapCreateCommand(Command command, String type) {
         createCommandToTypeMapping.put(
                 command,
@@ -46,10 +46,10 @@ public class DoController {
         do {
             if (commandStack.canUndo()) {
                 Command currentCommand = commandStack.getUndoCommand();
-                isRemoveCommand =  undoSingleCommand(currentCommand, commandStack);
+                isRemoveCommand = undoSingleCommand(currentCommand, commandStack);
                 isAddCommand = currentCommand instanceof AddCommand;
 
-                if ((isRemoveCommand || isAddCommand)&& toUndoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
+                if ((isRemoveCommand || isAddCommand) && toUndoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
                     toUndoCount = lastCommandDeletedCount.pop();
                     lastCommandUndoCount.push(toUndoCount);
                 }
@@ -60,13 +60,13 @@ public class DoController {
 
     }
 
-    public void redo(){
+    public void redo() {
         boolean isRemoveCommand = false;
         int toRedoCount = -1;
         do {
             if (commandStack.canRedo()) {
                 Command currentCommand = commandStack.getRedoCommand();
-                isRemoveCommand =  redoSingleCommand(currentCommand, commandStack);
+                isRemoveCommand = redoSingleCommand(currentCommand, commandStack);
 
                 if (isRemoveCommand && toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
                     toRedoCount = lastCommandUndoCount.pop();
@@ -78,11 +78,11 @@ public class DoController {
         } while (toRedoCount > 0 && isRemoveCommand);
     }
 
-    private boolean redoSingleCommand(Command command, CommandStack stack){
+    private boolean redoSingleCommand(Command command, CommandStack stack) {
         boolean isRemove = command instanceof RemoveCommand;
         String type = createCommandToTypeMapping.get(command);
-        if(null != type){
-            if(command instanceof CompoundCommand){
+        if (null != type) {
+            if (command instanceof CompoundCommand) {
                 //redo trust boundary
                 skinController.setTrustBoundarySkinFactories();
             } else {
@@ -120,7 +120,7 @@ public class DoController {
         return isRemove;
     }
 
-    public void stackDeletedCount(int count){
+    public void stackDeletedCount(int count) {
         lastCommandDeletedCount.push(count);
     }
 
@@ -132,12 +132,12 @@ public class DoController {
         return createCommandToTypeMapping;
     }
 
-    public Command getMostRecentCommand(){
-       return commandStack.getMostRecentCommand();
+    public Command getMostRecentCommand() {
+        return commandStack.getMostRecentCommand();
     }
 
 
-    public void flushCommandStack(){
+    public void flushCommandStack() {
         commandStack.flush();
         createCommandToTypeMapping.clear();
         deleteCommandToTypeTextMapping.clear();

@@ -1,10 +1,12 @@
 package ch.zhaw.threatmodeling;
+
 import ch.zhaw.threatmodeling.controller.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 import java.net.URL;
 
 public class App extends Application {
@@ -19,6 +21,7 @@ public class App extends Application {
     public static final int PREF_WIDTH = 1200;
     public static final int PREF_HEIGHT = 1000;
     private MainController controller;
+
     @Override
     public void start(final Stage stage) throws Exception {
         final URL location = getClass().getResource("main.fxml");
@@ -37,11 +40,11 @@ public class App extends Application {
         controller = loader.getController();
     }
 
-    private void addStyleSheetToScene(Scene scene, String filename){
+    private void addStyleSheetToScene(Scene scene, String filename) {
         scene.getStylesheets().add(getClass().getResource(filename).toExternalForm());
     }
 
-    public MainController getController(){
+    public MainController getController() {
         return controller;
     }
 

@@ -57,7 +57,7 @@ public abstract class GenericRectangleNodeSkin extends GenericNodeSkin implement
 
             final GConnectorSkin skin = connectorSkins.get(i);
             final Node skinRoot = skin.getRoot();
-            final double connectorOffset = -skin.getWidth() /2 ;
+            final double connectorOffset = -skin.getWidth() / 2;
             if (vertical) {
                 //left and right connectors
                 skinRoot.setLayoutX(offset + connectorOffset);

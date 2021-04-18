@@ -3,7 +3,7 @@ package ch.zhaw.threatmodeling.persistence.utils.objects;
 /**
  * Used for the elements node and joint
  */
-public class DataFlowPositionedObject extends DataFlowObject{
+public class DataFlowPositionedObject extends DataFlowObject {
     private final double x;
     private final double y;
     private final String text;

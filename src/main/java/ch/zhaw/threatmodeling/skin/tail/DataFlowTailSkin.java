@@ -28,7 +28,7 @@ public class DataFlowTailSkin extends GTailSkin {
 
     /**
      * Creates a new data flow tail skin instance.
-     *
+     * <p>
      * This is simply an arrow (straight line with arrowhead) from the start point (start connector) to the mouse
      * cursor, which is shown while dragging the tail to the end connector.
      *
@@ -96,10 +96,8 @@ public class DataFlowTailSkin extends GTailSkin {
     /**
      * Checks that the connector has the correct values to use this skin.
      */
-    private void performChecks()
-    {
-        if (!DataFlowConnectorTypes.isValid(getItem().getType()))
-        {
+    private void performChecks() {
+        if (!DataFlowConnectorTypes.isValid(getItem().getType())) {
             LOGGER.log(Level.INFO, "Connector type '{}' not recognized, setting to 'right'.", getItem().getType());
             getItem().setType(DataFlowConnectorTypes.RIGHT);
         }

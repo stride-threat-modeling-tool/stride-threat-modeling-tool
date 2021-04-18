@@ -24,7 +24,7 @@ public class MultipleProcessNodeSkin extends ProcessNodeSkin {
         ellipse.strokeWidthProperty().bind(ellipseWithConnectors.strokeWidthProperty());
         ellipse.strokeTypeProperty().bind(ellipseWithConnectors.strokeTypeProperty());
         ellipse.strokeProperty().bind(ellipseWithConnectors.strokeProperty());
-        ellipse.setFill(Color.rgb(0,0,0,0));
+        ellipse.setFill(Color.rgb(0, 0, 0, 0));
         getRoot().setMinWidth(getRoot().getMinWidth() + INNER_ELLIPSE_OFFSET * 2);
         getRoot().setMinHeight(getRoot().getMinHeight() + INNER_ELLIPSE_OFFSET * 2);
         pane.getChildren().add(ellipse);

@@ -65,23 +65,23 @@ public class DataFlowConnectorSkin extends GConnectorSkin {
 
         switch (style) {
 
-        case DEFAULT:
-            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, false);
-            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, false);
-            forbiddenGraphic.setVisible(false);
-            break;
+            case DEFAULT:
+                root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, false);
+                root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, false);
+                forbiddenGraphic.setVisible(false);
+                break;
 
-        case DRAG_OVER_ALLOWED:
-            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, false);
-            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, true);
-            forbiddenGraphic.setVisible(false);
-            break;
+            case DRAG_OVER_ALLOWED:
+                root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, false);
+                root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, true);
+                forbiddenGraphic.setVisible(false);
+                break;
 
-        case DRAG_OVER_FORBIDDEN:
-            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, true);
-            root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, false);
-            forbiddenGraphic.setVisible(true);
-            break;
+            case DRAG_OVER_FORBIDDEN:
+                root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_FORBIDDEN, true);
+                root.pseudoClassStateChanged(DataFlowSkinConstants.PSEUDO_CLASS_ALLOWED, false);
+                forbiddenGraphic.setVisible(true);
+                break;
         }
     }
 

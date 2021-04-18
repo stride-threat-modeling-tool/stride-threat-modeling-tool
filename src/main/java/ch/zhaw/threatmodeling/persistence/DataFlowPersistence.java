@@ -37,13 +37,13 @@ public class DataFlowPersistence {
 
     }
 
-    public Pair<List<DataFlowNodeObject>,List<DataFlowConnectionObject>> loadFromFile(GraphEditor graphEditor) {
-        return  handlePersistence(graphEditor, false);
+    public Pair<List<DataFlowNodeObject>, List<DataFlowConnectionObject>> loadFromFile(GraphEditor graphEditor) {
+        return handlePersistence(graphEditor, false);
     }
 
-    private Pair<List<DataFlowNodeObject>,List<DataFlowConnectionObject>> handlePersistence(GraphEditor graphEditor, boolean save) {
+    private Pair<List<DataFlowNodeObject>, List<DataFlowConnectionObject>> handlePersistence(GraphEditor graphEditor, boolean save) {
         final Scene scene = graphEditor.getView().getScene();
-        Pair<List<DataFlowNodeObject>,List<DataFlowConnectionObject>> result = null;
+        Pair<List<DataFlowNodeObject>, List<DataFlowConnectionObject>> result = null;
         if (scene != null) {
             final File file = showFileChooser(scene.getWindow(), save);
             final GModel model = graphEditor.getModel();
@@ -59,7 +59,7 @@ public class DataFlowPersistence {
         return result;
     }
 
-    private Pair<List<DataFlowNodeObject>,List<DataFlowConnectionObject>> loadModelFromFile(File file) {
+    private Pair<List<DataFlowNodeObject>, List<DataFlowConnectionObject>> loadModelFromFile(File file) {
         final String absolutePath = file.getAbsolutePath();
         final List<DataFlowNodeObject> loadedNodes = new ArrayList<>();
         final List<DataFlowConnectionObject> loadedConnections = new ArrayList<>();
@@ -68,11 +68,11 @@ public class DataFlowPersistence {
         if (absolutePath.endsWith(EXTENSION)) {
             try {
                 for (String line : Files.readAllLines(Paths.get(absolutePath))) {
-                    if(loadingConnections){
+                    if (loadingConnections) {
                         loadedConnections.add(GSON.fromJson(line, DataFlowConnectionObject.class));
                     } else {
                         loadingConnections = line.equals(CONNECTIONS_START);
-                        if(loadingNodes && ! loadingConnections) {
+                        if (loadingNodes && !loadingConnections) {
                             loadedNodes.add(GSON.fromJson(line, DataFlowNodeObject.class));
                         }
                         loadingNodes = line.equals(NODES_START) || loadingNodes;

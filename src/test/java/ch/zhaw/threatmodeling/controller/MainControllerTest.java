@@ -1,13 +1,16 @@
-package ch.zhaw.threatmodeling;
+package ch.zhaw.threatmodeling.controller;
 
-import ch.zhaw.threatmodeling.controller.MainController;
+import ch.zhaw.threatmodeling.App;
 import ch.zhaw.threatmodeling.model.Threat;
 import ch.zhaw.threatmodeling.model.ThreatGenerator;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
@@ -23,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MainControllerTest extends ApplicationTest {
 
-    private static final Logger LOGGER = Logger.getLogger("Main Controller Test");
     private final Threat threat = new Threat(1,
             State.NOT_STARTED,
             "test threat",
@@ -53,12 +55,12 @@ class MainControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testGraphEditorSet() {
+    void testGraphEditorSet() {
         assertNotNull(mainController.getGraphEditor());
     }
 
     @Test
-    public void testThreatTableGetsFilled() {
+    void testThreatTableGetsFilled() {
         verifyMainControllerInit();
         threatGenerator.getThreats().add(threat);
         assertEquals(1, mainController.getThreatTable().getItems().size());
@@ -85,7 +87,7 @@ class MainControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testSelectingThreatFillsEditFields() {
+    void testSelectingThreatFillsEditFields() {
         verifyMainControllerInit();
         fillThreatTableSelectLast();
         assertEquals(threat.getTitle(), mainController.getEditTitleTextField().getText());
@@ -98,7 +100,7 @@ class MainControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testStateChoiceBoxChangesThreat() {
+    void testStateChoiceBoxChangesThreat() {
         verifyMainControllerInit();
         fillThreatTableSelectLast();
         interact(() -> {
@@ -115,7 +117,7 @@ class MainControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testCategoryChoiceBoxChangesThreat() {
+    void testCategoryChoiceBoxChangesThreat() {
         verifyMainControllerInit();
         fillThreatTableSelectLast();
         interact(() -> {
@@ -131,7 +133,7 @@ class MainControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testPriorityBoxChangesThreat() {
+    void testPriorityBoxChangesThreat() {
         verifyMainControllerInit();
         fillThreatTableSelectLast();
         interact(() -> {
@@ -148,28 +150,56 @@ class MainControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testTitleTextFieldChangesThreat() {
-        String testTitle = "modified title";
+    void testTitleTextFieldChangesThreat() {
+        testTextField(mainController.getEditTitleTextField(), threat.getTitle(), threat.getTitleProperty());
+    }
+    @Test
+    void testDescriptionTextAreaChangesThreat() {
+        testTextArea(mainController.getDescriptionTextArea(), threat.getDescription(), threat.getDescriptionProperty());
+    }
+
+    @Test
+    void testJustificationTextAreaChangesThreat() {
+        testTextArea(mainController.getJustificationTextArea(), threat.getJustification(), threat.getJustificationProperty());
+    }
+
+
+    private void testTextField(TextField field, String target, StringProperty propertyToTest) {
         verifyMainControllerInit();
         fillThreatTableSelectLast();
         showThreatPane();
+        String textToAdd = " modified";
         assertFalse(threat.isModified());
-        interact(() -> {
-            assertNotEquals(testTitle, threat.getTitle());
-            clickOn(mainController.getEditTitleTextField());
-            write(testTitle);
-            sleep(5000);
-            assertEquals(testTitle, threat.getTitle());
+        assertNotEquals(textToAdd, threat.getTitle());
+        clickOn(field);
+        testTextInput(textToAdd, target, propertyToTest);
 
-        });
+
+    }
+
+    private void testTextInput( String textToAdd, String target, StringProperty propertyToTest) {
+        write(textToAdd);
+        assertEquals(target + textToAdd, propertyToTest.get());
         assertTrue(threat.isModified());
         assertFalse(threat2.isModified());
+    }
+
+    private void testTextArea(TextArea area, String target, StringProperty propertyToTest) {
+        verifyMainControllerInit();
+        fillThreatTableSelectLast();
+        showThreatPane();
+        String textToAdd = " modified";
+        assertFalse(threat.isModified());
+        assertNotEquals(textToAdd, threat.getTitle());
+        clickOn(area);
+        testTextInput(textToAdd, target, propertyToTest);
+
     }
 
     private void showThreatPane() {
         interact(() -> {
             mainController.getExpandableThreatPane().setExpanded(true);
-            sleep(2000);
+            sleep(500);
         });
 
     }

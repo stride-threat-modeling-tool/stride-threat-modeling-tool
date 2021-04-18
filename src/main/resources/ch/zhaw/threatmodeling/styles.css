@@ -28,7 +28,7 @@
     -fx-fill: null;
 }
 
-.data-flow-tail  {
+.data-flow-tail {
     -fx-stroke: derive(-border-color, 50%);
     -fx-effect: dropshadow(one-pass-box, rgb(220, 220, 220), 1, 0, 1, 1);
 }
