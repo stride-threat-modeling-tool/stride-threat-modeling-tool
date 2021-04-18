@@ -102,9 +102,9 @@ public class MainController {
 
     private final ChangeListener<STRIDECategory> categoryChangeListener = (o, s, t) -> handleThreatFieldsModified();
 
-    private final ChangeListener<ThreatPriority> threatPriorityChangeListener = (o,s,t) -> handleThreatFieldsModified();
+    private final ChangeListener<ThreatPriority> threatPriorityChangeListener = (o, s, t) -> handleThreatFieldsModified();
 
-    private final ChangeListener<State> stateChangeListener = (o,s,t) -> handleThreatFieldsModified();
+    private final ChangeListener<State> stateChangeListener = (o, s, t) -> handleThreatFieldsModified();
 
     private final ChangeListener<String> threatTextFieldsChangeListener = (o, s, t) -> handleThreatFieldsModified();
 
@@ -176,7 +176,7 @@ public class MainController {
         priorityChoiceBox.valueProperty().removeListener(threatPriorityChangeListener);
     }
 
-    private void handleThreatFieldsModified(){
+    private void handleThreatFieldsModified() {
         threatTable.refresh();
         setCurrentThreatModified();
     }
@@ -338,41 +338,43 @@ public class MainController {
         dfdSkinController.restoreModel(persistence.loadFromFile(graphEditor), getCurrentZoomFactor());
     }
 
-    public GraphEditor getGraphEditor(){return graphEditor;}
+    GraphEditor getGraphEditor() {
+        return graphEditor;
+    }
 
-    public DataFlowDiagramSkinController getDfdSkinController() {
+    DataFlowDiagramSkinController getDfdSkinController() {
         return dfdSkinController;
     }
 
-    public TableView<Threat> getThreatTable() {
+    TableView<Threat> getThreatTable() {
         return threatTable;
     }
 
-    public TextArea getDescriptionTextArea() {
+    TextArea getDescriptionTextArea() {
         return descriptionTextArea;
     }
 
-    public ChoiceBox<STRIDECategory> getCategoryChoiceBox() {
+    ChoiceBox<STRIDECategory> getCategoryChoiceBox() {
         return categoryChoiceBox;
     }
 
-    public ChoiceBox<ThreatPriority> getPriorityChoiceBox() {
+    ChoiceBox<ThreatPriority> getPriorityChoiceBox() {
         return priorityChoiceBox;
     }
 
-    public ChoiceBox<State> getStateChoiceBox() {
+    ChoiceBox<State> getStateChoiceBox() {
         return stateChoiceBox;
     }
 
-    public TextField getEditTitleTextField() {
+    TextField getEditTitleTextField() {
         return editTitleTextField;
     }
 
-    public TextArea getJustificationTextArea() {
+    TextArea getJustificationTextArea() {
         return justificationTextArea;
     }
 
-    public TitledPane getExpandableThreatPane() {
+    TitledPane getExpandableThreatPane() {
         return expandableThreatPane;
     }
 }
