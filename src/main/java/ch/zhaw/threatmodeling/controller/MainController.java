@@ -21,13 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -43,6 +37,9 @@ public class MainController {
     private final GraphEditor graphEditor = new DataFlowGraphEditor();
     private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
     private final DataFlowPersistence persistence = new DataFlowPersistence();
+
+    @FXML
+    private TitledPane expandableThreatPane;
     @FXML
     private VBox graphEditorParent;
     private ThreatGenerator threatGenerator;
@@ -152,7 +149,6 @@ public class MainController {
         Threat threat = currentThreat.get();
         if (threat != null) {
             threat.setModified(true);
-            LOGGER.info("modified threat" + threat.getTitle());
         }
     }
 
@@ -374,5 +370,9 @@ public class MainController {
 
     public TextArea getJustificationTextArea() {
         return justificationTextArea;
+    }
+
+    public TitledPane getExpandableThreatPane() {
+        return expandableThreatPane;
     }
 }

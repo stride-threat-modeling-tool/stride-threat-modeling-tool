@@ -78,7 +78,7 @@
             <Insets top="15.0" />
         </padding>
     </HBox>
-    <TitledPane expanded="false" StackPane.alignment="BOTTOM_CENTER">
+    <TitledPane fx:id="expandableThreatPane" expanded="false" StackPane.alignment="BOTTOM_CENTER">
         <StackPane.margin>
             <Insets />
         </StackPane.margin>
