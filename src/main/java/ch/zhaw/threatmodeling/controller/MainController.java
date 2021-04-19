@@ -36,7 +36,7 @@ public class MainController {
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DataFlowGraphEditor();
     private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
-    private final DataFlowPersistence persistence = new DataFlowPersistence();
+    private DataFlowPersistence persistence = new DataFlowPersistence();
 
     @FXML
     private TitledPane expandableThreatPane;
@@ -342,7 +342,7 @@ public class MainController {
         return graphEditor;
     }
 
-    DataFlowDiagramSkinController getDfdSkinController() {
+    public DataFlowDiagramSkinController getDfdSkinController() {
         return dfdSkinController;
     }
 
@@ -376,5 +376,9 @@ public class MainController {
 
     TitledPane getExpandableThreatPane() {
         return expandableThreatPane;
+    }
+
+    public void setPersistence(DataFlowPersistence persistence) {
+        this.persistence = persistence;
     }
 }

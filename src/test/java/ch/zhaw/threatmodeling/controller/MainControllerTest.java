@@ -19,8 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
 
-import java.util.logging.Logger;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -199,7 +197,7 @@ class MainControllerTest extends ApplicationTest {
     private void showThreatPane() {
         interact(() -> {
             mainController.getExpandableThreatPane().setExpanded(true);
-            sleep(500);
+            sleep(250);
         });
 
     }

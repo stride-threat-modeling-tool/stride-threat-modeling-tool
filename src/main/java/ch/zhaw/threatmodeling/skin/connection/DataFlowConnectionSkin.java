@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class DataFlowConnectionSkin extends CurvedConnectionSkin {
 
     private static final Logger LOGGER = Logger.getLogger("Data Flow Connection Skin");
-    private static final String type = DataFlowSkinConstants.DFD_CONNECTION;
+    public static final String type = DataFlowSkinConstants.DFD_CONNECTION;
 
     /**
      * Creates a new data flow connection skin instance.

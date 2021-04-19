@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class DataFlowPersistence {
-    private static final String EXTENSION = ".dfd-stride";
+    public static final String EXTENSION = ".dfd-stride";
     private static final String CHOOSER_TEXT = "Data flow diagrams (*" + EXTENSION + ")";
 
     private static final Logger LOGGER = Logger.getLogger("Data Flow Persistence");
@@ -85,7 +85,7 @@ public class DataFlowPersistence {
         return new Pair<>(loadedNodes, loadedConnections);
     }
 
-    private File showFileChooser(Window window, boolean save) {
+    File showFileChooser(Window window, boolean save) {
         File chosenFile;
         final FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(CHOOSER_TEXT, "*" + EXTENSION));

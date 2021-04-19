@@ -18,6 +18,9 @@ public class ExternalEntityNodeSkin extends GenericRectangleNodeSkin {
     public ExternalEntityNodeSkin(GNode node) {
         super(node);
         typeProperty().set(TITLE_TEXT);
+        getRoot().setMinSize(MIN_WIDTH, MIN_HEIGHT);
+        addSelectionHalo();
+        createContent();
     }
 
     @Override
