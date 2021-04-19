@@ -5,6 +5,7 @@ import ch.zhaw.threatmodeling.controller.MainController;
 import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.trustboundary.TrustBoundaryNodeSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowNodeCommands;
 import de.tesis.dynaware.grapheditor.GraphEditor;
@@ -19,10 +20,15 @@ import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DataFlowPersistenceTest extends ApplicationTest {
     private MainController mainController;
@@ -101,6 +107,8 @@ class DataFlowPersistenceTest extends ApplicationTest {
                     DataFlowNodeCommands.getTextOfNode(con.getSource().getParent(), skinLookup));
             assertEquals(savedNodeNames.getValue(),
                     DataFlowNodeCommands.getTextOfNode(con.getTarget().getParent(), skinLookup));
+            assertTrue(nodeLabel.contains(joint.getType()));
+            LOGGER.info("Connection name restored " + nodeLabel);
 
         });
     }
@@ -172,9 +180,9 @@ class DataFlowPersistenceTest extends ApplicationTest {
             assertEquals(savedNodeState.getWidth(), node.getWidth());
             assertEquals(savedNodeState.getX(), node.getX());
             assertEquals(savedNodeState.getY(), node.getY());
-            assertTrue(text.contains(savedState.getKey()));
-            LOGGER.info("node name restored " + text);
-
+            if(!nodeSkin.getType().equals(TrustBoundaryNodeSkin.TITLE_TEXT)){
+                assertTrue(text.contains(savedState.getKey()));
+            }
         });
     }
 
@@ -208,6 +216,7 @@ class DataFlowPersistenceTest extends ApplicationTest {
                 mainController.addExternalEntity();
                 mainController.addProcess();
                 mainController.addMultipleProcess();
+                mainController.addTrustBoundary();
             }
         });
     }
