@@ -119,9 +119,11 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
 
     private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean active) {
         final DataFlowConnectionSkin connectionSkin = (DataFlowConnectionSkin) skinLookup.lookupConnection(connection);
-        Group connectionSkinRoot = (Group) connectionSkin.getRoot();
-        Path path = (Path) connectionSkinRoot.getChildren().get(0);
-        path.pseudoClassStateChanged(pseudoClass, active);
+        if(connectionSkin != null){
+            Group connectionSkinRoot = (Group) connectionSkin.getRoot();
+            Path path = (Path) connectionSkinRoot.getChildren().get(0);
+            path.pseudoClassStateChanged(pseudoClass, active);
+        }
     }
 
     private void setConnectorsStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean active) {

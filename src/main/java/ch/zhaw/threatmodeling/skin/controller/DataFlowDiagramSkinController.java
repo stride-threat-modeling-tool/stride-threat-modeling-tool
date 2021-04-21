@@ -42,11 +42,12 @@ import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
-import org.eclipse.emf.edit.domain.EditingDomain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class DataFlowDiagramSkinController implements SkinController {
@@ -103,7 +104,7 @@ public class DataFlowDiagramSkinController implements SkinController {
     private void executeAddNodeCommand(GNode node, String type) {
         Commands.addNode(model, node);
         final Command mostRecent = doController.getMostRecentCommand();
-        doController.mapCreateCommand(mostRecent, type);
+        doController.mapCreateCommand(mostRecent, type, type);
 
     }
 
@@ -222,7 +223,7 @@ public class DataFlowDiagramSkinController implements SkinController {
                 graphEditor.getConnectionEventManager()
         );
 
-        doController.mapCreateCommand(addTrustBoundaryCommand, TrustBoundaryNodeSkin.TITLE_TEXT);
+        doController.mapCreateCommand(addTrustBoundaryCommand, TrustBoundaryNodeSkin.TITLE_TEXT, null);
 
         // Set SkinFactories back to the normal DataFlow element skins
         setDataFlowSkinFactories();
@@ -386,14 +387,14 @@ public class DataFlowDiagramSkinController implements SkinController {
         });
     }
 
-    private void resetRemoveNodeName(String name, GNode node) {
+    void resetRemoveNodeName(String name, GNode node) {
         SkinLookup skinLookup = graphEditor.getSkinLookup();
         GenericNodeSkin nodeSkin = (GenericNodeSkin) skinLookup.lookupNode(node);
         nodeSkin.setText(name);
 
     }
 
-    private void resetRemovedJointName(String name, GConnection connection) {
+    void resetRemovedJointName(String name, GConnection connection) {
         //expand for other connection types
         DataFlowConnectionCommands.setJointLabel(connection, name, graphEditor.getSkinLookup());
 
@@ -408,24 +409,65 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void deleteSelection() {
-        List<GConnection> connections = new ArrayList<>();
-        EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
-        ObservableSet<EObject> selectedItems = getSelectionManager().getSelectedItems();
-        selectedItems.forEach(elem -> {
-            if (elem instanceof GJoint) {
-                connections.add(((GJoint) elem).getConnection());
-            }
-        });
-        selectedItems.addAll(connections);
+
         SkinLookup skinLookup = graphEditor.getSkinLookup();
+        ObservableSet<EObject> selectedItems = getSelectionManager().getSelectedItems();
+
+        addMissingItemsToSelection(selectedItems, skinLookup);
 
         doController.stackDeletedCount(DataFlowCommands.remove(
                 doController.getDeleteCommandToTypeTextMapping(),
                 skinLookup,
                 graphEditor.getSelectionManager().getSelectedItems(),
-                editingDomain,
+                AdapterFactoryEditingDomain.getEditingDomainFor(model),
                 model));
 
+        LOGGER.info("nodes "+ getGraphEditor().getModel().getNodes().size());
+
+    }
+
+    private void addMissingItemsToSelection(ObservableSet<EObject> selectedItems, SkinLookup skinLookup) {
+        Set<GConnection> missingConnections = new HashSet<>();
+        Set<GNode> missingNodes = new HashSet<>();
+        Set<GJoint> missingJoints = new HashSet<>();
+        selectedItems.forEach(elem -> {
+            if (elem instanceof GJoint) {
+                GJoint joint = (GJoint) elem;
+                GConnection connection = joint.getConnection();
+                missingConnections.add(connection);
+                GJointSkin jointSkin = skinLookup.lookupJoint(joint);
+                if(jointSkin instanceof TrustBoundaryJointSkin) {
+                   addSourceAndTargetNodes(missingNodes, connection);
+                }
+            }
+            if(elem instanceof GConnection ) {
+                GConnection connection = ((GConnection) elem);
+                GConnectionSkin connectionSkin = skinLookup.lookupConnection(connection);
+                missingJoints.add(connection.getJoints().get(0));
+                if(connectionSkin instanceof TrustBoundaryConnectionSkin) {
+                    addSourceAndTargetNodes(missingNodes, connection);
+                }
+            }
+            if(elem instanceof GNode) {
+                GNode node = (GNode) elem;
+                if(node.getType().equals(TrustBoundaryNodeSkin.TITLE_TEXT)){
+                    GConnection connection = node.getConnectors().get(0).getConnections().get(0);
+                    missingConnections.add(connection);
+                    missingJoints.add(connection.getJoints().get(0));
+                    addSourceAndTargetNodes(missingNodes, connection);
+                }
+            }
+        });
+        selectedItems.addAll(missingConnections);
+        selectedItems.addAll(missingNodes);
+        selectedItems.addAll(missingJoints);
+
+        selectedItems.forEach(eObject -> LOGGER.info(eObject.toString()));
+    }
+
+    private void addSourceAndTargetNodes(Set<GNode> nodes, GConnection connection){
+        nodes.add(connection.getSource().getParent());
+        nodes.add(connection.getTarget().getParent());
     }
 
     public void clearAll() {

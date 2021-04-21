@@ -1,6 +1,8 @@
 package ch.zhaw.threatmodeling.skin.controller;
 
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
+import ch.zhaw.threatmodeling.skin.utils.DataFlowNodeCommands;
+import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GNode;
@@ -19,7 +21,7 @@ public class DoController {
     private final Deque<Integer> lastCommandDeletedCount = new ArrayDeque<>();
     private final Deque<Integer> lastCommandUndoCount = new ArrayDeque<>();
     private final Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping = new HashMap<>();
-    private final Map<Command, String> createCommandToTypeMapping = new HashMap<>();
+    private final Map<Command, Pair<String, String>> createCommandToTypeTextMapping = new HashMap<>();
     private final GModel model;
     private final EditingDomain editingDomain;
     private final CommandStack commandStack;
@@ -33,10 +35,10 @@ public class DoController {
 
     }
 
-    public void mapCreateCommand(Command command, String type) {
-        createCommandToTypeMapping.put(
+    public void mapCreateCommand(Command command, String type, String text) {
+        createCommandToTypeTextMapping.put(
                 command,
-                type);
+                new Pair<>(type, text));
     }
 
     public void undo() {
@@ -80,8 +82,11 @@ public class DoController {
 
     private boolean redoSingleCommand(Command command, CommandStack stack) {
         boolean isRemove = command instanceof RemoveCommand;
-        String type = createCommandToTypeMapping.get(command);
-        if (null != type) {
+        final List<GConnection> oldConnections = new ArrayList<>(skinController.getGraphEditor().getModel().getConnections());
+        final List<GNode> oldNodes = new ArrayList<>(skinController.getGraphEditor().getModel().getNodes());
+        Pair<String, String> typeText = createCommandToTypeTextMapping.get(command);
+        if (null != typeText) {
+            String type = typeText.getKey();
             if (command instanceof CompoundCommand) {
                 //redo trust boundary
                 skinController.setTrustBoundarySkinFactories();
@@ -94,6 +99,9 @@ public class DoController {
             }
         }
         stack.redo();
+        if(command instanceof AddCommand && null != typeText){
+            skinController.resetNodeAndConnectionNames(typeText.getValue(), oldNodes, oldConnections);
+        }
         skinController.setDataFlowSkinFactories();
         return isRemove;
     }
@@ -110,14 +118,23 @@ public class DoController {
             } else {
                 skinController.activateCorrespondingNodeFactory(type);
             }
-
         }
+        handleUndoAddCommand(command);
         stack.undo();
         if (isRemove && null != typeTextPair) {
             skinController.resetNodeAndConnectionNames(typeTextPair.getValue(), oldNodes, oldConnections);
 
         }
+        skinController.setDataFlowSkinFactories();
         return isRemove;
+    }
+
+    private void handleUndoAddCommand(Command command) {
+        if(command instanceof AddCommand) {
+            GraphEditor editor = skinController.getGraphEditor();
+            List<GNode> nodes = editor.getModel().getNodes();
+            createCommandToTypeTextMapping.put(command, DataFlowNodeCommands.getTypeAndTextOfNode(nodes.get(nodes.size() - 1), editor.getSkinLookup()));
+        }
     }
 
     public void stackDeletedCount(int count) {
@@ -128,8 +145,8 @@ public class DoController {
         return deleteCommandToTypeTextMapping;
     }
 
-    public Map<Command, String> getCreateCommandToTypeMapping() {
-        return createCommandToTypeMapping;
+    public Map<Command, Pair<String, String>> getCreateCommandToTypeMapping() {
+        return createCommandToTypeTextMapping;
     }
 
     public Command getMostRecentCommand() {
@@ -139,7 +156,7 @@ public class DoController {
 
     public void flushCommandStack() {
         commandStack.flush();
-        createCommandToTypeMapping.clear();
+        createCommandToTypeTextMapping.clear();
         deleteCommandToTypeTextMapping.clear();
         lastCommandDeletedCount.clear();
         lastCommandUndoCount.clear();

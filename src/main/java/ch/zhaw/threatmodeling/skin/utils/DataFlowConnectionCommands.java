@@ -85,7 +85,7 @@ public class DataFlowConnectionCommands {
                                      final String type,
                                      final List<GJoint> joints,
                                      final ConnectionEventManager connectionEventManager,
-                                     final Map<Command, String> createCommandToTypeTextMapping) {
+                                     final Map<Command, Pair<String, String>> createCommandToTypeTextMapping) {
         final EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
 
         if (editingDomain != null) {
@@ -101,7 +101,7 @@ public class DataFlowConnectionCommands {
             Command creationCommand = AddCommand.create(editingDomain, model, GraphPackage.Literals.GMODEL__CONNECTIONS, connection);
             editingDomain.getCommandStack().execute(creationCommand);
             if (createCommandToTypeTextMapping != null) {
-                createCommandToTypeTextMapping.put(creationCommand, type);
+                createCommandToTypeTextMapping.put(creationCommand, new Pair<>(type, type));
             }
             editingDomain.getCommandStack().execute(AddCommand.create(editingDomain, source, GraphPackage.Literals.GCONNECTOR__CONNECTIONS, connection));
             editingDomain.getCommandStack().execute(AddCommand.create(editingDomain, target, GraphPackage.Literals.GCONNECTOR__CONNECTIONS, connection));
