@@ -36,7 +36,7 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
     protected final Group root = new Group();
     protected final Path path = new Path();
     protected final QuadCurveTo curve = new QuadCurveTo();
-    private static final String type = TrustBoundaryJointSkin.ELEMENT_TYPE;
+    private static final String TYPE = TrustBoundaryJointSkin.ELEMENT_TYPE;
 
     private static final String STYLE_CLASS = "trust-boundary-connection";
 
@@ -109,7 +109,7 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
     }
 
     public static String getType() {
-        return type;
+        return TYPE;
     }
 
     @Override
@@ -188,15 +188,18 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
 
     @Override
     protected void selectionChanged(boolean isSelected) {
-        final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) jointSkins.get(0);
-        if (isSelected) {
-            path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
-            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
-            setNodesStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, true);
-        } else {
-            path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
-            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
-            setNodesStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, false);
+        if(null != jointSkins){
+            final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) jointSkins.get(0);
+            if (isSelected) {
+                path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+                jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+                setNodesStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, true);
+            } else {
+                path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+                jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+                setNodesStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, false);
+            }
         }
+
     }
 }

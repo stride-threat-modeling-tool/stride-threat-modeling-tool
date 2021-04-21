@@ -9,6 +9,7 @@ module STRIDEModel {
     requires java.logging;
     requires com.google.gson;
     requires org.apache.commons.text;
+    
 
 
     exports ch.zhaw.threatmodeling;
@@ -18,6 +19,7 @@ module STRIDEModel {
     opens ch.zhaw.threatmodeling;
     opens ch.zhaw.threatmodeling.controller;
     opens ch.zhaw.threatmodeling.skin;
+    opens ch.zhaw.threatmodeling.skin.controller;
     opens ch.zhaw.threatmodeling.persistence.utils.objects;
     opens ch.zhaw.threatmodeling.persistence;
 

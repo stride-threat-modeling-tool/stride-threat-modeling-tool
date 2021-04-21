@@ -118,9 +118,11 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
 
     private void setConnectionStyle(SkinLookup skinLookup, GConnection connection, PseudoClass pseudoClass, boolean active) {
         final TrustBoundaryConnectionSkin connectionSkin = (TrustBoundaryConnectionSkin) skinLookup.lookupConnection(connection);
-        Group connectionSkinRoot = (Group) connectionSkin.getRoot();
-        Path path = (Path) connectionSkinRoot.getChildren().get(0);
-        path.pseudoClassStateChanged(pseudoClass, active);
+        if(null != connectionSkin) {
+            Group connectionSkinRoot = (Group) connectionSkin.getRoot();
+            Path path = (Path) connectionSkinRoot.getChildren().get(0);
+            path.pseudoClassStateChanged(pseudoClass, active);
+        }
     }
 
     private void setNodesStyle(SkinLookup skinLookup, GConnection connection, final PseudoClass pseudoClass, boolean active) {
@@ -128,8 +130,12 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
         final GConnector targetConnector = connection.getTarget();
         final TrustBoundaryNodeSkin sourceNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(sourceConnector.getParent());
         final TrustBoundaryNodeSkin targetNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(targetConnector.getParent());
-        sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
-        targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
+        if(sourceNode != null){
+            sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
+        }
+        if(targetNode != null){
+            targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
+        }
     }
 
     public GJoint getJoint() {
@@ -148,7 +154,7 @@ public class TrustBoundaryJointSkin extends GJointSkin implements DataFlowElemen
 
     @Override
     protected void selectionChanged(boolean isSelected) {
-        final GConnection connection = joint.getConnection();
+       final GConnection connection = joint.getConnection();
         final SkinLookup skinLookup = getGraphEditor().getSkinLookup();
         if (isSelected) {
             getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);

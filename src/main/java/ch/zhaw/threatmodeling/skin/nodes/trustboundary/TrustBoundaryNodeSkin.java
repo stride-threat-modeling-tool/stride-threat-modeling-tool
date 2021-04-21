@@ -19,6 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 
+import java.util.logging.Logger;
+
 import static ch.zhaw.threatmodeling.skin.DataFlowSkinConstants.PSEUDO_CLASS_HOVER;
 
 public class TrustBoundaryNodeSkin extends GenericNodeSkin {
@@ -26,6 +28,7 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
     protected static final int SIZE = 15;
     private static final String STYLE_CLASS = "trust-boundary-node";
     public static final String TITLE_TEXT = "Trust Boundary";
+    private static final Logger LOGGER = Logger.getLogger("Trust boundary node skin");
 
     public TrustBoundaryNodeSkin(GNode node) {
         super(node);
@@ -72,18 +75,22 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
     private void unhighlightTrustBoundary() {
         // Unhighlight the connection, joint, nodes
         SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+        try{
+            // Connection
+            final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
+            setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
 
-        // Connection
-        final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
-        setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
+            // Joint
+            final GJoint joint = connection.getJoints().get(0);
+            final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(joint);
+            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, false);
 
-        // Joint
-        final GJoint joint = connection.getJoints().get(0);
-        final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(joint);
-        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, false);
+            // TrustBoundary nodes
+            setNodesStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
+        } catch (IndexOutOfBoundsException ignored) {
+            LOGGER.info("ignored exception occurred");
+        }
 
-        // TrustBoundary nodes
-        setNodesStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, false);
     }
 
 
@@ -138,16 +145,20 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
 
     @Override
     protected void selectionChanged(final boolean isSelected) {
-        final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
-        final SkinLookup skinLookup = getGraphEditor().getSkinLookup();
-        if (isSelected) {
-            setJointStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
-            setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
-            setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
-        } else {
-            setJointStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
-            setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
-            setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
+        try {
+            final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
+            final SkinLookup skinLookup = getGraphEditor().getSkinLookup();
+            if (isSelected) {
+                setJointStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
+                setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
+                setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, true);
+            } else {
+                setJointStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
+                setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
+                setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
+            }
+        } catch (IndexOutOfBoundsException ingored){
+            LOGGER.info("An ignored exception has occurred in trustboundarynodeskin:selectionChanged");
         }
     }
 

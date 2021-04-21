@@ -211,15 +211,17 @@ public class CurvedConnectionSkin extends GConnectionSkin {
 
     @Override
     protected void selectionChanged(boolean isSelected) {
-        final DataFlowJointSkin jointSkin = (DataFlowJointSkin) jointSkins.get(0);
-        if (isSelected) {
-            path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
-            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
-            setConnectorsStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, true);
-        } else {
-            path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
-            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
-            setConnectorsStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, false);
+        if(null != jointSkins) {
+            final DataFlowJointSkin jointSkin = (DataFlowJointSkin) jointSkins.get(0);
+            if (isSelected) {
+                path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+                jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+                setConnectorsStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, true);
+            } else {
+                path.pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+                jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+                setConnectorsStyle(getGraphEditor().getSkinLookup(), this.getItem(), PSEUDO_CLASS_SELECTED, false);
+            }
         }
     }
 }
