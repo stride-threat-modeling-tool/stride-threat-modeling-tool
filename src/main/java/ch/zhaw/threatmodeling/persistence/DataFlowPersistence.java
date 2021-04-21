@@ -5,6 +5,8 @@ import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowConnectionObject
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowNodeObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import javafx.scene.Scene;
@@ -68,15 +70,20 @@ public class DataFlowPersistence {
         if (absolutePath.endsWith(EXTENSION)) {
             try {
                 for (String line : Files.readAllLines(Paths.get(absolutePath))) {
-                    if (loadingConnections) {
-                        loadedConnections.add(GSON.fromJson(line, DataFlowConnectionObject.class));
-                    } else {
-                        loadingConnections = line.equals(CONNECTIONS_START);
-                        if (loadingNodes && !loadingConnections) {
-                            loadedNodes.add(GSON.fromJson(line, DataFlowNodeObject.class));
+                    try {
+                        if (loadingConnections) {
+                            loadedConnections.add(GSON.fromJson(line, DataFlowConnectionObject.class));
+                        } else {
+                            loadingConnections = line.equals(CONNECTIONS_START);
+                            if (loadingNodes && !loadingConnections) {
+                                loadedNodes.add(GSON.fromJson(line, DataFlowNodeObject.class));
+                            }
+                            loadingNodes = line.equals(NODES_START) || loadingNodes;
                         }
-                        loadingNodes = line.equals(NODES_START) || loadingNodes;
+                    }catch (JsonSyntaxException ex) {
+                        LOGGER.warning("could not parse a line in loaded file " + ex.getMessage());
                     }
+
                 }
             } catch (IOException e) {
                 LOGGER.warning("Could not load diagram " + e.getMessage());
