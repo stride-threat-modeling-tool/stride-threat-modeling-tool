@@ -125,6 +125,7 @@ public class DoController {
             skinController.resetNodeAndConnectionNames(typeTextPair.getValue(), oldNodes, oldConnections);
 
         }
+        skinController.setDataFlowSkinFactories();
         return isRemove;
     }
 

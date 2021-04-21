@@ -104,8 +104,12 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
         final GConnector targetConnector = connection.getTarget();
         final TrustBoundaryNodeSkin sourceNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(sourceConnector.getParent());
         final TrustBoundaryNodeSkin targetNode = (TrustBoundaryNodeSkin) skinLookup.lookupNode(targetConnector.getParent());
-        sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
-        targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
+        if(sourceNode != null) {
+            sourceNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
+        }
+        if(targetNode != null){
+            targetNode.getRoot().getChildren().get(0).pseudoClassStateChanged(pseudoClass, active);
+        }
     }
 
     public static String getType() {

@@ -60,16 +60,20 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
         SkinLookup skinLookup = getGraphEditor().getSkinLookup();
 
         // Connection
-        final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
-        setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
+        try {
+            final GConnection connection = getItem().getConnectors().get(0).getConnections().get(0);
+            setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
 
-        // Joint
-        final GJoint joint = connection.getJoints().get(0);
-        final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(joint);
-        jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
+            // Joint
+            final GJoint joint = connection.getJoints().get(0);
+            final TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skinLookup.lookupJoint(joint);
+            jointSkin.getRoot().pseudoClassStateChanged(PSEUDO_CLASS_HOVER, true);
 
-        // TrustBoundary nodes
-        setNodesStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
+            // TrustBoundary nodes
+            setNodesStyle(skinLookup, connection, PSEUDO_CLASS_HOVER, true);
+        } catch (IndexOutOfBoundsException ignored) {
+            LOGGER.info("ignored exception occurred");
+        }
     }
 
     private void unhighlightTrustBoundary() {
@@ -157,7 +161,7 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
                 setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
                 setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
             }
-        } catch (IndexOutOfBoundsException ingored){
+        } catch (IndexOutOfBoundsException ignored){
             LOGGER.info("An ignored exception has occurred in trustboundarynodeskin:selectionChanged");
         }
     }

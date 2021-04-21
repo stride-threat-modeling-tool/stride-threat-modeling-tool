@@ -422,6 +422,8 @@ public class DataFlowDiagramSkinController implements SkinController {
                 AdapterFactoryEditingDomain.getEditingDomainFor(model),
                 model));
 
+        LOGGER.info("nodes "+ getGraphEditor().getModel().getNodes().size());
+
     }
 
     private void addMissingItemsToSelection(ObservableSet<EObject> selectedItems, SkinLookup skinLookup) {
