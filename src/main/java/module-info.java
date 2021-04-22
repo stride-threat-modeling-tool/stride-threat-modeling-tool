@@ -9,8 +9,7 @@ module STRIDEModel {
     requires java.logging;
     requires com.google.gson;
     requires org.apache.commons.text;
-    
-
+    requires commons.math3;
 
     exports ch.zhaw.threatmodeling;
     exports ch.zhaw.threatmodeling.controller;
