@@ -134,7 +134,6 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
      * Adds the selection halo and initializes some of its values.
      */
     protected void addSelectionHalo() {
-
         getRoot().getChildren().add(selectionHalo);
 
         selectionHalo.setManaged(false);
@@ -162,7 +161,7 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
                 setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
             }
         } catch (IndexOutOfBoundsException ignored){
-            LOGGER.info("An ignored exception has occurred in trustboundarynodeskin:selectionChanged");
+            LOGGER.info("An ignored exception has occurred");
         }
     }
 

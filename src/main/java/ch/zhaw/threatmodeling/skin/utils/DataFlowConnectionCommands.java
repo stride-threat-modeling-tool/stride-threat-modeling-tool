@@ -120,7 +120,10 @@ public class DataFlowConnectionCommands {
      * @param connection             the {@link GConnection} to be removed
      * @param connectionEventManager
      */
-    public static void removeConnection(final GModel model, final GConnection connection, ConnectionEventManager connectionEventManager) {
+    public static void removeConnection(final GModel model,
+                                        final GConnection connection,
+                                        ConnectionEventManager connectionEventManager,
+                                        Map<Command, Pair<String, String>> commandToTypeTextMapping, SkinLookup skinLookup) {
         final EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
 
         if (editingDomain != null) {
@@ -139,6 +142,7 @@ public class DataFlowConnectionCommands {
             }
 
             if (command.canExecute()) {
+                commandToTypeTextMapping.put(command, DataFlowConnectionCommands.getTypeAndJointLabel(connection, skinLookup));
                 editingDomain.getCommandStack().execute(command);
             }
 

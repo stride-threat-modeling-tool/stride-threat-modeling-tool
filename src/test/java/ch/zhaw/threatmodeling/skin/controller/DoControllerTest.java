@@ -45,6 +45,7 @@ class DoControllerTest extends ApplicationTest {
         skinController = mainController.getDfdSkinController();
         doController = skinController.getDoController();
         selectionManager = skinController.getGraphEditor().getSelectionManager();
+        doController.flushCommandStack();
     }
 
     @Test
@@ -199,6 +200,7 @@ class DoControllerTest extends ApplicationTest {
         interact(() -> doController.redo());
         assertEquals(0, connections.size());
         assertEquals(2, nodes.size());
+        interact(() -> doController.undo());
     }
 
     private void verifyTrustBoundaryDeletionIsReversible(List<GNode> nodes, List<GConnection> connections) {

@@ -411,6 +411,7 @@ public class DataFlowDiagramSkinController implements SkinController {
     public void deleteSelection() {
 
         SkinLookup skinLookup = graphEditor.getSkinLookup();
+        currentElement.set(null);
         ObservableSet<EObject> selectedItems = getSelectionManager().getSelectedItems();
 
         addMissingItemsToSelection(selectedItems, skinLookup);
@@ -421,9 +422,6 @@ public class DataFlowDiagramSkinController implements SkinController {
                 graphEditor.getSelectionManager().getSelectedItems(),
                 AdapterFactoryEditingDomain.getEditingDomainFor(model),
                 model));
-
-        LOGGER.info("nodes "+ getGraphEditor().getModel().getNodes().size());
-
     }
 
     private void addMissingItemsToSelection(ObservableSet<EObject> selectedItems, SkinLookup skinLookup) {
@@ -458,11 +456,13 @@ public class DataFlowDiagramSkinController implements SkinController {
                 }
             }
         });
-        selectedItems.addAll(missingConnections);
-        selectedItems.addAll(missingNodes);
-        selectedItems.addAll(missingJoints);
-
-        selectedItems.forEach(eObject -> LOGGER.info(eObject.toString()));
+        SelectionManager selectionManager = getSelectionManager();
+        missingNodes.forEach(node -> {
+            selectionManager.select(node);
+            node.getConnectors().forEach(selectionManager::select);
+        });
+        missingConnections.forEach(selectionManager::select);
+        missingJoints.forEach(selectionManager::select);
     }
 
     private void addSourceAndTargetNodes(Set<GNode> nodes, GConnection connection){

@@ -16,6 +16,7 @@ import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class DoController {
     private final Deque<Integer> lastCommandDeletedCount = new ArrayDeque<>();
@@ -26,6 +27,7 @@ public class DoController {
     private final EditingDomain editingDomain;
     private final CommandStack commandStack;
     private final DataFlowDiagramSkinController skinController;
+    private static final Logger LOGGER = Logger.getLogger("docontroller");
 
     public DoController(GModel model, DataFlowDiagramSkinController skinController) {
         this.model = model;
@@ -42,8 +44,8 @@ public class DoController {
     }
 
     public void undo() {
-        boolean isRemoveCommand = false;
-        boolean isAddCommand = false;
+        boolean isRemoveCommand;
+        boolean isAddCommand;
         int toUndoCount = -1;
         do {
             if (commandStack.canUndo()) {
@@ -57,13 +59,13 @@ public class DoController {
                 }
             }
             toUndoCount = toUndoCount - 1;
-        } while (toUndoCount > 0 && (isRemoveCommand || isAddCommand));
+        } while (toUndoCount > 0);
 
 
     }
 
     public void redo() {
-        boolean isRemoveCommand = false;
+        boolean isRemoveCommand;
         int toRedoCount = -1;
         do {
             if (commandStack.canRedo()) {
@@ -77,7 +79,7 @@ public class DoController {
                 }
             }
             toRedoCount = toRedoCount - 1;
-        } while (toRedoCount > 0 && isRemoveCommand);
+        } while (toRedoCount > 0);
     }
 
     private boolean redoSingleCommand(Command command, CommandStack stack) {
@@ -111,7 +113,7 @@ public class DoController {
         final List<GNode> oldNodes = new ArrayList<>(model.getNodes());
         final List<GConnection> oldConnections = new ArrayList<>(model.getConnections());
         Pair<String, String> typeTextPair = deleteCommandToTypeTextMapping.get(command);
-        if (isRemove && null != typeTextPair) {
+        if (null != typeTextPair) {
             String type = typeTextPair.getKey();
             if (DataFlowConnectionCommands.isConnectionType(type)) {
                 skinController.activateCorrespondingConnectionFactory(type);
@@ -121,7 +123,7 @@ public class DoController {
         }
         handleUndoAddCommand(command);
         stack.undo();
-        if (isRemove && null != typeTextPair) {
+        if (null != typeTextPair) {
             skinController.resetNodeAndConnectionNames(typeTextPair.getValue(), oldNodes, oldConnections);
 
         }

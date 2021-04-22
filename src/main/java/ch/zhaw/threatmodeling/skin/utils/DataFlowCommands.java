@@ -71,8 +71,8 @@ public class DataFlowCommands {
                         deleteCommandCount++;
 
                     } else if (obj instanceof GConnection) {
-                        remove(commandToTypeTextMapping, skinLookup, (GConnection) obj, editingDomain, model);
-                        deleteCommandCount += 3;
+                        DataFlowConnectionCommands.removeConnection(model, (GConnection) obj, null, commandToTypeTextMapping, skinLookup);
+                        deleteCommandCount++;
                     }
                 }
                 return deleteCommandCount;
