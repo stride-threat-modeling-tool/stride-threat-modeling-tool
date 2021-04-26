@@ -25,21 +25,23 @@ import static org.junit.jupiter.api.Assertions.*;
 class MainControllerTest extends ApplicationTest {
 
     private final Threat threat = new Threat(1,
+            "",
             State.NOT_STARTED,
-            "test threat",
             STRIDECategory.SPOOFING,
+            "test threat",
             "test desc",
             "test",
             null,
-            null);
+             null, null, null);
     private final Threat threat2 = new Threat(2,
+            "",
             State.NOT_STARTED,
-            "test threat2",
             STRIDECategory.SPOOFING,
+            "test threat2",
             "test desc2",
             "test2",
             null,
-            null);
+            null, null, null);
     private App app;
     private MainController mainController;
     private DataFlowDiagramSkinController skinController;

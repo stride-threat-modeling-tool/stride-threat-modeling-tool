@@ -108,10 +108,6 @@ public class MainController {
 
     private final ChangeListener<String> threatTextFieldsChangeListener = (o, s, t) -> handleThreatFieldsModified();
 
-    private final ChangeListener<String> titleTextFieldChangeListener = (observableValue, oldTitle, newTitle) -> {
-        currentThreat.get().updateThreatElementNames(oldTitle, newTitle);
-    };
-
     public void initialize() {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
         threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
@@ -156,7 +152,6 @@ public class MainController {
         descriptionTextArea.textProperty().addListener(threatTextFieldsChangeListener);
         justificationTextArea.textProperty().addListener(threatTextFieldsChangeListener);
         editTitleTextField.textProperty().addListener(threatTextFieldsChangeListener);
-        editTitleTextField.textProperty().addListener(titleTextFieldChangeListener);
         editTextTextField.textProperty().addListener(threatTextFieldsChangeListener);
 
         categoryChoiceBox.valueProperty().addListener(categoryChangeListener);
@@ -168,7 +163,6 @@ public class MainController {
         descriptionTextArea.textProperty().removeListener(threatTextFieldsChangeListener);
         justificationTextArea.textProperty().removeListener(threatTextFieldsChangeListener);
         editTitleTextField.textProperty().removeListener(threatTextFieldsChangeListener);
-        editTitleTextField.textProperty().removeListener(titleTextFieldChangeListener);
         editTextTextField.textProperty().removeListener(threatTextFieldsChangeListener);
 
         categoryChoiceBox.valueProperty().removeListener(categoryChangeListener);

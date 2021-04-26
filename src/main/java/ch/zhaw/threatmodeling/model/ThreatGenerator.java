@@ -1,20 +1,19 @@
 package ch.zhaw.threatmodeling.model;
 
-import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
-import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
-import de.tesis.dynaware.grapheditor.GNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class ThreatGenerator {
@@ -48,58 +47,45 @@ public class ThreatGenerator {
 
     public void generateAllThreats() {
         for (GConnection con : model.getConnections()) {
-            final GNodeSkin target = skinLookup.lookupNode(con.getTarget().getParent());
-            final GNodeSkin source = skinLookup.lookupNode(con.getSource().getParent());
+            final GenericNodeSkin target = (GenericNodeSkin) skinLookup.lookupNode(con.getTarget().getParent());
+            final GenericNodeSkin source = (GenericNodeSkin) skinLookup.lookupNode(con.getSource().getParent());
             final DataFlowJointSkin joint = (DataFlowJointSkin) skinLookup.lookupJoint(con.getJoints().get(0));
+            final List<Threat> newlyGeneratedThreats = new ArrayList<>();
             LOGGER.info("Target is a " + target.getItem().getType());
             LOGGER.info("Source is a " + source.getItem().getType());
 
             if (target.getItem().getType().equals(DataStoreNodeSkin.TITLE_TEXT)) {
-                getThreats().add(generateDataStoreDestinationSpoofingThreat((DataStoreNodeSkin) target, joint, con));
+                newlyGeneratedThreats.addAll(DataStoreThreatGenerator.generateTargetThreats(getThreats() .size() + newlyGeneratedThreats.size() + 1, source, target, joint, con));
             }
             if (source.getItem().getType().equals(DataStoreNodeSkin.TITLE_TEXT)) {
-                getThreats().add(generateDataStoreSourceSpoofingThreat((DataStoreNodeSkin) source, ((DataStoreNodeSkin) target).getText(), joint, con));
+                newlyGeneratedThreats.addAll(DataStoreThreatGenerator.generateSourceThreats(getThreats().size()  + newlyGeneratedThreats.size() + 1, source, target, joint, con));
             }
+
+            addAllUniqueNewThreats(newlyGeneratedThreats);
         }
     }
 
-    private Threat generateDataStoreGenericSpoofingThreat(String srcDest, String name, String name2, String specificText, DataFlowJointSkin joint, GConnection con) {
-        Threat generatedThreat = new Threat(getThreats().size() + 1,
-                State.NOT_STARTED,
-                "Spoofing of ${srcOrDest} Data Store ${name1}",
-                STRIDECategory.SPOOFING,
-                "",
-                "",
-                joint,
-                con
-        );
-
-        Map<String, String> templateMap = generatedThreat.getTemplateMap();
-        templateMap.put("name1", name);
-        templateMap.put("name2", name2);
-        templateMap.put("specificText", specificText);
-        templateMap.put("srcOrDest", srcDest);
-        generatedThreat.updateThreatElementNames();
-        return generatedThreat;
+    private void addAllUniqueNewThreats(List<Threat> newlyGeneratedThreats) {
+        newlyGeneratedThreats.forEach(threat -> {
+            if(getThreats()
+                    .stream()
+                    .noneMatch(t ->
+                            t.getTypeId().equals(threat.getTypeId()) &&
+                            t.getNodeName1() == threat.getNodeName1()&&
+                            t.getNodeName2() == threat.getNodeName2()))
+            {
+                getThreats().add(threat);
+            }
+        });
     }
 
-    private Threat generateDataStoreDestinationSpoofingThreat(DataStoreNodeSkin store, DataFlowJointSkin joint, GConnection con) {
-        return generateDataStoreGenericSpoofingThreat(
-                "Destination",
-                store.getText(),
-                store.getText(),
-                ThreatConstants.DATA_STORE_SPOOFING_DESTINATION_TEXT,
-                joint
-                , con);
-    }
-
-    private Threat generateDataStoreSourceSpoofingThreat(DataStoreNodeSkin store, String targetName, DataFlowJointSkin joint, GConnection con) {
-        return generateDataStoreGenericSpoofingThreat(
-                "Source",
-                store.getText(),
-                targetName,
-                ThreatConstants.DATA_STORE_SPOOFING_SOURCE_TEXT,
-                joint, con);
+    static ChangeListener<String> createThreatTitleChangeListener(Threat threat, String key, GenericNodeSkin linkedNode) {
+       return  (observableValue, s, t1) -> {
+           if (!threat.isModified()) {
+               threat.addTemplate(key, linkedNode.getText());
+               threat.updateThreat();
+           }
+       };
     }
 
     public List<Threat> getAllThreatsForConnection(GConnection connection) {

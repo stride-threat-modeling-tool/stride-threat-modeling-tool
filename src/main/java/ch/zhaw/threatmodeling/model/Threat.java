@@ -4,9 +4,15 @@ import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
+import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GConnection;
-import javafx.beans.property.*;
-import org.apache.commons.text.StringSubstitutor;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,46 +23,76 @@ public class Threat {
     public static final ThreatPriority DEFAULT_THREAT_PRIORITY = ThreatPriority.HIGH;
 
     private final IntegerProperty id = new SimpleIntegerProperty();
+    private final String typeId;
     private final ObjectProperty<State> state = new SimpleObjectProperty<>();
     private final StringProperty title = new SimpleStringProperty();
+    private final String titleTemplate;
+    private final String descriptionTemplate;
+    private final Map<String, String> templateMap = new HashMap<>();
     private final ObjectProperty<STRIDECategory> category = new SimpleObjectProperty<>();
     private final StringProperty description = new SimpleStringProperty();
     private final StringProperty justification = new SimpleStringProperty();
     private final ObjectProperty<DataFlowElement> interaction = new SimpleObjectProperty<>();
     private final ObjectProperty<ThreatPriority> priority = new SimpleObjectProperty<>();
     private final GConnection connection;
-    private final Map<String, String> templateMap = new HashMap<>();
+    private final GenericNodeSkin nodeName1;
+    private final GenericNodeSkin nodeName2;
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public GenericNodeSkin getNodeName1() {
+        return nodeName1;
+    }
+
+    public GenericNodeSkin getNodeName2() {
+        return nodeName2;
+    }
+
     private boolean modified = false;
 
 
     public Threat(int id,
+                  String typeId,
                   State state,
-                  String title,
                   STRIDECategory category,
-                  String description,
+                  String titleTemplate,
+                  String descriptionTemplate,
                   String justification,
                   DataFlowElement interaction,
-                  GConnection connection) {
+                  GConnection connection,
+                  GenericNodeSkin nodeName1,
+                  GenericNodeSkin nodeName2
+    ) {
+        this.titleTemplate = titleTemplate;
+        this.descriptionTemplate = descriptionTemplate;
+        this.typeId = typeId;
         setId(id);
         setState(state);
-        setTitle(title);
         setCategory(category);
-        setDescription(description);
         setJustification(justification);
         setInteraction(interaction);
         this.connection = connection;
+        this.nodeName1 = nodeName1;
+        this.nodeName2 = nodeName2;
         setPriority(DEFAULT_THREAT_PRIORITY);
+        updateThreat();
     }
 
-    public void updateThreatElementNames(String oldName, String newName) {
-        LOGGER.info("update threat: from name " + oldName + " to name " + newName);
-        updateThreatElementNames();
+    public void updateThreat() {
+        String updatedTitle = titleTemplate;
+        String updatedDescription = descriptionTemplate;
+        for(Map.Entry<String, String> entry :templateMap.entrySet()) {
+            updatedTitle = updatedTitle.replace(entry.getKey(), entry.getValue());
+            updatedDescription = updatedDescription.replace(entry.getKey(), entry.getValue());
+        }
+        setTitle(updatedTitle);
+        setDescription(updatedDescription);
     }
 
-    public void updateThreatElementNames() {
-        final StringSubstitutor substitutor = new StringSubstitutor(templateMap);
-        description.set(substitutor.replace(description.get()));
-        title.set(substitutor.replace(title.get()));
+    public void addTemplate(String key, String value) {
+        templateMap.put(key, value);
     }
 
     public StringProperty getDescriptionProperty() {
@@ -158,9 +194,5 @@ public class Threat {
 
     public GConnection getConnection() {
         return connection;
-    }
-
-    public Map<String, String> getTemplateMap() {
-        return templateMap;
     }
 }
