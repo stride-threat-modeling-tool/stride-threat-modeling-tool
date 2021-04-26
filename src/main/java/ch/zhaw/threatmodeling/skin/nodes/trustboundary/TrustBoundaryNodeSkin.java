@@ -160,9 +160,10 @@ public class TrustBoundaryNodeSkin extends GenericNodeSkin {
                 setConnectionStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
                 setNodesStyle(skinLookup, connection, PSEUDO_CLASS_SELECTED, false);
             }
-        } catch (IndexOutOfBoundsException ignored){
+        } catch (IndexOutOfBoundsException | NullPointerException ignored ){
             LOGGER.info("An ignored exception has occurred");
         }
+
     }
 
     @Override

@@ -18,8 +18,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class DataFlowCommands {
+    private static final Logger LOGGER = Logger.getLogger("Data Flow commands");
 
     private DataFlowCommands() {
     }
@@ -79,6 +81,55 @@ public class DataFlowCommands {
             }
         }
         return -1;
+    }
+
+    public static int orderedRemove(Map<Command, Pair<String, String>> commandToTypeTextMapping,
+                                    SkinLookup skinLookup,
+                                    Collection<EObject> pToRemove,
+                                    EditingDomain editingDomain,
+                                    GModel model) {
+        List<EObject> toDelete = new ArrayList<>();
+        RemoveContext editContext = new RemoveContext();
+        model.getNodes().forEach(node -> {
+            if (pToRemove.contains(node) && editContext.canRemove(node)) {
+                toDelete.add(node);
+                node.getConnectors().forEach(connector -> {
+                    connector.getConnections().forEach(con -> {
+                        if (con != null && editContext.canRemove(con)) {
+                            toDelete.add(con);
+                        }
+                    });
+                });
+            }
+        });
+        model.getConnections().forEach(connection -> {
+            if (pToRemove.contains(connection) && editContext.canRemove(connection)) {
+                toDelete.add(connection);
+            }
+        });
+        return deleteAllElements(toDelete, commandToTypeTextMapping, skinLookup, editingDomain, model);
+    }
+
+    private static int deleteAllElements(List<EObject> toDelete, Map<Command, Pair<String, String>> commandToTypeTextMapping,
+                                         SkinLookup skinLookup,
+                                         EditingDomain editingDomain, GModel model) {
+        for (EObject obj : toDelete) {
+            deleteElement(obj, commandToTypeTextMapping, skinLookup, editingDomain, model);
+        }
+        return toDelete.size();
+    }
+
+    private static void deleteElement(EObject obj, Map<Command, Pair<String, String>> commandToTypeTextMapping,
+                                      SkinLookup skinLookup,
+                                      EditingDomain editingDomain, GModel model) {
+        if (obj instanceof GNode) {
+            Command command = RemoveCommand.create(editingDomain, model, GraphPackage.Literals.GMODEL__NODES, obj);
+            commandToTypeTextMapping.put(command, DataFlowNodeCommands.getTypeAndTextOfNode((GNode) obj, skinLookup));
+            editingDomain.getCommandStack().execute(command);
+
+        } else if (obj instanceof GConnection) {
+            DataFlowConnectionCommands.removeConnection(model, (GConnection) obj, null, commandToTypeTextMapping, skinLookup);
+        }
     }
 
     private static void remove(Map<Command, Pair<String, String>> commandToTypeTextMapping,

@@ -415,11 +415,10 @@ public class DataFlowDiagramSkinController implements SkinController {
         ObservableSet<EObject> selectedItems = getSelectionManager().getSelectedItems();
 
         addMissingItemsToSelection(selectedItems, skinLookup);
-
-        doController.stackDeletedCount(DataFlowCommands.remove(
+        doController.stackDeletedCount(DataFlowCommands.orderedRemove(
                 doController.getDeleteCommandToTypeTextMapping(),
                 skinLookup,
-                graphEditor.getSelectionManager().getSelectedItems(),
+                selectedItems,
                 AdapterFactoryEditingDomain.getEditingDomainFor(model),
                 model));
     }

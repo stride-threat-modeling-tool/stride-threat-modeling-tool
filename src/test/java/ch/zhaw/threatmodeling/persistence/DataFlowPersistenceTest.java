@@ -8,6 +8,7 @@ import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.trustboundary.TrustBoundaryNodeSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowNodeCommands;
+import ch.zhaw.threatmodeling.testUtils.ModelUtils;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.*;
@@ -68,7 +69,7 @@ class DataFlowPersistenceTest extends ApplicationTest {
         initSpiedPersistence();
         addNodes(15);
         saveNodeState(targetNodes);
-        addConnections(75);
+        ModelUtils.addConnections(75, skinController, this);
         saveConnectionsState(targetConnections);
         interact(() ->  {
             mainController.saveDiagram();
@@ -220,43 +221,7 @@ class DataFlowPersistenceTest extends ApplicationTest {
             }
         });
     }
-    private GJoint createJoint() {
-        return GraphFactory.eINSTANCE.createGJoint();
-    }
 
-    private void addConnections(int n) {
-        final GraphEditor editor = skinController.getGraphEditor();
-        final GModel model = editor.getModel();
-        final List<GNode> nodes = model.getNodes();
-        final Random rmd = new Random();
-        final int bound = 500;
-        interact(() -> {
-            for(int i = 0; i < n; i++){
-                GNode srcNode;
-                GNode targetNode;
-                GConnector srcCon;
-                GConnector targetCon;
-                do{
-                     srcNode = nodes.get(rmd.nextInt(nodes.size()));
-                     targetNode = nodes.get(rmd.nextInt(nodes.size()));
-                     srcCon = srcNode.getConnectors().get(rmd.nextInt(srcNode.getConnectors().size()));
-                     targetCon = targetNode.getConnectors().get(rmd.nextInt(targetNode.getConnectors().size()));
-                } while (srcCon == targetCon);
-                List<GJoint> joints = new ArrayList<>();
-                final GJoint joint = createJoint();
-                joint.setType(DataFlowConnectionSkin.type);
-                joint.setX(rmd.nextInt(bound));
-                joint.setY(rmd.nextInt(bound));
-                joints.add(joint);
-                DataFlowConnectionCommands.addConnection(
-                        model,
-                        srcCon,
-                        targetCon,
-                        DataFlowConnectionSkin.type,
-                        joints,
-                        null,
-                        null);
-            }
-        });
-    }
+
+
 }

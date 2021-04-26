@@ -10,6 +10,7 @@ import ch.zhaw.threatmodeling.skin.nodes.multipleprocess.MultipleProcessNodeSkin
 import ch.zhaw.threatmodeling.skin.nodes.process.ProcessNodeSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowNodeCommands;
+import ch.zhaw.threatmodeling.testUtils.ModelUtils;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
@@ -19,13 +20,17 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -111,6 +116,81 @@ class DoControllerTest extends ApplicationTest {
     }
 
     @Test
+    void testUndoRedoCopyPaste() {
+        //fails currently because the appropriate feature has not been implemented (yet?)
+        final Map<String, Pair<String, Integer>> nameTypeAmountMap = new HashMap<>();
+        assertNotNull(doController);
+        final GraphEditor editor = skinController.getGraphEditor();
+        final GModel model = editor.getModel();
+        final SkinLookup skinLookup = editor.getSkinLookup();
+        final Random rmd = new Random();
+        final List<GNode> nodes = model.getNodes();
+        final List<GConnection> connections = model.getConnections();
+        final SelectionManager selector = editor.getSelectionManager();
+        interact(() -> {
+            mainController.addDataStore();
+            mainController.addProcess();
+            mainController.addExternalEntity();
+            mainController.addMultipleProcess();
+            mainController.addTrustBoundary();
+        });
+
+        ModelUtils.addConnections( 3, skinController, this);
+
+        nodes.forEach(node -> {
+            interact(() -> {
+                String currentText = DataFlowNodeCommands.getTextOfNode(node, skinLookup) +  rmd.nextInt();
+                DataFlowNodeCommands.setTextOfNode(node, skinLookup, currentText);
+                nameTypeAmountMap.put(currentText, new Pair<>(DataFlowNodeCommands.getTypeOfNode(node, skinLookup), 0));
+                selector.select(node);
+            });
+        });
+        connections.forEach(con -> {
+            interact(() -> {
+                String currentText = DataFlowConnectionCommands.getJointLabel(con, skinLookup) + rmd.nextInt();
+                DataFlowConnectionCommands.setJointLabel(con, currentText, skinLookup);
+                nameTypeAmountMap.put(currentText, new Pair<>(DataFlowConnectionCommands.getType(con, skinLookup), 0));
+                selector.select(con);
+            });
+        });
+        mainController.copy();
+        interact(() -> {
+            mainController.paste();
+        });
+
+        catalogNodes(nodes, nameTypeAmountMap, skinLookup);
+        catalogConnections(connections, nameTypeAmountMap, skinLookup);
+        nameTypeAmountMap.values().forEach(pair -> assertEquals(2, pair.getValue()));
+        interact(() -> doController.undo());
+        catalogNodes(nodes, nameTypeAmountMap, skinLookup);
+        catalogConnections(connections, nameTypeAmountMap, skinLookup);
+        nameTypeAmountMap.values().forEach(pair -> assertEquals(3, pair.getValue()));
+        interact(() -> doController.redo());
+        catalogNodes(nodes, nameTypeAmountMap, skinLookup);
+        catalogConnections(connections, nameTypeAmountMap, skinLookup);
+        nameTypeAmountMap.values().forEach(pair -> assertEquals(5, pair.getValue()));
+
+    }
+
+    private void catalogNodes(List<GNode> nodes, Map<String, Pair<String, Integer>> nameTypeAmountMap, SkinLookup skinLookup) {
+        nodes.forEach(node -> {
+            String text = DataFlowNodeCommands.getTextOfNode(node, skinLookup);
+            Pair<String, Integer> pair = nameTypeAmountMap.get(text);
+            assertEquals(pair.getKey(), DataFlowNodeCommands.getTypeOfNode(node, skinLookup));
+            nameTypeAmountMap.put(text, new Pair<>(pair.getKey(), pair.getValue() + 1));
+        });
+    }
+
+    private void catalogConnections(List<GConnection> connections, Map<String, Pair<String, Integer>> nameTypeAmountMap, SkinLookup skinLookup) {
+        connections.forEach(con -> {
+            String text = DataFlowConnectionCommands.getJointLabel(con, skinLookup);
+            Pair<String, Integer> pair = nameTypeAmountMap.get(text);
+            assertEquals(pair.getKey(), DataFlowConnectionCommands.getType(con, skinLookup));
+            nameTypeAmountMap.put(text, new Pair<>(pair.getKey(), pair.getValue() + 1));
+        });
+    }
+
+    @Test
     void testSelectTrustBoundaryConnectionDeletesWholeTrustBoundary() {
         assertNotNull(doController);
         interact(() -> mainController.addTrustBoundary());
@@ -138,7 +218,7 @@ class DoControllerTest extends ApplicationTest {
         GNode node1 = nodes.get(0);
         GNode node2 = nodes.get(1);
         List<GJoint> joints = new ArrayList<>();
-        joints.add(createJoint());
+        joints.add(ModelUtils.createJoint());
         interact(() -> DataFlowConnectionCommands.addConnection(
                 model,
                 node1.getConnectors().get(0),
@@ -171,7 +251,7 @@ class DoControllerTest extends ApplicationTest {
         GNode node1 = nodes.get(0);
         GNode node2 = nodes.get(1);
         List<GJoint> joints = new ArrayList<>();
-        joints.add(createJoint());
+        joints.add(ModelUtils.createJoint());
         interact(() -> DataFlowConnectionCommands.addConnection(
                 model,
                 node1.getConnectors().get(0),
@@ -270,9 +350,6 @@ class DoControllerTest extends ApplicationTest {
         assertTrue(expectedText.contains(DataFlowNodeCommands.getTypeOfNode(nodes.get(0), skinLookup)));
     }
 
-    private GJoint createJoint() {
-        return GraphFactory.eINSTANCE.createGJoint();
-    }
 
     @AfterEach
     public void tearDown() throws Exception {

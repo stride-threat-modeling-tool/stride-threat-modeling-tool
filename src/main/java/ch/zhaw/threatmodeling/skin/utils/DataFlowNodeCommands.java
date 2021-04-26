@@ -1,6 +1,7 @@
 package ch.zhaw.threatmodeling.skin.utils;
 
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
+import ch.zhaw.threatmodeling.skin.nodes.trustboundary.TrustBoundaryNodeSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.core.connections.ConnectionEventManager;
 import de.tesis.dynaware.grapheditor.model.*;
@@ -30,6 +31,14 @@ public class DataFlowNodeCommands {
 
     public static Pair<String, String> getTypeAndTextOfNode(GNode node, SkinLookup skinLookup) {
         return new Pair<>(getTypeOfNode(node, skinLookup), getTextOfNode(node, skinLookup));
+    }
+
+    public static void setTextOfNode(GNode node, SkinLookup skinLookup, String text){
+        ((GenericNodeSkin) skinLookup.lookupNode(node)).setText(text);
+    }
+
+    public static boolean isTrustBoundaryNode(GNode node, SkinLookup skinLookup) {
+        return  getTypeOfNode(node, skinLookup).equals(TrustBoundaryNodeSkin.TITLE_TEXT);
     }
 
 
