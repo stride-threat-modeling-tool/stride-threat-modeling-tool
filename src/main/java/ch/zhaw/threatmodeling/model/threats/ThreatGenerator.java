@@ -2,6 +2,7 @@ package ch.zhaw.threatmodeling.model.threats;
 
 import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
 import ch.zhaw.threatmodeling.persistence.ThreatPatternPersistence;
+import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
@@ -31,6 +32,7 @@ public class ThreatGenerator {
         this.model = model;
         this.threatPatterns = ThreatPatternPersistence.loadThreatPatterns();
         clearThreats();
+        LOGGER.info("loaded threats" + threatPatterns.size());
 
     }
 
@@ -95,10 +97,10 @@ public class ThreatGenerator {
         });
     }
 
-    public static ChangeListener<String> createThreatTitleChangeListener(Threat threat, String key, GenericNodeSkin linkedNode) {
+    public static ChangeListener<String> createElementTextChangeListener(Threat threat, String key, DataFlowElement element) {
        return  (observableValue, s, t1) -> {
            if (!threat.isModified()) {
-               threat.addTemplate(key, linkedNode.getText());
+               threat.addTemplate(key, element.getText());
                threat.updateThreat();
            }
        };
