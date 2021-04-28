@@ -55,9 +55,11 @@ public class ThreatPattern {
         );
         threat.addTemplate(ThreatConstants.SOURCE_NAME_TEMPLATE, node1.getText());
         threat.addTemplate(ThreatConstants.TARGET_NAME_TEMPLATE, node2.getText());
+        threat.addTemplate(ThreatConstants.FLOW_NAME_TEMPLATE, interaction.getText());
         threat.updateThreat();
-        node1.textProperty().addListener(ThreatGenerator.createThreatTitleChangeListener(threat, ThreatConstants.SOURCE_NAME_TEMPLATE, node1));
-        node2.textProperty().addListener(ThreatGenerator.createThreatTitleChangeListener(threat, ThreatConstants.TARGET_NAME_TEMPLATE, node2));
+        node1.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(threat, ThreatConstants.SOURCE_NAME_TEMPLATE, node1));
+        node2.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(threat, ThreatConstants.TARGET_NAME_TEMPLATE, node2));
+        interaction.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(threat, ThreatConstants.FLOW_NAME_TEMPLATE, interaction));
         return threat;
     }
 }

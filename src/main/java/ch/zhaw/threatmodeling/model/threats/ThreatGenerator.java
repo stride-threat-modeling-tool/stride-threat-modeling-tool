@@ -4,12 +4,12 @@ import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
 import ch.zhaw.threatmodeling.persistence.ThreatPatternPersistence;
 import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.connection.TrustBoundaryConnectionSkin;
+import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
 import ch.zhaw.threatmodeling.skin.utils.intersection.QuadraticSplineUtils;
-import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
@@ -22,7 +22,6 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class ThreatGenerator {
     private static final Logger LOGGER = Logger.getLogger(ThreatGenerator.class.getName());
@@ -37,6 +36,7 @@ public class ThreatGenerator {
         this.model = model;
         this.threatPatterns = ThreatPatternPersistence.loadThreatPatterns();
         clearThreats();
+        LOGGER.info("loaded threats" + threatPatterns.size());
 
     }
 
@@ -122,10 +122,10 @@ public class ThreatGenerator {
         });
     }
 
-    public static ChangeListener<String> createThreatTitleChangeListener(Threat threat, String key, GenericNodeSkin linkedNode) {
+    public static ChangeListener<String> createElementTextChangeListener(Threat threat, String key, DataFlowElement element) {
        return  (observableValue, s, t1) -> {
            if (!threat.isModified()) {
-               threat.addTemplate(key, linkedNode.getText());
+               threat.addTemplate(key, element.getText());
                threat.updateThreat();
            }
        };

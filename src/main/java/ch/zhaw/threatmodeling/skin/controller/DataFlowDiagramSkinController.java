@@ -294,24 +294,24 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public GNodeSkin createDataStoreSkin(final GNode node) {
         DataStoreNodeSkin skin = new DataStoreNodeSkin(node);
-        return initNodeEventListeners(node, skin);
+        return initNodeEventListeners(skin);
     }
 
     public GNodeSkin createExternalEntitySkin(final GNode node) {
         ExternalEntityNodeSkin skin = new ExternalEntityNodeSkin(node);
-        return initNodeEventListeners(node, skin);
+        return initNodeEventListeners(skin);
     }
 
 
     public GNodeSkin createProcessSkin(GNode gNode) {
         ProcessNodeSkin skin = new ProcessNodeSkin(gNode);
-        return initNodeEventListeners(gNode, skin);
+        return initNodeEventListeners(skin);
     }
 
 
     public GNodeSkin createMultipleProcessSkin(GNode gNode) {
         MultipleProcessNodeSkin skin = new MultipleProcessNodeSkin(gNode);
-        return initNodeEventListeners(gNode, skin);
+        return initNodeEventListeners(skin);
     }
 
     public GJointSkin createJointSkin(final GJoint joint) {
@@ -332,9 +332,8 @@ public class DataFlowDiagramSkinController implements SkinController {
         return new DataFlowConnectionSkin(gConnection);
     }
 
-    private GenericNodeSkin initNodeEventListeners(GNode gNode, GenericNodeSkin skin) {
+    private GenericNodeSkin initNodeEventListeners(GenericNodeSkin skin) {
         skin.setHasBeenSelectedHandler(createClickDataFlowElementHandler(skin));
-        addTextPropertyChangeListener(skin, gNode);
         return skin;
     }
 
@@ -356,21 +355,6 @@ public class DataFlowDiagramSkinController implements SkinController {
         return new TrustBoundaryConnectionSkin(gConnection);
     }
 
-    //TODO not working as intended
-    private void addTextPropertyChangeListener(DataFlowElement element, GNode node) {
-       /* element.textProperty().addListener((observableValue, oldVal, newVal) -> {
-            if (!oldVal.isBlank() && !newVal.isBlank()) {
-                for (GConnector connector : node.getConnectors()) {
-                    for (GConnection connection : connector.getConnections()) {
-                        for (Threat threat : threatGenerator.getAllThreatsForConnection(connection))
-                            if (!threat.isModified()) {
-                                threat.updateThreatElementNames(oldVal.trim(), newVal.trim());
-                            }
-                    }
-                }
-            }
-        });*/
-    }
 
 
     public void resetNodeAndConnectionNames(String text, List<GNode> oldNodes, List<GConnection> oldConnections) {

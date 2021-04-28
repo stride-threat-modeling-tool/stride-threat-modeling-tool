@@ -12,4 +12,5 @@ public class ThreatConstants {
 
     public static final String SOURCE_NAME_TEMPLATE = "{source.Name}";
     public static final String TARGET_NAME_TEMPLATE = "{target.Name}";
+    public static final String FLOW_NAME_TEMPLATE = "{flow.Name}";
 }

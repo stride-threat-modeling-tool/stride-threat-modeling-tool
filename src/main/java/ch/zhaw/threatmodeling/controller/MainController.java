@@ -143,9 +143,16 @@ public class MainController {
 
     private void setCurrentThreatModified() {
         Threat threat = currentThreat.get();
-        if (threat != null) {
+        if (threat != null && (threatTextFieldsFocused() || threatChoiceBoxesFocused())) {
             threat.setModified(true);
         }
+    }
+
+    private boolean threatTextFieldsFocused(){
+        return descriptionTextArea.isFocused() || editTitleTextField.isFocused() || justificationTextArea.isFocused();
+    }
+    private boolean threatChoiceBoxesFocused(){
+        return categoryChoiceBox.isFocused() || stateChoiceBox.isFocused() || priorityChoiceBox.isFocused();
     }
 
     private void setThreatFieldsListeners() {
