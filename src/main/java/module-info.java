@@ -23,8 +23,4 @@ module STRIDEModel {
     opens ch.zhaw.threatmodeling.persistence;
     opens ch.zhaw.threatmodeling.model.threats.patterns;
     opens ch.zhaw.threatmodeling.model.threats;
-
-
-    opens ch.zhaw.threatmodeling.model;
-
 }
