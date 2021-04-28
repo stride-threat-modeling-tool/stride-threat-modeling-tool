@@ -3,6 +3,7 @@ package ch.zhaw.threatmodeling.model.threats;
 import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
 import ch.zhaw.threatmodeling.persistence.ThreatPatternPersistence;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
+import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
@@ -50,29 +51,34 @@ public class ThreatGenerator {
     }
 
     public void generateAllThreats() {
+        final List<Threat> newlyGeneratedThreats = new ArrayList<>();
         for (GConnection con : model.getConnections()) {
             final GenericNodeSkin target = (GenericNodeSkin) skinLookup.lookupNode(con.getTarget().getParent());
             final GenericNodeSkin source = (GenericNodeSkin) skinLookup.lookupNode(con.getSource().getParent());
             final DataFlowJointSkin joint = (DataFlowJointSkin) skinLookup.lookupJoint(con.getJoints().get(0));
-            final List<Threat> newlyGeneratedThreats = new ArrayList<>();
-            threatPatterns.forEach(threatPattern -> {
-
-                LOGGER.info(source.getType());
-                LOGGER.info( target.getType());
-                if(threatPattern.shouldBeGenerated(source.getType(), target.getType(), true, null, null, null)) {
-                    newlyGeneratedThreats.add(threatPattern.generate(
-                            getThreats().size() + newlyGeneratedThreats.size() + 1,
-                            joint,
-                            con,
-                            source,
-                            target
-                            ));
-                }
-            });
-
-
-            addAllUniqueNewThreats(newlyGeneratedThreats);
+            if(!joint.getText().equals(TrustBoundaryJointSkin.ELEMENT_TYPE)) {
+                threatPatterns.forEach(threatPattern -> {
+                    LOGGER.info(source.getType());
+                    LOGGER.info( target.getType());
+                    if(threatPattern.shouldBeGenerated(source.getType(), target.getType(), intersectsTrustBoundary(con), null, null, null)) {
+                        newlyGeneratedThreats.add(threatPattern.generate(
+                                getThreats().size() + newlyGeneratedThreats.size() + 1,
+                                joint,
+                                con,
+                                source,
+                                target
+                        ));
+                    }
+                });
+            }
         }
+        addAllUniqueNewThreats(newlyGeneratedThreats);
+    }
+
+    //TODO
+    private boolean intersectsTrustBoundary(GConnection connection) {
+        boolean intersects = false;
+        return true;
     }
 
     private void addAllUniqueNewThreats(List<Threat> newlyGeneratedThreats) {

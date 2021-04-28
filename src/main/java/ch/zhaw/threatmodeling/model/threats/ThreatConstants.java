@@ -9,4 +9,7 @@ public class ThreatConstants {
     public static final String DATA_STORE_SPOOFING_SOURCE_TEXT = "incorrect data delivered to";
     public static final String DATA_STORE_SPOOFING_TARGET_ID = "TargetDataStoreSpoofing";
     public static final String DATA_STORE_SPOOFING_SOURCE_ID = "SourceDataStoreSpoofing";
+
+    public static final String SOURCE_NAME_TEMPLATE = "{sourceName}";
+    public static final String TARGET_NAME_TEMPLATE = "{targetName}";
 }
