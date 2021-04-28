@@ -12,6 +12,9 @@ public class Inclusion {
     }
 
     public boolean matches(String source, String target, boolean intersectTrustBoundary) {
-        return source.equals(this.source) && target.equals(this.target) && (!requiresTrustBoundaryIntersection || intersectTrustBoundary);
+        return  (this.source.equals("")  || source.equals(this.source)) &&
+                (this.target.equals("") || target.equals(this.target)) &&
+                (!requiresTrustBoundaryIntersection || intersectTrustBoundary);
+
     }
 }
