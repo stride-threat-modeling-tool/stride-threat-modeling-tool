@@ -11,7 +11,7 @@ public class Inclusion {
         this.requiresTrustBoundaryIntersection = requiresTrustBoundaryIntersection;
     }
 
-    public boolean matches(String source, String target, boolean requiresTrustBoundaryIntersection) {
-        return source.equals(this.source) && target.equals(this.target) && requiresTrustBoundaryIntersection == this.requiresTrustBoundaryIntersection;
+    public boolean matches(String source, String target, boolean intersectTrustBoundary) {
+        return source.equals(this.source) && target.equals(this.target) && (!requiresTrustBoundaryIntersection || intersectTrustBoundary);
     }
 }
