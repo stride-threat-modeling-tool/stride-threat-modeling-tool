@@ -2,9 +2,14 @@ package ch.zhaw.threatmodeling.model.threats;
 
 import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
 import ch.zhaw.threatmodeling.persistence.ThreatPatternPersistence;
+import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
+import ch.zhaw.threatmodeling.skin.connection.TrustBoundaryConnectionSkin;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
+import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
+import ch.zhaw.threatmodeling.skin.utils.intersection.QuadraticSplineUtils;
+import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
@@ -17,6 +22,7 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ThreatGenerator {
     private static final Logger LOGGER = Logger.getLogger(ThreatGenerator.class.getName());
@@ -53,32 +59,53 @@ public class ThreatGenerator {
     public void generateAllThreats() {
         final List<Threat> newlyGeneratedThreats = new ArrayList<>();
         for (GConnection con : model.getConnections()) {
-            final GenericNodeSkin target = (GenericNodeSkin) skinLookup.lookupNode(con.getTarget().getParent());
-            final GenericNodeSkin source = (GenericNodeSkin) skinLookup.lookupNode(con.getSource().getParent());
-            final DataFlowJointSkin joint = (DataFlowJointSkin) skinLookup.lookupJoint(con.getJoints().get(0));
-            if(!joint.getText().equals(TrustBoundaryJointSkin.ELEMENT_TYPE)) {
-                threatPatterns.forEach(threatPattern -> {
-                    LOGGER.info(source.getType());
-                    LOGGER.info( target.getType());
-                    if(threatPattern.shouldBeGenerated(source.getType(), target.getType(), intersectsTrustBoundary(con), null, null, null)) {
-                        newlyGeneratedThreats.add(threatPattern.generate(
-                                getThreats().size() + newlyGeneratedThreats.size() + 1,
-                                joint,
-                                con,
-                                source,
-                                target
-                        ));
-                    }
-                });
+            // Ignore TrustBoundaries
+            if (!(DataFlowConnectionCommands.getType(con, skinLookup).equals(TrustBoundaryJointSkin.ELEMENT_TYPE))) {
+                final GenericNodeSkin target = (GenericNodeSkin) skinLookup.lookupNode(con.getTarget().getParent());
+                final GenericNodeSkin source = (GenericNodeSkin) skinLookup.lookupNode(con.getSource().getParent());
+                final DataFlowJointSkin joint = (DataFlowJointSkin) skinLookup.lookupJoint(con.getJoints().get(0));
+                final boolean intersectsTrustBoundary = intersectsTrustBoundary(con);
+                if (!joint.getText().equals(TrustBoundaryJointSkin.ELEMENT_TYPE)) {
+                    threatPatterns.forEach(threatPattern -> {
+                        LOGGER.info(source.getType());
+                        LOGGER.info(target.getType());
+                        if (threatPattern.shouldBeGenerated(source.getType(), target.getType(), intersectsTrustBoundary , null, null, null)) {
+                            newlyGeneratedThreats.add(threatPattern.generate(
+                                    getThreats().size() + newlyGeneratedThreats.size() + 1,
+                                    joint,
+                                    con,
+                                    source,
+                                    target
+                            ));
+                        }
+                    });
+                }
             }
         }
         addAllUniqueNewThreats(newlyGeneratedThreats);
     }
 
-    //TODO
     private boolean intersectsTrustBoundary(GConnection connection) {
         boolean intersects = false;
-        return true;
+        DataFlowConnectionSkin dataFlowConnectionSkin = (DataFlowConnectionSkin) skinLookup.lookupConnection(connection);
+        List<TrustBoundaryConnectionSkin> trustBoundaries = new ArrayList<>();
+
+        // Get all trust boundary skins
+        for (GConnection con : model.getConnections()) {
+            if (DataFlowConnectionCommands.getType(con, skinLookup).equals(TrustBoundaryJointSkin.ELEMENT_TYPE)) {
+                trustBoundaries.add((TrustBoundaryConnectionSkin) skinLookup.lookupConnection(con));
+            }
+        }
+
+        // Check all existing trust boundaries in the scene against the dataflow
+        for (TrustBoundaryConnectionSkin trustBoundaryConnectionSkin : trustBoundaries) {
+            if (QuadraticSplineUtils.checkIntersection(dataFlowConnectionSkin, trustBoundaryConnectionSkin)) {
+                // Abort as soon as the first intersection with ANY trust boundary has been found
+                intersects = true;
+                break;
+            }
+        }
+        return intersects;
     }
 
     private void addAllUniqueNewThreats(List<Threat> newlyGeneratedThreats) {

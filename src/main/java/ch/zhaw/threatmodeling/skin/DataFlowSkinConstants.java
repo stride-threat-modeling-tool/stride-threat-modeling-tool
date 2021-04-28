@@ -46,6 +46,7 @@ public class DataFlowSkinConstants {
             DFD_LEFT_CENTER_CONNECTOR,
             DFD_TOP_LEFT_CONNECTOR,
             DFD_TOP_CENTER_CONNECTOR);
+
     public static final List<String> DFD_CONNECTION_TYPES = Arrays.asList(
             DataFlowJointSkin.ELEMENT_TYPE,
             TrustBoundaryJointSkin.ELEMENT_TYPE

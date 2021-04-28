@@ -159,12 +159,12 @@ public class QuadraticSplineUtils {
         QuadCurveTo quadCurveTo2 = (QuadCurveTo) path2.getElements().get(1);
 
         Vector2D dataFlowStartPoint = new Vector2D(moveTo1.getX(), moveTo1.getY());
-        Vector2D dataFlowControlPoint = new Vector2D(quadCurveTo1.getX(), quadCurveTo1.getY());
-        Vector2D dataFlowEndPoint = new Vector2D(quadCurveTo1.getControlX(), quadCurveTo1.getControlY());
+        Vector2D dataFlowEndPoint = new Vector2D(quadCurveTo1.getX(), quadCurveTo1.getY());
+        Vector2D dataFlowControlPoint = new Vector2D(quadCurveTo1.getControlX(), quadCurveTo1.getControlY());
 
         Vector2D trustBoundaryStartPoint = new Vector2D(moveTo2.getX(), moveTo2.getY());
-        Vector2D trustBoundaryControlPoint = new Vector2D(quadCurveTo2.getX(), quadCurveTo2.getY());
-        Vector2D trustBoundaryEndPoint = new Vector2D(quadCurveTo2.getControlX(), quadCurveTo2.getControlY());
+        Vector2D trustBoundaryEndPoint = new Vector2D(quadCurveTo2.getX(), quadCurveTo2.getY());
+        Vector2D trustBoundaryControlPoint = new Vector2D(quadCurveTo2.getControlX(), quadCurveTo2.getControlY());
 
         // Find the intersections
         List<Vector2D> intersections = intersectSplines(dataFlowStartPoint,
@@ -176,6 +176,9 @@ public class QuadraticSplineUtils {
 
         if (intersections != null) {
             LOGGER.info("Found " + intersections.size() + " intersections.");
+            for (Vector2D intersection : intersections) {
+                LOGGER.info("Intersection: " + intersection.toString());
+            }
         }
         return intersections != null;
     }
