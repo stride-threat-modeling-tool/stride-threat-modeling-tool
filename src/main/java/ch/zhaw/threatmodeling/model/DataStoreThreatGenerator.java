@@ -2,6 +2,9 @@ package ch.zhaw.threatmodeling.model;
 
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
+import ch.zhaw.threatmodeling.model.threats.Threat;
+import ch.zhaw.threatmodeling.model.threats.ThreatConstants;
+import ch.zhaw.threatmodeling.model.threats.ThreatGenerator;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GConnection;

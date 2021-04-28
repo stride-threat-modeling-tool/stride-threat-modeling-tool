@@ -1,4 +1,4 @@
-package ch.zhaw.threatmodeling.model;
+package ch.zhaw.threatmodeling.model.threats;
 
 import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;

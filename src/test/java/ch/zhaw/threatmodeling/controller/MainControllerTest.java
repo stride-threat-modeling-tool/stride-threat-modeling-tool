@@ -1,8 +1,8 @@
 package ch.zhaw.threatmodeling.controller;
 
 import ch.zhaw.threatmodeling.App;
-import ch.zhaw.threatmodeling.model.Threat;
-import ch.zhaw.threatmodeling.model.ThreatGenerator;
+import ch.zhaw.threatmodeling.model.threats.Threat;
+import ch.zhaw.threatmodeling.model.threats.ThreatGenerator;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.model.enums.ThreatPriority;

@@ -1,7 +1,8 @@
-package ch.zhaw.threatmodeling.model;
+package ch.zhaw.threatmodeling.model.threats;
 
+import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
+import ch.zhaw.threatmodeling.persistence.ThreatPatternPersistence;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
-import ch.zhaw.threatmodeling.skin.nodes.datastore.DataStoreNodeSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
@@ -22,11 +23,14 @@ public class ThreatGenerator {
     private final ObjectProperty<ObservableList<Threat>> threatsProperty = new SimpleObjectProperty<>();
     private final GModel model;
     private final SkinLookup skinLookup;
+    private final List<ThreatPattern> threatPatterns;
 
     public ThreatGenerator(GModel model, SkinLookup skinLookup) {
         this.skinLookup = skinLookup;
         this.model = model;
+        this.threatPatterns = ThreatPatternPersistence.loadThreatPatterns();
         clearThreats();
+
     }
 
     private void clearThreats() {
@@ -51,15 +55,21 @@ public class ThreatGenerator {
             final GenericNodeSkin source = (GenericNodeSkin) skinLookup.lookupNode(con.getSource().getParent());
             final DataFlowJointSkin joint = (DataFlowJointSkin) skinLookup.lookupJoint(con.getJoints().get(0));
             final List<Threat> newlyGeneratedThreats = new ArrayList<>();
-            LOGGER.info("Target is a " + target.getItem().getType());
-            LOGGER.info("Source is a " + source.getItem().getType());
+            threatPatterns.forEach(threatPattern -> {
 
-            if (target.getItem().getType().equals(DataStoreNodeSkin.TITLE_TEXT)) {
-                newlyGeneratedThreats.addAll(DataStoreThreatGenerator.generateTargetThreats(getThreats() .size() + newlyGeneratedThreats.size() + 1, source, target, joint, con));
-            }
-            if (source.getItem().getType().equals(DataStoreNodeSkin.TITLE_TEXT)) {
-                newlyGeneratedThreats.addAll(DataStoreThreatGenerator.generateSourceThreats(getThreats().size()  + newlyGeneratedThreats.size() + 1, source, target, joint, con));
-            }
+                LOGGER.info(source.getType());
+                LOGGER.info( target.getType());
+                if(threatPattern.shouldBeGenerated(source.getType(), target.getType(), true, null, null, null)) {
+                    newlyGeneratedThreats.add(threatPattern.generate(
+                            getThreats().size() + newlyGeneratedThreats.size() + 1,
+                            joint,
+                            con,
+                            source,
+                            target
+                            ));
+                }
+            });
+
 
             addAllUniqueNewThreats(newlyGeneratedThreats);
         }
@@ -79,7 +89,7 @@ public class ThreatGenerator {
         });
     }
 
-    static ChangeListener<String> createThreatTitleChangeListener(Threat threat, String key, GenericNodeSkin linkedNode) {
+    public static ChangeListener<String> createThreatTitleChangeListener(Threat threat, String key, GenericNodeSkin linkedNode) {
        return  (observableValue, s, t1) -> {
            if (!threat.isModified()) {
                threat.addTemplate(key, linkedNode.getText());

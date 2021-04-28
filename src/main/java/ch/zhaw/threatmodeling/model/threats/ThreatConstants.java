@@ -1,4 +1,4 @@
-package ch.zhaw.threatmodeling.model;
+package ch.zhaw.threatmodeling.model.threats;
 
 public class ThreatConstants {
     private ThreatConstants(){}

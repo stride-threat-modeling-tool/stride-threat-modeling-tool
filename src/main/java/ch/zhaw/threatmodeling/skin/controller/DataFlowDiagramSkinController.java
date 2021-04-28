@@ -1,6 +1,6 @@
 package ch.zhaw.threatmodeling.skin.controller;
 
-import ch.zhaw.threatmodeling.model.ThreatGenerator;
+import ch.zhaw.threatmodeling.model.threats.ThreatGenerator;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowConnectionObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowNodeObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowPositionedObject;
