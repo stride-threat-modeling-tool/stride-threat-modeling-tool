@@ -103,10 +103,12 @@ class MainControllerTest extends ApplicationTest {
     void testStateChoiceBoxChangesThreat() {
         verifyMainControllerInit();
         fillThreatTableSelectLast();
+        showThreatPane();
         interact(() -> {
             SingleSelectionModel<State> model = mainController.getStateChoiceBox().getSelectionModel();
             State currentState = model.getSelectedItem();
             assertFalse(threat.isModified());
+            mainController.getStateChoiceBox().requestFocus();
             model.select(model.getSelectedIndex() + 1);
             assertNotEquals(currentState, model.getSelectedItem());
             assertEquals(model.getSelectedItem(), threat.getState());
@@ -120,10 +122,12 @@ class MainControllerTest extends ApplicationTest {
     void testCategoryChoiceBoxChangesThreat() {
         verifyMainControllerInit();
         fillThreatTableSelectLast();
+        showThreatPane();
         interact(() -> {
             SingleSelectionModel<STRIDECategory> model = mainController.getCategoryChoiceBox().getSelectionModel();
             STRIDECategory category = model.getSelectedItem();
             assertFalse(threat.isModified());
+            mainController.getCategoryChoiceBox().requestFocus();
             model.select(model.getSelectedIndex() + 1);
             assertNotEquals(category, model.getSelectedItem());
             assertEquals(model.getSelectedItem(), threat.getCategory());
@@ -136,10 +140,12 @@ class MainControllerTest extends ApplicationTest {
     void testPriorityBoxChangesThreat() {
         verifyMainControllerInit();
         fillThreatTableSelectLast();
+        showThreatPane();
         interact(() -> {
             SingleSelectionModel<ThreatPriority> model = mainController.getPriorityChoiceBox().getSelectionModel();
             ThreatPriority priority = model.getSelectedItem();
             assertFalse(threat.isModified());
+            mainController.getPriorityChoiceBox().requestFocus();
             model.select(model.getSelectedIndex() + 1);
             assertNotEquals(priority, model.getSelectedItem());
             assertEquals(model.getSelectedItem(), threat.getPriority());
