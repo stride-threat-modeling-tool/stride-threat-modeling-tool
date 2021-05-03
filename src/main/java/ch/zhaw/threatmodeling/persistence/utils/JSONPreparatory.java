@@ -2,12 +2,15 @@ package ch.zhaw.threatmodeling.persistence.utils;
 
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowConnectionObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowNodeObject;
-import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowPositionedObject;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
 import de.tesis.dynaware.grapheditor.SkinLookup;
-import de.tesis.dynaware.grapheditor.model.*;
+import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GConnector;
+import de.tesis.dynaware.grapheditor.model.GJoint;
+import de.tesis.dynaware.grapheditor.model.GModel;
+import de.tesis.dynaware.grapheditor.model.GNode;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -17,14 +20,14 @@ public class JSONPreparatory {
     private JSONPreparatory() {
     }
 
-    public static List<DataFlowObject> createSavableNodes(GModel model, SkinLookup skinLookup) {
-        List<DataFlowObject> serializableObjects = new ArrayList<>();
+    public static List<DataFlowNodeObject> createSavableNodes(GModel model, SkinLookup skinLookup) {
+        List<DataFlowNodeObject> serializableObjects = new ArrayList<>();
         model.getNodes().forEach(node -> serializableObjects.add(translateToSavableNode(node, skinLookup)));
         return serializableObjects;
     }
 
-    public static List<DataFlowObject> createSavableConnections(GModel model, SkinLookup skinLookup) {
-        List<DataFlowObject> serializableObjects = new ArrayList<>();
+    public static List<DataFlowConnectionObject> createSavableConnections(GModel model, SkinLookup skinLookup) {
+        List<DataFlowConnectionObject> serializableObjects = new ArrayList<>();
         model.getConnections().forEach(con -> serializableObjects.add(translateToSavableConnection(con, skinLookup, model.getNodes())));
         return serializableObjects;
     }

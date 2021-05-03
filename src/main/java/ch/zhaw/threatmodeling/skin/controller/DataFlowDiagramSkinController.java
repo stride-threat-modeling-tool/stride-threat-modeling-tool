@@ -4,6 +4,7 @@ import ch.zhaw.threatmodeling.model.threats.ThreatGenerator;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowConnectionObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowNodeObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowPositionedObject;
+import ch.zhaw.threatmodeling.persistence.utils.objects.STRIDEModel;
 import ch.zhaw.threatmodeling.selections.SelectionCopier;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.DataFlowGraphEditor;
@@ -37,17 +38,12 @@ import javafx.geometry.Side;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
-import javafx.util.Pair;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.OptionalInt;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class DataFlowDiagramSkinController implements SkinController {
@@ -501,10 +497,10 @@ public class DataFlowDiagramSkinController implements SkinController {
         }
     }
 
-    public void restoreModel(Pair<List<DataFlowNodeObject>, List<DataFlowConnectionObject>> loadedObjects, double currentZoomFactor) {
+    public void restoreModel(STRIDEModel loadedModel, double currentZoomFactor) {
         clearAll();
-        loadedObjects.getKey().forEach(dataFlowNodeObject -> restoreNode(dataFlowNodeObject, currentZoomFactor));
-        loadedObjects.getValue().forEach(this::restoreConnection);
+        loadedModel.getSavableNodes().forEach(dataFlowNodeObject -> restoreNode(dataFlowNodeObject, currentZoomFactor));
+        loadedModel.getSavableConnections().forEach(this::restoreConnection);
         doController.flushCommandStack();
         setDataFlowSkinFactories();
     }
