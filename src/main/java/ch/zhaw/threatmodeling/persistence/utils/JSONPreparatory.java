@@ -1,8 +1,10 @@
 package ch.zhaw.threatmodeling.persistence.utils;
 
+import ch.zhaw.threatmodeling.model.threats.Threat;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowConnectionObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowNodeObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowPositionedObject;
+import ch.zhaw.threatmodeling.persistence.utils.objects.ThreatObject;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
 import de.tesis.dynaware.grapheditor.SkinLookup;
@@ -30,6 +32,14 @@ public class JSONPreparatory {
         List<DataFlowConnectionObject> serializableObjects = new ArrayList<>();
         model.getConnections().forEach(con -> serializableObjects.add(translateToSavableConnection(con, skinLookup, model.getNodes())));
         return serializableObjects;
+    }
+
+    public static List<ThreatObject> createSavableThreats(GModel model, List<Threat> threats){
+        List<ThreatObject> serializableThreats = new ArrayList<>();
+        List<GNode> nodes = model.getNodes();
+        List<GConnection> connections = model.getConnections();
+        threats.forEach(threat -> serializableThreats.add(translateToSavableThreat(threat, nodes, connections)));
+        return serializableThreats;
     }
 
     private static DataFlowConnectionObject translateToSavableConnection(GConnection connection, SkinLookup skinLookup, List<GNode> nodes) {
@@ -60,6 +70,23 @@ public class JSONPreparatory {
     private static DataFlowNodeObject translateToSavableNode(GNode node, SkinLookup skinLookup) {
         GenericNodeSkin skin = (GenericNodeSkin) skinLookup.lookupNode(node);
         return new DataFlowNodeObject(skin.getType(), skin.getText(), node.getX(), node.getY(), node.getWidth(), node.getHeight());
+    }
+
+    private static ThreatObject translateToSavableThreat(Threat threat, List<GNode> nodes, List<GConnection> connections){
+        return new ThreatObject(
+          threat.getId(),
+          threat.getState(),
+          threat.getTitle(),
+          threat.getTitleTemplate(),
+          threat.getDescriptionTemplate(),
+          threat.getCategory(),
+          threat.getDescription(),
+          threat.getJustification(),
+          threat.getPriority(),
+          connections.indexOf(threat.getConnection()),
+          nodes.indexOf(threat.getNodeName1().getNode()),
+          nodes.indexOf(threat.getNodeName2().getNode())
+        );
     }
 
 

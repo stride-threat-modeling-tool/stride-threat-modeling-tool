@@ -197,13 +197,15 @@ public class MainController {
     }
 
     private void bindFieldsToCurrentThreat() {
-        descriptionTextArea.textProperty().bindBidirectional(currentThreat.get().getDescriptionProperty());
-        justificationTextArea.textProperty().bindBidirectional(currentThreat.get().getJustificationProperty());
-        editTitleTextField.textProperty().bindBidirectional(currentThreat.get().getTitleProperty());
+        if(currentThreat.get() != null) {
+            descriptionTextArea.textProperty().bindBidirectional(currentThreat.get().getDescriptionProperty());
+            justificationTextArea.textProperty().bindBidirectional(currentThreat.get().getJustificationProperty());
+            editTitleTextField.textProperty().bindBidirectional(currentThreat.get().getTitleProperty());
 
-        categoryChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getCategoryProperty());
-        priorityChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getPriorityProperty());
-        stateChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getStateProperty());
+            categoryChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getCategoryProperty());
+            priorityChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getPriorityProperty());
+            stateChoiceBox.valueProperty().bindBidirectional(currentThreat.get().getStateProperty());
+        }
 
     }
 
@@ -323,6 +325,7 @@ public class MainController {
     @FXML
     public void clearAll() {
         dfdSkinController.clearAll();
+        dfdSkinController.getThreatGenerator().getThreats().clear();
     }
 
     public void addTrustBoundary() {
@@ -331,7 +334,7 @@ public class MainController {
 
     @FXML
     public void saveDiagram() {
-        persistence.saveToFile(graphEditor);
+        persistence.saveToFile(graphEditor, dfdSkinController.getThreatGenerator().getThreats());
     }
 
     @FXML

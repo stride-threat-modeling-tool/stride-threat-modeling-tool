@@ -3,12 +3,14 @@ package ch.zhaw.threatmodeling.persistence.utils.objects;
 import java.util.List;
 
 public class STRIDEModel {
-    private List<DataFlowNodeObject> savableNodes;
-    private List<DataFlowConnectionObject> savableConnections;
+    private final List<DataFlowNodeObject> savableNodes;
+    private final List<DataFlowConnectionObject> savableConnections;
+    private final List<ThreatObject> savableThreats;
 
-    public STRIDEModel(List<DataFlowNodeObject> savableNodes, List<DataFlowConnectionObject> savableConnections) {
+    public STRIDEModel(List<DataFlowNodeObject> savableNodes, List<DataFlowConnectionObject> savableConnections, List<ThreatObject> savableThreats) {
         this.savableNodes = savableNodes;
         this.savableConnections = savableConnections;
+        this.savableThreats = savableThreats;
     }
 
     public List<DataFlowNodeObject> getSavableNodes(){
@@ -17,5 +19,9 @@ public class STRIDEModel {
 
     public List<DataFlowConnectionObject> getSavableConnections() {
         return savableConnections;
+    }
+
+    public List<ThreatObject> getSavableThreats() {
+        return savableThreats;
     }
 }

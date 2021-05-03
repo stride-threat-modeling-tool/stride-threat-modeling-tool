@@ -41,7 +41,7 @@ public class ThreatPattern {
     }
 
     public Threat generate(int numberId, DataFlowElement interaction, GConnection connection, GenericNodeSkin node1, GenericNodeSkin node2) {
-        Threat threat = new Threat(
+        return new Threat(
                 numberId,
                 State.NOT_STARTED,
                 this.strideCategory,
@@ -53,13 +53,5 @@ public class ThreatPattern {
                 node1,
                 node2
         );
-        threat.addTemplate(ThreatConstants.SOURCE_NAME_TEMPLATE, node1.getText());
-        threat.addTemplate(ThreatConstants.TARGET_NAME_TEMPLATE, node2.getText());
-        threat.addTemplate(ThreatConstants.FLOW_NAME_TEMPLATE, interaction.getText());
-        threat.updateThreat();
-        node1.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(threat, ThreatConstants.SOURCE_NAME_TEMPLATE, node1));
-        node2.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(threat, ThreatConstants.TARGET_NAME_TEMPLATE, node2));
-        interaction.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(threat, ThreatConstants.FLOW_NAME_TEMPLATE, interaction));
-        return threat;
     }
 }

@@ -1,10 +1,12 @@
 package ch.zhaw.threatmodeling.skin.controller;
 
+import ch.zhaw.threatmodeling.model.threats.Threat;
 import ch.zhaw.threatmodeling.model.threats.ThreatGenerator;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowConnectionObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowNodeObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowPositionedObject;
 import ch.zhaw.threatmodeling.persistence.utils.objects.STRIDEModel;
+import ch.zhaw.threatmodeling.persistence.utils.objects.ThreatObject;
 import ch.zhaw.threatmodeling.selections.SelectionCopier;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.DataFlowGraphEditor;
@@ -501,8 +503,24 @@ public class DataFlowDiagramSkinController implements SkinController {
         clearAll();
         loadedModel.getSavableNodes().forEach(dataFlowNodeObject -> restoreNode(dataFlowNodeObject, currentZoomFactor));
         loadedModel.getSavableConnections().forEach(this::restoreConnection);
+        loadedModel.getSavableThreats().forEach(this::restoreThreat);
         doController.flushCommandStack();
         setDataFlowSkinFactories();
+    }
+
+    private void restoreThreat(ThreatObject threatObject) {
+        GConnection connection = model.getConnections().get(threatObject.getConnectionIndex());
+        List<GNode> nodes = model.getNodes();
+        SkinLookup skinLookup = graphEditor.getSkinLookup();
+        final DataFlowJointSkin joint = (DataFlowJointSkin) skinLookup.lookupJoint(connection.getJoints().get(0));
+        threatGenerator.getThreats().add(new Threat(
+                threatObject,
+                joint,
+                connection,
+                (GenericNodeSkin) skinLookup.lookupNode(nodes.get(threatObject.getNodeName1Index())),
+                (GenericNodeSkin) skinLookup.lookupNode(nodes.get(threatObject.getNodeName2Index()))
+                )
+        );
     }
 
     private void restoreConnection(DataFlowConnectionObject connectionObject) {

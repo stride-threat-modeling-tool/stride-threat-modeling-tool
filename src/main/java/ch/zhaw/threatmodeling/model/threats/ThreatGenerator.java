@@ -1,11 +1,10 @@
 package ch.zhaw.threatmodeling.model.threats;
 
-import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
 import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPatterns;
 import ch.zhaw.threatmodeling.persistence.ThreatPatternPersistence;
+import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.connection.TrustBoundaryConnectionSkin;
-import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
@@ -124,7 +123,7 @@ public class ThreatGenerator {
     public static ChangeListener<String> createElementTextChangeListener(Threat threat, String key, DataFlowElement element) {
        return  (observableValue, s, t1) -> {
            if (!threat.isModified()) {
-               threat.addTemplate(key, element.getText());
+               threat.updateTemplate(key, element.getText());
                threat.updateThreat();
            }
        };

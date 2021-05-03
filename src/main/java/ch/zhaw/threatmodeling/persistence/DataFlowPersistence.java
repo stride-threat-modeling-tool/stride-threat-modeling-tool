@@ -1,5 +1,6 @@
 package ch.zhaw.threatmodeling.persistence;
 
+import ch.zhaw.threatmodeling.model.threats.Threat;
 import ch.zhaw.threatmodeling.persistence.utils.JSONPreparatory;
 import ch.zhaw.threatmodeling.persistence.utils.objects.STRIDEModel;
 import com.google.gson.Gson;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class DataFlowPersistence {
@@ -27,16 +29,16 @@ public class DataFlowPersistence {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 
-    public void saveToFile(GraphEditor graphEditor) {
-        handlePersistence(graphEditor, true);
+    public void saveToFile(GraphEditor graphEditor, List<Threat> threats) {
+        handlePersistence(graphEditor, threats, true);
 
     }
 
     public STRIDEModel loadFromFile(GraphEditor graphEditor) {
-        return handlePersistence(graphEditor, false);
+        return handlePersistence(graphEditor, null, false);
     }
 
-    private STRIDEModel handlePersistence(GraphEditor graphEditor, boolean save) {
+    private STRIDEModel handlePersistence(GraphEditor graphEditor, List<Threat> threats, boolean save) {
         final Scene scene = graphEditor.getView().getScene();
         STRIDEModel result = null;
         if (scene != null) {
@@ -44,7 +46,7 @@ public class DataFlowPersistence {
             final GModel model = graphEditor.getModel();
             if (file != null && model != null) {
                 if (save) {
-                    saveModelToFile(file, graphEditor);
+                    saveModelToFile(file, graphEditor, threats);
                 } else {
                     result = loadModelFromFile(file);
                 }
@@ -79,15 +81,15 @@ public class DataFlowPersistence {
         return chosenFile;
     }
 
-    private void saveModelToFile(File file, GraphEditor graphEditor) {
+    private void saveModelToFile(File file, GraphEditor graphEditor, List<Threat> threats) {
         String absolutePath = file.getAbsolutePath();
         if (!absolutePath.endsWith(EXTENSION)) {
             absolutePath += EXTENSION;
         }
         STRIDEModel model = new STRIDEModel(
                 JSONPreparatory.createSavableNodes(graphEditor.getModel(), graphEditor.getSkinLookup()),
-                JSONPreparatory.createSavableConnections(graphEditor.getModel(), graphEditor.getSkinLookup())
-        );
+                JSONPreparatory.createSavableConnections(graphEditor.getModel(), graphEditor.getSkinLookup()),
+                JSONPreparatory.createSavableThreats(graphEditor.getModel(), threats));
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(absolutePath, false))) {
             GSON.toJson(model, writer);

@@ -3,6 +3,7 @@ package ch.zhaw.threatmodeling.model.threats;
 import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
+import ch.zhaw.threatmodeling.persistence.utils.objects.ThreatObject;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import de.tesis.dynaware.grapheditor.model.GConnection;
@@ -49,6 +50,12 @@ public class Threat {
     private boolean modified = false;
 
 
+    private void initTemplateMap(){
+        updateTemplate(ThreatConstants.SOURCE_NAME_TEMPLATE, getNodeName1().getText());
+        updateTemplate(ThreatConstants.TARGET_NAME_TEMPLATE, getNodeName2().getText());
+        updateTemplate(ThreatConstants.FLOW_NAME_TEMPLATE, getInteraction().getText());
+    }
+
     public Threat(int id,
                   State state,
                   STRIDECategory category,
@@ -71,7 +78,37 @@ public class Threat {
         this.nodeName1 = nodeName1;
         this.nodeName2 = nodeName2;
         setPriority(DEFAULT_THREAT_PRIORITY);
+        initThreat();
+    }
+
+    private void initThreat() {
+        initTemplateMap();
         updateThreat();
+        nodeName1.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.SOURCE_NAME_TEMPLATE, nodeName1));
+        nodeName2.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.TARGET_NAME_TEMPLATE, nodeName2));
+        interaction.get().textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.FLOW_NAME_TEMPLATE, interaction.get()));
+    }
+
+    public Threat(ThreatObject restoredThreat,
+                  DataFlowElement interaction,
+                  GConnection connection,
+                  GenericNodeSkin nodeName1,
+                  GenericNodeSkin nodeName2){
+        setId(restoredThreat.getId());
+        setState(restoredThreat.getState());
+        setTitle(restoredThreat.getTitle());
+        titleTemplate = restoredThreat.getTitleTemplate();
+        descriptionTemplate = restoredThreat.getDescriptionTemplate();
+        setDescription(restoredThreat.getDescription());
+        setCategory(restoredThreat.getCategory());
+        setJustification(restoredThreat.getJustification());
+        setPriority(restoredThreat.getPriority());
+        setInteraction(interaction);
+        this.connection = connection;
+        this.nodeName1 = nodeName1;
+        this.nodeName2 = nodeName2;
+        initThreat();
+
     }
 
     public void updateThreat() {
@@ -85,7 +122,7 @@ public class Threat {
         setDescription(updatedDescription);
     }
 
-    public void addTemplate(String key, String value) {
+    public void updateTemplate(String key, String value) {
         templateMap.put(key, value);
     }
 
@@ -180,6 +217,11 @@ public class Threat {
     public String getTitleTemplate() {
         return titleTemplate;
     }
+
+    public String getDescriptionTemplate() {
+        return descriptionTemplate;
+    }
+
 
     public boolean isModified() {
         return modified;
