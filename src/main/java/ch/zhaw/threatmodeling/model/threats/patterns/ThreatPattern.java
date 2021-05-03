@@ -12,15 +12,16 @@ import de.tesis.dynaware.grapheditor.model.GConnection;
 import java.util.Map;
 
 public class ThreatPattern {
-    private final String id;
-    private final Inclusions inclusions;
-    private final Exclusions exclusions;
-    private final String descriptionTemplate;
     private final String titleTemplate;
     private final STRIDECategory strideCategory;
+    private final String descriptionTemplate;
+    private final Inclusions inclusions;
+    private final Exclusions exclusions;
 
-    public ThreatPattern(String id, Inclusions inclusions, Exclusions exclusions, String descriptionTemplate, String titleTemplate, STRIDECategory strideCategory) {
-        this.id = id;
+
+
+
+    public ThreatPattern(Inclusions inclusions, Exclusions exclusions, String descriptionTemplate, String titleTemplate, STRIDECategory strideCategory) {
         this.inclusions = inclusions;
         this.exclusions = exclusions;
         this.descriptionTemplate = descriptionTemplate;
@@ -42,7 +43,6 @@ public class ThreatPattern {
     public Threat generate(int numberId, DataFlowElement interaction, GConnection connection, GenericNodeSkin node1, GenericNodeSkin node2) {
         Threat threat = new Threat(
                 numberId,
-                this.id,
                 State.NOT_STARTED,
                 this.strideCategory,
                 this.titleTemplate,

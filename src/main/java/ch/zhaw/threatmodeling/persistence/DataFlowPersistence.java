@@ -48,7 +48,6 @@ public class DataFlowPersistence {
                 } else {
                     result = loadModelFromFile(file);
                 }
-
             }
         }
         return result;

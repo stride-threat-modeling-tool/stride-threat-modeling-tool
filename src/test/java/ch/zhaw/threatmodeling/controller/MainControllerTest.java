@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class MainControllerTest extends ApplicationTest {
 
     private final Threat threat = new Threat(1,
-            "",
             State.NOT_STARTED,
             STRIDECategory.SPOOFING,
             "test threat",
@@ -34,7 +33,6 @@ class MainControllerTest extends ApplicationTest {
             null,
              null, null, null);
     private final Threat threat2 = new Threat(2,
-            "",
             State.NOT_STARTED,
             STRIDECategory.SPOOFING,
             "test threat2",

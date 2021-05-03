@@ -1,6 +1,7 @@
 package ch.zhaw.threatmodeling.model.threats;
 
 import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
+import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPatterns;
 import ch.zhaw.threatmodeling.persistence.ThreatPatternPersistence;
 import ch.zhaw.threatmodeling.skin.connection.DataFlowConnectionSkin;
 import ch.zhaw.threatmodeling.skin.connection.TrustBoundaryConnectionSkin;
@@ -29,14 +30,14 @@ public class ThreatGenerator {
     private final ObjectProperty<ObservableList<Threat>> threatsProperty = new SimpleObjectProperty<>();
     private final GModel model;
     private final SkinLookup skinLookup;
-    private final List<ThreatPattern> threatPatterns;
+    private final ThreatPatterns threatPatterns;
 
     public ThreatGenerator(GModel model, SkinLookup skinLookup) {
         this.skinLookup = skinLookup;
         this.model = model;
         this.threatPatterns = ThreatPatternPersistence.loadThreatPatterns();
         clearThreats();
-        LOGGER.info("loaded threats" + threatPatterns.size());
+        LOGGER.info("loaded threats " + threatPatterns.size());
 
     }
 
@@ -67,8 +68,6 @@ public class ThreatGenerator {
                 final boolean intersectsTrustBoundary = intersectsTrustBoundary(con);
                 if (!joint.getText().equals(TrustBoundaryJointSkin.ELEMENT_TYPE)) {
                     threatPatterns.forEach(threatPattern -> {
-                        LOGGER.info(source.getType());
-                        LOGGER.info(target.getType());
                         if (threatPattern.shouldBeGenerated(source.getType(), target.getType(), intersectsTrustBoundary , null, null, null)) {
                             newlyGeneratedThreats.add(threatPattern.generate(
                                     getThreats().size() + newlyGeneratedThreats.size() + 1,
@@ -113,7 +112,7 @@ public class ThreatGenerator {
             if(getThreats()
                     .stream()
                     .noneMatch(t ->
-                            t.getTypeId().equals(threat.getTypeId()) &&
+                            t.getTitleTemplate().equals(threat.getTitleTemplate()) &&
                             t.getNodeName1() == threat.getNodeName1()&&
                             t.getNodeName2() == threat.getNodeName2()))
             {

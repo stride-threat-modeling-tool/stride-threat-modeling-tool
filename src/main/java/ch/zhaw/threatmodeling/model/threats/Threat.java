@@ -23,7 +23,6 @@ public class Threat {
     public static final ThreatPriority DEFAULT_THREAT_PRIORITY = ThreatPriority.HIGH;
 
     private final IntegerProperty id = new SimpleIntegerProperty();
-    private final String typeId;
     private final ObjectProperty<State> state = new SimpleObjectProperty<>();
     private final StringProperty title = new SimpleStringProperty();
     private final String titleTemplate;
@@ -38,9 +37,6 @@ public class Threat {
     private final GenericNodeSkin nodeName1;
     private final GenericNodeSkin nodeName2;
 
-    public String getTypeId() {
-        return typeId;
-    }
 
     public GenericNodeSkin getNodeName1() {
         return nodeName1;
@@ -54,7 +50,6 @@ public class Threat {
 
 
     public Threat(int id,
-                  String typeId,
                   State state,
                   STRIDECategory category,
                   String titleTemplate,
@@ -67,7 +62,6 @@ public class Threat {
     ) {
         this.titleTemplate = titleTemplate;
         this.descriptionTemplate = descriptionTemplate;
-        this.typeId = typeId;
         setId(id);
         setState(state);
         setCategory(category);
@@ -183,6 +177,9 @@ public class Threat {
         this.priority.set(threatPriority);
     }
 
+    public String getTitleTemplate() {
+        return titleTemplate;
+    }
 
     public boolean isModified() {
         return modified;
