@@ -642,7 +642,7 @@
     {
       "titleTemplate": "Weak Access Control for a Resource",
       "strideCategory": "INFORMATION_DISCLOSURE",
-      "descriptionTemplate": "Improper data protection of {source.name} can allow an attacker to read information not intended for disclosure. Review authorization settings.",
+      "descriptionTemplate": "Improper data protection of {source.Name} can allow an attacker to read information not intended for disclosure. Review authorization settings.",
       "inclusions": {
         "loadedInclusions": [
           {
