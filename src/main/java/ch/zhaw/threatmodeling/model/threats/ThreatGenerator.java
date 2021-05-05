@@ -13,11 +13,7 @@ import ch.zhaw.threatmodeling.skin.utils.intersection.QuadraticSplineUtils;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +22,7 @@ import java.util.logging.Logger;
 public class ThreatGenerator {
     private static final Logger LOGGER = Logger.getLogger(ThreatGenerator.class.getName());
 
-    private final ObjectProperty<ObservableList<Threat>> threatsProperty = new SimpleObjectProperty<>();
+    private final Threats threats;
     private final GModel model;
     private final SkinLookup skinLookup;
     private final ThreatPatterns threatPatterns;
@@ -35,25 +31,9 @@ public class ThreatGenerator {
         this.skinLookup = skinLookup;
         this.model = model;
         this.threatPatterns = ThreatPatternPersistence.loadThreatPatterns();
-        clearThreats();
+        threats = new Threats();
         LOGGER.info("loaded threats " + threatPatterns.size());
 
-    }
-
-    private void clearThreats() {
-        setThreats(FXCollections.observableArrayList());
-    }
-
-    public ObservableList<Threat> getThreats() {
-        return threatsProperty.get();
-    }
-
-    private void setThreats(ObservableList<Threat> threats) {
-        threatsProperty.set(threats);
-    }
-
-    public ObjectProperty<ObservableList<Threat>> getThreatsProperty() {
-        return threatsProperty;
     }
 
     public void generateAllThreats() {
@@ -69,7 +49,7 @@ public class ThreatGenerator {
                     threatPatterns.forEach(threatPattern -> {
                         if (threatPattern.shouldBeGenerated(source.getType(), target.getType(), intersectsTrustBoundary , null, null, null)) {
                             newlyGeneratedThreats.add(threatPattern.generate(
-                                    getThreats().size() + newlyGeneratedThreats.size() + 1,
+                                    threats.size() + newlyGeneratedThreats.size() + 1,
                                     joint,
                                     con,
                                     source,
@@ -108,14 +88,14 @@ public class ThreatGenerator {
 
     private void addAllUniqueNewThreats(List<Threat> newlyGeneratedThreats) {
         newlyGeneratedThreats.forEach(threat -> {
-            if(getThreats()
+            if(threats.all()
                     .stream()
                     .noneMatch(t ->
                             t.getTitleTemplate().equals(threat.getTitleTemplate()) &&
                             t.getNodeName1() == threat.getNodeName1()&&
                             t.getNodeName2() == threat.getNodeName2()))
             {
-                getThreats().add(threat);
+                threats.add(threat);
             }
         });
     }
@@ -129,7 +109,7 @@ public class ThreatGenerator {
        };
     }
 
-    public List<Threat> getAllThreatsForConnection(GConnection connection) {
-        return getThreats().filtered(threat -> threat.getConnection().equals(connection));
+    public Threats getThreats() {
+        return threats;
     }
 }

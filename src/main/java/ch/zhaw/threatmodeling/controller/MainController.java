@@ -240,7 +240,7 @@ public class MainController {
             setThreatFieldsListeners();
         });
 
-        threatTable.itemsProperty().bindBidirectional(threatGenerator.getThreatsProperty());
+        threatTable.itemsProperty().bindBidirectional(threatGenerator.getThreats().getListProperty());
     }
 
     private void bindTextFieldsToCurrentElement() {
@@ -334,7 +334,7 @@ public class MainController {
 
     @FXML
     public void saveDiagram() {
-        persistence.saveToFile(graphEditor, dfdSkinController.getThreatGenerator().getThreats());
+        persistence.saveToFile(graphEditor, dfdSkinController.getThreatGenerator().getThreats().all());
     }
 
     @FXML
