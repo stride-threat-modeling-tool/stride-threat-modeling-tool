@@ -28,6 +28,9 @@
             <SeparatorMenuItem/>
             <MenuItem accelerator="Delete" onAction="#deleteSelection" text="Delete"/>
         </Menu>
+        <Menu text="Reports">
+            <MenuItem text="Create full report" onAction="#createReport"/>
+        </Menu>
         <StackPane.margin>
             <Insets left="-20.0" right="-20.0" top="-30.0"/>
         </StackPane.margin>

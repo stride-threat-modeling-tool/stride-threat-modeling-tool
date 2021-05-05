@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class Threat {
+    public static final String NO_JUSTIFICATION_PROVIDED = "&lt;no mitigation provided&gt;";
     private static final Logger LOGGER = Logger.getLogger("Threat");
     public static final ThreatPriority DEFAULT_THREAT_PRIORITY = ThreatPriority.HIGH;
 

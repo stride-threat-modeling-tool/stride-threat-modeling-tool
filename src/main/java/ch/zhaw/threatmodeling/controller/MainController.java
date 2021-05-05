@@ -1,12 +1,15 @@
 package ch.zhaw.threatmodeling.controller;
 
 import ch.zhaw.threatmodeling.connections.DataFlowConnectorValidator;
-import ch.zhaw.threatmodeling.model.threats.Threat;
-import ch.zhaw.threatmodeling.model.threats.ThreatGenerator;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
+import ch.zhaw.threatmodeling.model.report.HTMLReportBuilder;
+import ch.zhaw.threatmodeling.model.threats.Threat;
+import ch.zhaw.threatmodeling.model.threats.ThreatGenerator;
 import ch.zhaw.threatmodeling.persistence.DataFlowPersistence;
+import ch.zhaw.threatmodeling.persistence.HTMLReportPersistence;
+import ch.zhaw.threatmodeling.persistence.utils.FileChooserUtil;
 import ch.zhaw.threatmodeling.skin.DataFlowGraphEditor;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
@@ -36,13 +39,14 @@ public class MainController {
     private static final String STYLE_CLASS_SKINS = "data-flow-diagram-skin";
     private final GraphEditor graphEditor = new DataFlowGraphEditor();
     private final ObjectProperty<Threat> currentThreat = new SimpleObjectProperty<>();
-    private DataFlowPersistence persistence = new DataFlowPersistence();
 
     @FXML
     private TitledPane expandableThreatPane;
     @FXML
     private VBox graphEditorParent;
     private ThreatGenerator threatGenerator;
+    private HTMLReportBuilder reportBuilder;
+    private DataFlowPersistence persistence = new DataFlowPersistence();
     private DataFlowDiagramSkinController dfdSkinController;
     @FXML
     private StackPane root;
@@ -112,6 +116,10 @@ public class MainController {
         final GModel model = GraphFactory.eINSTANCE.createGModel();
         threatGenerator = new ThreatGenerator(model, graphEditor.getSkinLookup());
         graphEditor.setModel(model);
+        reportBuilder = new HTMLReportBuilder(
+                threatGenerator.getThreats(),
+                graphEditor.getSkinLookup(), model.getConnections(),
+                new HTMLReportPersistence(graphEditor.getView(), new FileChooserUtil()));
         GraphEditorContainer graphEditorContainer = new GraphEditorContainer();
         setMaxSizeToInfinity(graphEditorContainer);
         setMaxSizeToInfinity(graphEditorParent);
@@ -384,5 +392,9 @@ public class MainController {
 
     public void setPersistence(DataFlowPersistence persistence) {
         this.persistence = persistence;
+    }
+
+    public void createReport() {
+        reportBuilder.buildReport();
     }
 }

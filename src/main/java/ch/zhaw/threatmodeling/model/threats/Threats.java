@@ -1,5 +1,6 @@
 package ch.zhaw.threatmodeling.model.threats;
 
+import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import javafx.beans.property.ObjectProperty;
@@ -49,8 +50,11 @@ public class Threats {
         all().remove(threat);
     }
 
-    public List<Threat> getAllThreatsForConnection(GConnection connection) {
+    public List<Threat> getAllForConnection(GConnection connection) {
         return all().filtered(threat -> threat.getConnection().equals(connection));
     }
 
+    public int withStateCount(State state) {
+        return (int) all().stream().filter(threat -> threat.getState().equals(state)).count();
+    }
 }
