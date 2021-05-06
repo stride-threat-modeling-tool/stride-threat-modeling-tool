@@ -27,16 +27,16 @@ class MainControllerTest extends ApplicationTest {
     private final Threat threat = new Threat(1,
             State.NOT_STARTED,
             STRIDECategory.SPOOFING,
-            "test threat",
-            "test desc",
+            "",
+            "",
             "test",
             null,
              null, null, null);
     private final Threat threat2 = new Threat(2,
             State.NOT_STARTED,
             STRIDECategory.SPOOFING,
-            "test threat2",
-            "test desc2",
+            "",
+            "",
             "test2",
             null,
             null, null, null);
@@ -50,6 +50,10 @@ class MainControllerTest extends ApplicationTest {
         app = new App();
         app.start(stage);
         mainController = app.getController();
+        threat.setDescription("test desc");
+        threat.setTitle("test threat");
+        threat2.setDescription("test desc2");
+        threat2.setTitle("test threat2");
     }
 
     @Test

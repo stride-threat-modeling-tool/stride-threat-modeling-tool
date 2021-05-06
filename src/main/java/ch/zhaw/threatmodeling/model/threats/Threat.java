@@ -83,11 +83,16 @@ public class Threat {
     }
 
     private void initThreat() {
-        initTemplateMap();
-        updateThreat();
-        nodeName1.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.SOURCE_NAME_TEMPLATE, nodeName1));
-        nodeName2.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.TARGET_NAME_TEMPLATE, nodeName2));
-        interaction.get().textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.FLOW_NAME_TEMPLATE, interaction.get()));
+        try{
+            initTemplateMap();
+            updateThreat();
+            nodeName1.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.SOURCE_NAME_TEMPLATE, nodeName1));
+            nodeName2.textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.TARGET_NAME_TEMPLATE, nodeName2));
+            interaction.get().textProperty().addListener(ThreatGenerator.createElementTextChangeListener(this, ThreatConstants.FLOW_NAME_TEMPLATE, interaction.get()));
+        } catch (NullPointerException e){
+            LOGGER.severe("Some elements given to the threat are null");
+        }
+
     }
 
     public Threat(ThreatObject restoredThreat,
