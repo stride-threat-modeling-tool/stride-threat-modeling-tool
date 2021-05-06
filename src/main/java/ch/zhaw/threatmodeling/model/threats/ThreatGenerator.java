@@ -14,7 +14,6 @@ import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import javafx.beans.value.ChangeListener;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;

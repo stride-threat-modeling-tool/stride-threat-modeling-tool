@@ -15,6 +15,7 @@ import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
 import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import de.tesis.dynaware.grapheditor.GraphEditor;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorContainer;
+import de.tesis.dynaware.grapheditor.core.view.GraphEditorView;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import de.tesis.dynaware.grapheditor.model.GraphFactory;
 import javafx.beans.property.ObjectProperty;
@@ -119,6 +120,7 @@ public class MainController {
         reportBuilder = new HTMLReportBuilder(
                 threatGenerator.getThreats(),
                 graphEditor.getSkinLookup(), model.getConnections(),
+                (GraphEditorView) graphEditor.getView(),
                 new HTMLReportPersistence(graphEditor.getView(), new FileChooserUtil()));
         GraphEditorContainer graphEditorContainer = new GraphEditorContainer();
         setMaxSizeToInfinity(graphEditorContainer);

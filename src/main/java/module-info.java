@@ -10,6 +10,8 @@ module STRIDEModel {
     requires com.google.gson;
     requires org.apache.commons.text;
     requires commons.math3;
+    requires java.desktop;
+    requires javafx.swing;
 
     exports ch.zhaw.threatmodeling;
     exports ch.zhaw.threatmodeling.controller;
