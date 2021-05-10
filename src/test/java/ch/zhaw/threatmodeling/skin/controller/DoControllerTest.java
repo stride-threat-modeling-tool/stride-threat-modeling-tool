@@ -232,7 +232,7 @@ class DoControllerTest extends ApplicationTest {
         assertEquals(1, connections.size());
         GConnection connection = connections.get(0);
         interact(() -> DataFlowConnectionCommands.setJointLabel(connection, text, skinController.getGraphEditor().getSkinLookup()));
-        selectionManager.select(connection.getJoints().get(0));
+        interact(() -> selectionManager.select(connection.getJoints().get(0)));
         verifyDataFlowDeletionIsReversible(nodes, connections);
         assertEquals(text, DataFlowConnectionCommands.getJointLabel(connection, skinController.getGraphEditor().getSkinLookup()));
     }
@@ -265,7 +265,7 @@ class DoControllerTest extends ApplicationTest {
         assertEquals(1, connections.size());
         GConnection connection = connections.get(0);
         interact(() -> DataFlowConnectionCommands.setJointLabel(connection, text, skinController.getGraphEditor().getSkinLookup()));
-        selectionManager.select(connection);
+        interact(() -> selectionManager.select(connection));
         verifyDataFlowDeletionIsReversible(nodes, connections);
         assertEquals(text, DataFlowConnectionCommands.getJointLabel(connection, skinController.getGraphEditor().getSkinLookup()));
 

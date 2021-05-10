@@ -71,7 +71,7 @@ public class DoController {
                 Command currentCommand = commandStack.getRedoCommand();
                 redoSingleCommand(currentCommand, commandStack);
 
-                if (toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
+                if (toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand) && !lastCommandUndoCount.isEmpty()) {
                     toRedoCount = lastCommandUndoCount.pop();
                     lastCommandDeletedCount.push(toRedoCount);
                 }
