@@ -271,6 +271,53 @@ class DoControllerTest extends ApplicationTest {
 
     }
 
+    @Test
+    void testReversingDeletionOfNodeRestoresAttachedConnections(){
+        GModel model = skinController.getGraphEditor().getModel();
+        List<GConnection> connections = model.getConnections();
+        List<GNode> nodes = model.getNodes();
+        interact(() -> {
+            mainController.addProcess();
+            mainController.addDataStore();
+        });
+        GNode node1 = nodes.get(0);
+        GNode node2 = nodes.get(1);
+        List<GJoint> joints = new ArrayList<>();
+        joints.add(ModelUtils.createJoint());
+        interact(() -> DataFlowConnectionCommands.addConnection(
+                model,
+                node1.getConnectors().get(0),
+                node2.getConnectors().get(1),
+                DataFlowConnectionSkin.getType(),
+                joints,
+                null,
+                doController.getCreateCommandToTypeMapping()
+        ));
+        assertEquals(1, connections.size());
+        joints.clear();
+        joints.add(ModelUtils.createJoint());
+        interact(() -> DataFlowConnectionCommands.addConnection(
+                model,
+                node1.getConnectors().get(4),
+                node1.getConnectors().get(5),
+                DataFlowConnectionSkin.getType(),
+                joints,
+                null,
+                doController.getCreateCommandToTypeMapping()
+        ));
+        assertEquals(2, connections.size());
+        interact(() -> selectionManager.select(node1));
+        interact(() -> skinController.deleteSelection());
+        assertEquals(0, connections.size());
+        interact(() -> doController.undo());
+        assertEquals(2, connections.size());
+
+        interact(() -> doController.redo());
+        assertEquals(0, connections.size());
+        assertEquals(1, nodes.size());
+
+    }
+
     private void verifyDataFlowDeletionIsReversible(List<GNode> nodes, List<GConnection> connections) {
         interact(() -> skinController.deleteSelection());
         assertEquals(0, connections.size());

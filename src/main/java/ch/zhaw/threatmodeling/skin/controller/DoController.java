@@ -65,25 +65,22 @@ public class DoController {
     }
 
     public void redo() {
-        boolean isRemoveCommand;
         int toRedoCount = -1;
         do {
             if (commandStack.canRedo()) {
                 Command currentCommand = commandStack.getRedoCommand();
-                isRemoveCommand = redoSingleCommand(currentCommand, commandStack);
+                redoSingleCommand(currentCommand, commandStack);
 
-                if (isRemoveCommand && toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
+                if (toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
                     toRedoCount = lastCommandUndoCount.pop();
                     lastCommandDeletedCount.push(toRedoCount);
-
                 }
             }
             toRedoCount = toRedoCount - 1;
         } while (toRedoCount > 0);
     }
 
-    private boolean redoSingleCommand(Command command, CommandStack stack) {
-        boolean isRemove = command instanceof RemoveCommand;
+    private void redoSingleCommand(Command command, CommandStack stack) {
         final List<GConnection> oldConnections = new ArrayList<>(skinController.getGraphEditor().getModel().getConnections());
         final List<GNode> oldNodes = new ArrayList<>(skinController.getGraphEditor().getModel().getNodes());
         Pair<String, String> typeText = createCommandToTypeTextMapping.get(command);
@@ -105,7 +102,6 @@ public class DoController {
             skinController.resetNodeAndConnectionNames(typeText.getValue(), oldNodes, oldConnections);
         }
         skinController.setDataFlowSkinFactories();
-        return isRemove;
     }
 
     private boolean undoSingleCommand(Command command, CommandStack stack) {
