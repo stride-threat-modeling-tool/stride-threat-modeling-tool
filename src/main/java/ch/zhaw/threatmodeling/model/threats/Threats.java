@@ -1,7 +1,6 @@
 package ch.zhaw.threatmodeling.model.threats;
 
 import ch.zhaw.threatmodeling.model.enums.State;
-import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPattern;
 import de.tesis.dynaware.grapheditor.model.GConnection;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

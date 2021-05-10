@@ -152,15 +152,20 @@ public class DataFlowJointSkin extends GJointSkin implements DataFlowElement {
     @Override
     protected void selectionChanged(boolean isSelected) {
         final GConnection connection = joint.getConnection();
-        if (isSelected) {
-            getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
-            setConnectionStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, true);
-            setConnectorsStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, true);
-        } else {
-            getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
-            setConnectionStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, false);
-            setConnectorsStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, false);
+        try{
+            if (isSelected) {
+                getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, true);
+                setConnectionStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, true);
+                setConnectorsStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, true);
+            } else {
+                getRoot().pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, false);
+                setConnectionStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, false);
+                setConnectorsStyle(getGraphEditor().getSkinLookup(), connection, PSEUDO_CLASS_SELECTED, false);
+            }
+        } catch (NullPointerException exception) {
+            LOGGER.info("An ignored exception occurred");
         }
+
     }
 
     @Override

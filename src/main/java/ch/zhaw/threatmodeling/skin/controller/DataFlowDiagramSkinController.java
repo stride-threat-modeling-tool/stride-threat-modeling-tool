@@ -364,12 +364,12 @@ public class DataFlowDiagramSkinController implements SkinController {
         model.getNodes().forEach(gNode ->
         {
             if (!oldNodes.contains(gNode)) {
-                resetRemoveNodeName(text, gNode);
+                resetRemovedNodeName(text, gNode);
             }
         });
     }
 
-    void resetRemoveNodeName(String name, GNode node) {
+    void resetRemovedNodeName(String name, GNode node) {
         SkinLookup skinLookup = graphEditor.getSkinLookup();
         GenericNodeSkin nodeSkin = (GenericNodeSkin) skinLookup.lookupNode(node);
         nodeSkin.setText(name);
@@ -397,7 +397,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         ObservableSet<EObject> selectedItems = getSelectionManager().getSelectedItems();
 
         addMissingItemsToSelection(selectedItems, skinLookup);
-        doController.stackDeletedCount(DataFlowCommands.orderedRemove(
+        doController.stackDeletedCount( DataFlowCommands.orderedRemove(
                 doController.getDeleteCommandToTypeTextMapping(),
                 skinLookup,
                 selectedItems,
@@ -434,9 +434,12 @@ public class DataFlowDiagramSkinController implements SkinController {
                     missingConnections.add(connection);
                     missingJoints.add(connection.getJoints().get(0));
                     addSourceAndTargetNodes(missingNodes, connection);
+                } else {
+                   addAllAttachedConnections(node, missingConnections);
                 }
             }
         });
+        addAllAttachedJoints(missingJoints, missingConnections);
         SelectionManager selectionManager = getSelectionManager();
         missingNodes.forEach(node -> {
             selectionManager.select(node);
@@ -444,6 +447,14 @@ public class DataFlowDiagramSkinController implements SkinController {
         });
         missingConnections.forEach(selectionManager::select);
         missingJoints.forEach(selectionManager::select);
+    }
+
+    private void addAllAttachedJoints(Set<GJoint> missingJoints, Set<GConnection> missingConnections) {
+        missingConnections.forEach(gConnection -> missingJoints.addAll(gConnection.getJoints()));
+    }
+
+    private void addAllAttachedConnections(GNode node, Set<GConnection> missingConnections) {
+        node.getConnectors().forEach(gConnector -> missingConnections.addAll(gConnector.getConnections()));
     }
 
     private void addSourceAndTargetNodes(Set<GNode> nodes, GConnection connection){
