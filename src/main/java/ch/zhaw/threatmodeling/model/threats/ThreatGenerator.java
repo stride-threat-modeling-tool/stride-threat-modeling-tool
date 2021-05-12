@@ -15,6 +15,7 @@ import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GModel;
 import javafx.beans.value.ChangeListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -60,6 +61,16 @@ public class ThreatGenerator {
             }
         }
         addAllUniqueNewThreats(newlyGeneratedThreats);
+        removeThreatsNotFulfillingPatternConditions(newlyGeneratedThreats);
+    }
+
+    private void removeThreatsNotFulfillingPatternConditions(List<Threat> newlyGeneratedThreats) {
+        Iterator<Threat> iter = threats.iterator();
+        while(iter.hasNext()){
+            if(!newlyGeneratedThreats.contains(iter.next())){
+                iter.remove();
+            }
+        }
     }
 
     private boolean intersectsTrustBoundary(GConnection connection) {
@@ -90,9 +101,7 @@ public class ThreatGenerator {
             if(threats.all()
                     .stream()
                     .noneMatch(t ->
-                            t.getTitleTemplate().equals(threat.getTitleTemplate()) &&
-                            t.getNodeName1() == threat.getNodeName1()&&
-                            t.getNodeName2() == threat.getNodeName2()))
+                            t.equals(threat)))
             {
                 threats.add(threat);
             }
