@@ -99,7 +99,7 @@ public class HTMLReportBuilder {
         writeBase64Image(
                 writer,
                 encodedImage,
-                "Picure of an interaction"
+                "Picture of an interaction"
         );
     }
 
