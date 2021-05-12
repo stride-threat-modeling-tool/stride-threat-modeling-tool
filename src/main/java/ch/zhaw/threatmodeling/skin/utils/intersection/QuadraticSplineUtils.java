@@ -10,6 +10,11 @@ import org.apache.commons.math3.linear.RealMatrix;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * The spline intersection finding code (QuadraticSplineUtils) and its helper functions (LinearAlgebra- , GeometryUtils)
+ * are based on a python implementation given to us by Dr. Stephan Neuhaus.
+ * Date: 2021
+ */
 public class QuadraticSplineUtils {
     //Maximum angle change between line segments in a spline is at most this # number of degrees.
     private static final double ANGLE_EPS = 5.0;

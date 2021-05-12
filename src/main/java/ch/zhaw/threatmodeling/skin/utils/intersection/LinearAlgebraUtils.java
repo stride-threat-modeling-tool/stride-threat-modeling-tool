@@ -2,6 +2,11 @@ package ch.zhaw.threatmodeling.skin.utils.intersection;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
+/**
+ * The spline intersection finding code (QuadraticSplineUtils) and its helper functions (LinearAlgebra- , GeometryUtils)
+ * are based on a python implementation given to us by Dr. Stephan Neuhaus.
+ * Date: 2021
+ */
 public class LinearAlgebraUtils {
     /**
      * Return the cosine of the angle ABC.

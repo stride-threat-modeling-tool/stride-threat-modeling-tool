@@ -6,6 +6,11 @@ import org.apache.commons.math3.linear.*;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The spline intersection finding code (QuadraticSplineUtils) and its helper functions (LinearAlgebra- , GeometryUtils)
+ * are based on a python implementation given to us by Dr. Stephan Neuhaus.
+ * Date: 2021
+ */
 public class GeometryUtils {
 
     /**
