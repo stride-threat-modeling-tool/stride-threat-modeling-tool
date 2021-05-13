@@ -136,13 +136,13 @@ public class SelectionCopier {
             }
         }
 
-        fixJointSelections();
+        completeTrustBoundaryJointSelections();
     }
 
     /**
-     * Select trust boundary nodes of selected trust boundary joints and clear selections of data flow joints.
+     * Select trust boundary nodes of selected trust boundary joints.
      */
-    private void fixJointSelections() {
+    private void completeTrustBoundaryJointSelections() {
         // If a TrustBoundaryJoint is selected, the trust boundary's nodes have to be selected as well
         for (final GConnection connection : model.getConnections()) {
             GJoint joint = connection.getJoints().get(0);
@@ -150,9 +150,6 @@ public class SelectionCopier {
                 if (selectionManager.isSelected(joint)) {
                     selectTrustBoundaryNodes(connection);
                 }
-            } else {
-                // Clear selection of DataFlowJoints
-                selectionManager.clearSelection(joint);
             }
         }
     }
@@ -359,7 +356,7 @@ public class SelectionCopier {
      */
     private void saveParentPositionInScene() {
 
-        if (!selectionManager.getSelectedItems().isEmpty()) {
+        if (!selectionManager.getSelectedItems().isEmpty() && !selectionManager.getSelectedNodes().isEmpty()) {
 
             final GNode firstSelectedNode = selectionManager.getSelectedNodes().get(0);
             final GNodeSkin firstSelectedNodeSkin = skinLookup.lookupNode(firstSelectedNode);
