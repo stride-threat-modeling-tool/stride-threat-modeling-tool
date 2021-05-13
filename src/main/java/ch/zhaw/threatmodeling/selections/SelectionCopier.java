@@ -2,16 +2,14 @@ package ch.zhaw.threatmodeling.selections;
 
 import ch.zhaw.threatmodeling.selections.utils.ConnectionMaps;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
+import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
+import ch.zhaw.threatmodeling.skin.utils.DataFlowNodeCommands;
 import de.tesis.dynaware.grapheditor.GNodeSkin;
 import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
-import de.tesis.dynaware.grapheditor.model.GConnection;
-import de.tesis.dynaware.grapheditor.model.GJoint;
-import de.tesis.dynaware.grapheditor.model.GModel;
-import de.tesis.dynaware.grapheditor.model.GNode;
-import de.tesis.dynaware.grapheditor.model.GraphPackage;
+import de.tesis.dynaware.grapheditor.model.*;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -96,6 +94,8 @@ public class SelectionCopier {
 
         final Map<GNode, GNode> copyStorage = new HashMap<>();
 
+        completePartialTrustBoundarySelections();
+
         // Don't iterate directly over selectionTracker.getSelectedNodes() because that will not preserve ordering.
         for (final GNode node : model.getNodes()) {
             if (selectionManager.isSelected(node)) {
@@ -108,6 +108,64 @@ public class SelectionCopier {
         }
         DataFlowConnectionCopier.copyConnections(copyStorage, connectionToClassMapping, skinLookup);
         saveParentPositionInScene();
+    }
+
+
+    /**
+     * Check if a partial trust boundary is selected (e.g. just one of two TrustBoundaryNodes) and select
+     * both nodes so that the whole trust boundary can be copied.
+     */
+    private void completePartialTrustBoundarySelections() {
+        GNode firstNode = null;
+        GNode secondNode = null;
+        for (final GNode node : model.getNodes()) {
+            // Find pairs of trust boundary nodes where only one is selected and select the second one too
+            if (DataFlowNodeCommands.isTrustBoundaryNode(node, skinLookup)) {
+                if (firstNode == null) {
+                    firstNode = node;
+                } else {
+                    secondNode = node;
+
+                    // Select both nodes if either one is selected
+                    if (selectionManager.isSelected(firstNode) || selectionManager.isSelected(secondNode)) {
+                        selectionManager.select(firstNode);
+                        selectionManager.select(secondNode);
+                    }
+                    firstNode = null;
+                }
+            }
+        }
+
+        fixJointSelections();
+    }
+
+    /**
+     * Select trust boundary nodes of selected trust boundary joints and clear selections of data flow joints.
+     */
+    private void fixJointSelections() {
+        // If a TrustBoundaryJoint is selected, the trust boundary's nodes have to be selected as well
+        for (final GConnection connection : model.getConnections()) {
+            if (DataFlowConnectionCommands.getType(connection, skinLookup).equals(TrustBoundaryJointSkin.ELEMENT_TYPE)) {
+                GJoint joint = connection.getJoints().get(0);
+                if (selectionManager.isSelected(joint)) {
+                    selectTrustBoundaryNodes(connection);
+                } else {
+                    // Clear selection of DataFlowJoint
+                    selectionManager.clearSelection(joint);
+                }
+            }
+        }
+    }
+
+    /**
+     * Selects the TrustBoundaryNodes of a TrustBoundaryConnection
+     * @param connection the connection of a selected trust boundary joint
+     */
+    private void selectTrustBoundaryNodes(GConnection connection) {
+        final GConnector sourceConnector = connection.getSource();
+        final GConnector targetConnector = connection.getTarget();
+        selectionManager.select(sourceConnector.getParent());
+        selectionManager.select(targetConnector.getParent());
     }
 
     /**
