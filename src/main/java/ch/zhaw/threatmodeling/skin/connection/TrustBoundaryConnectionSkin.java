@@ -4,6 +4,7 @@ import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.trustboundary.TrustBoundaryNodeSkin;
 import de.tesis.dynaware.grapheditor.GConnectionSkin;
 import de.tesis.dynaware.grapheditor.GJointSkin;
+import de.tesis.dynaware.grapheditor.SelectionManager;
 import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.core.skins.defaults.connection.SimpleConnectionSkin;
 import de.tesis.dynaware.grapheditor.model.GConnection;
@@ -65,8 +66,20 @@ public class TrustBoundaryConnectionSkin extends GConnectionSkin {
 
     private void initEventListener() {
         // Change style of TrustBoundary on mouseover
+        path.setOnMouseClicked(mouseEvent -> selectTrustBoundary());
         path.setOnMouseEntered(mouseEvent -> highlightTrustBoundary());
         path.setOnMouseExited(mouseEvent -> unhighlightTrustBoundary());
+    }
+
+    private void selectTrustBoundary() {
+        // Select the whole trust boundary when the connection is clicked
+        final SelectionManager selectionManager = getGraphEditor().getSelectionManager();
+        GConnection connection = this.getItem();
+        final GConnector sourceConnector = connection.getSource();
+        final GConnector targetConnector = connection.getTarget();
+        selectionManager.select(sourceConnector.getParent());
+        selectionManager.select(targetConnector.getParent());
+        selectionManager.select(connection.getJoints().get(0));
     }
 
     private void highlightTrustBoundary() {
