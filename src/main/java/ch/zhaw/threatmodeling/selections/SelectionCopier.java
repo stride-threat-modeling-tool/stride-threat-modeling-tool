@@ -145,14 +145,14 @@ public class SelectionCopier {
     private void fixJointSelections() {
         // If a TrustBoundaryJoint is selected, the trust boundary's nodes have to be selected as well
         for (final GConnection connection : model.getConnections()) {
+            GJoint joint = connection.getJoints().get(0);
             if (DataFlowConnectionCommands.getType(connection, skinLookup).equals(TrustBoundaryJointSkin.ELEMENT_TYPE)) {
-                GJoint joint = connection.getJoints().get(0);
                 if (selectionManager.isSelected(joint)) {
                     selectTrustBoundaryNodes(connection);
-                } else {
-                    // Clear selection of DataFlowJoint
-                    selectionManager.clearSelection(joint);
                 }
+            } else {
+                // Clear selection of DataFlowJoints
+                selectionManager.clearSelection(joint);
             }
         }
     }
