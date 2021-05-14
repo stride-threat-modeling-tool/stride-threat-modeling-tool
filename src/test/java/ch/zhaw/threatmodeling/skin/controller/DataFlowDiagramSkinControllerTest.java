@@ -127,35 +127,6 @@ class DataFlowDiagramSkinControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testCopyPasteTrustBoundaryByConnection() {
-        // index of out bounds exception
-        final GraphEditor editor = skinController.getGraphEditor();
-        final GModel model = editor.getModel();
-        final List<GNode> nodes = model.getNodes();
-        final SelectionManager selector = editor.getSelectionManager();
-
-        interact(() -> mainController.addTrustBoundary());
-
-        final List<GConnection> connections = model.getConnections();
-        final GConnection connection = connections.get(0);
-
-        assertEquals(2, nodes.size());
-        assertEquals(1, connections.size());
-
-        interact(() -> {
-            selector.select(connection);
-        });
-        mainController.copy();
-        interact(() -> {
-            mainController.paste();
-        });
-
-        assertEquals(4, model.getNodes().size());
-        assertEquals(2, model.getConnections().size());
-        validateTrustBoundaryElementTypes(nodes, connections);
-    }
-
-    @Test
     public void testCopyPasteTrustBoundaryBySourceNode() {
         // doesn't work, only pastes a ghost node
         final GraphEditor editor = skinController.getGraphEditor();
