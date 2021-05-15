@@ -388,6 +388,7 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void paste() {
         selectionCopier.paste(null);
+        setDataFlowSkinFactories();
     }
 
     public void deleteSelection() {
