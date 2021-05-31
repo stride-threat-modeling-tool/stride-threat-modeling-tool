@@ -1,0 +1,1001 @@
+{
+  "all": [
+    {
+      "titleTemplate": "Spoofing the {source.Name} Process",
+      "strideCategory": "SPOOFING",
+      "descriptionTemplate": "{source.Name} may be spoofed by an attacker and this may lead to unauthorized access to {target.Name}. Consider using a standard authentication mechanism to identify the source process.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {
+              "implements or uses Authentication Mechanism": "yes"
+            },
+            "flowExclusionAttributes": {
+              "authenticates source": "yes"
+            },
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Spoofing the {target.Name} Process",
+      "strideCategory": "SPOOFING",
+      "descriptionTemplate": "{target.Name} may be spoofed by an attacker and this may lead to information disclosure by {source.Name}. Consider using a standard authentication mechanism to identify the destination process.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "External Entity",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "Data Store",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {
+              "authenticates target": "yes"
+            },
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Spoofing the {source.Name} External Entity",
+      "strideCategory": "SPOOFING",
+      "descriptionTemplate": "{source.Name} may be spoofed by an attacker and this may lead to unauthorized access to {target.Name}. Consider using a standard authentication mechanism to identify the external entity.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "External Entity",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {
+              "authenticates itself": "yes"
+            },
+            "flowExclusionAttributes": {
+              "authenticates source": "yes"
+            },
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Spoofing of Source Data Store {source.Name}",
+      "strideCategory": "SPOOFING",
+      "descriptionTemplate": "{source.Name} may be spoofed by an attacker and this may lead to incorrect data delivered to {target.Name}. Consider using a standard authentication mechanism to identify the source data store.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Data Store",
+            "target": "",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Spoofing of Destination Data Store {target.Name}",
+      "strideCategory": "SPOOFING",
+      "descriptionTemplate": "{target.Name} may be spoofed by an attacker and this may lead to data being written to the attacker\u0027s target instead of {target.Name}. Consider using a standard authentication mechanism to identify the destination data store.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Spoofing of the {target.Name} External Destination Entity",
+      "strideCategory": "SPOOFING",
+      "descriptionTemplate": "{target.Name} may be spoofed by an attacker and this may lead to data being sent to the attacker\u0027s target instead of {target.Name}. Consider using a standard authentication mechanism to identify the external entity.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "External Entity",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Potential Lack of Input Validation for {target.Name}",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "Data flowing across {flow.Name} may be tampered with by an attacker. This may lead to a denial of service attack against {target.Name} or an elevation of privilege attack against {target.Name} or an information disclosure by {target.Name}. Failure to verify that input is as expected is a root cause of a very large number of exploitable issues. Consider all paths and the way they handle data. Verify that all input is verified for correctness using an approved list input validation approach.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "External Entity",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {
+              "provides confidentiality and integrity": "yes"
+            },
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "{source.Name} Process Memory Tampered",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If {target.Name} uses unmanaged code such as C and if {source.Name} is given access to memory, such as shared memory or pointers, or is given the ability to control what {target.Name} executes (for example, passing back a function pointer.), then {source.Name} can tamper with {target.Name}. Consider if the function could work with less access to memory, such as passing data rather than pointers. Copy in data provided, and then validate it.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Replay Attacks",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If {target.Name} uses or implements a communication protocol then packets or messages without sequence numbers or timestamps can be captured and replayed in a wide variety of ways. Implement or utilize an existing communication protocol that supports anti-replay techniques (investigate sequence numbers before timers) and strong integrity.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Collision Attacks",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If {target.Name} uses or implements a communication protocol then attackers who can send a series of packets or messages may be able to overlap data. For example, packet 1 may be 100 bytes starting at offset 0. Packet 2 may be 100 bytes starting at offset 25. Packet 2 will overwrite 75 bytes of packet 1. Ensure you reassemble data before filtering it, and ensure you explicitly handle these sorts of cases.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Risks from Logging",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If the Data Store stores log data keep in mind that log readers can come under attack via log files. Consider ways to canonicalize data in all logs. Implement a single reader for the logs, if possible, in order to reduce attack surface area. Be sure to understand and document log file elements which come from untrusted sources.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": false
+          },
+          {
+            "source": "Data Store",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Authenticated Data Flow Compromised",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If {flow.Name} authenticates either {source.Name} or {target.Name} without providing confidentiality and integrity an attacker can read or modify data transmitted over this dataflow.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {}
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Possible SQL Injection Vulnerability for {target.Name}",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "SQL injection is an attack in which malicious code is inserted into strings that are later passed to an instance of SQL Server for parsing and execution. Any procedure that constructs SQL statements should be reviewed for injection vulnerabilities because SQL Server will execute all syntactically valid queries that it receives. Even parameterized data can be manipulated by a skilled and determined attacker.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Extenal Entity",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {}
+        ]
+      }
+    },
+    {
+      "titleTemplate": "XML DTD and XSLT Processing",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If a dataflow contains XML, XML processing threats (DTD and XSLT code execution) may be exploited.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {}
+        ]
+      }
+    },
+    {
+      "titleTemplate": "JavaScript Object Notation Processing",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If a dataflow contains JSON, JSON processing and hijacking threats may be exploited.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {}
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Cross Site Scripting",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If {target.Name} is a web server it could be a subject to a cross-site scripting attack because it might not sanitize untrusted input.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {
+              "sanitizes input and output": "yes"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Persistent Cross Site Scripting",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "If {target.Name} is a web server it could be a subject to a persistent cross-site scripting attack because it does not sanitize data store \u0027{source.Name}\u0027 inputs and output.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Data Store",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {
+              "sanitizes input and output": "yes"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "The {target.Name} Data Store Could Be Corrupted",
+      "strideCategory": "TAMPERING",
+      "descriptionTemplate": "Data flowing across {flow.Name} may be tampered with by an attacker. This may lead to corruption of {target.Name}. Ensure the integrity of the data flow to the data store.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "External Entity",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Lower Trusted Subject Updates Logs",
+      "strideCategory": "REPUDIATION",
+      "descriptionTemplate": "If {target.Name} stores log data and you have trust levels, is anyone other outside of the highest trust level allowed to log? Letting everyone write to your logs can lead to repudiation problems. Only allow trusted code to log",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "External Entity",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Data Logs from an Unknown Source",
+      "strideCategory": "REPUDIATION",
+      "descriptionTemplate": "If {target.Name} stores logs and accepts them from unknown or weakly authenticated users or systems identify and authenticate the source of the logs before accepting them.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "External Entity",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": []
+      }
+    },
+    {
+      "titleTemplate": "Insufficient Auditing",
+      "strideCategory": "REPUDIATION",
+      "descriptionTemplate": "Does the log capture enough data to understand what happened in the past? Do your logs capture enough data to understand an incident after the fact? Is such capture lightweight enough to be left on all the time? Do you have enough data to deal with repudiation claims? Make sure you log sufficient and appropriate data to handle a repudiation claims. You might want to talk to an audit expert as well as a privacy expert about your choice of data.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Potential Weak Protections for Audit Data",
+      "strideCategory": "REPUDIATION",
+      "descriptionTemplate": "Consider what happens when the audit mechanism comes under attack, including attempts to destroy the logs, or attack log analysis programs. Ensure access to the log is through a reference monitor, which controls read and write separately. Document what filters, if any, readers can rely on, or writers should expect",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Potential Data Repudiation by {target.Name}",
+      "strideCategory": "REPUDIATION",
+      "descriptionTemplate": "{target.Name} claims that it did not receive data from a source outside the trust boundary. Consider using logging or auditing to record the source, time, and summary of the received data.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Potential Data Repudiation by {target.Name}",
+      "strideCategory": "REPUDIATION",
+      "descriptionTemplate": "{target.Name} claims that it did not receive data from a source outside the trust boundary. Consider using logging or auditing to record the source, time, and summary of the received data.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "External Entity",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Data Store Denies {target.Name} Potentially Writing Data",
+      "strideCategory": "REPUDIATION",
+      "descriptionTemplate": "{target.Name} claims that it did not write data received from an entity on the other side of the trust boundary. Consider using logging or auditing to record the source, time, and summary of the received data.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Authorization Bypass",
+      "strideCategory": "INFORMATION_DISCLOSURE",
+      "descriptionTemplate": "Can you access {target.Name} and bypass the permissions for the object? For example by editing the files directly with a hex editor, or reaching it via filesharing? Ensure that your program is the only one that can access the data, and that all other subjects have to use your interface.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Data Flow Sniffing",
+      "strideCategory": "INFORMATION_DISCLOSURE",
+      "descriptionTemplate": "Data flowing across {flow.Name} may be sniffed by an attacker. Depending on what type of data an attacker can read, it may be used to attack other parts of the system or simply be a disclosure of information leading to compliance violations. Consider encrypting the data flow.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "External Entity",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {
+              "provides confidentiality": "yes"
+            },
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Weak Access Control for a Resource",
+      "strideCategory": "INFORMATION_DISCLOSURE",
+      "descriptionTemplate": "Improper data protection of {source.Name} can allow an attacker to read information not intended for disclosure. Review authorization settings.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Data Store",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          },
+          {
+            "source": "Data Store",
+            "target": "External Entity",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Weak Credential Storage",
+      "strideCategory": "INFORMATION_DISCLOSURE",
+      "descriptionTemplate": "Credentials held at the server are often disclosed or tampered with and credentials stored on the client are often stolen. For server side, consider storing a salted hash of the credentials instead of storing the credentials themselves. If this is not possible due to business requirements, be sure to encrypt the credentials before storage, using an SDL-approved mechanism. For client side, if storing credentials is required, encrypt them and protect the data store in which they\u0027re stored",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Weak Credential Transit",
+      "strideCategory": "INFORMATION_DISCLOSURE",
+      "descriptionTemplate": "Credentials on the wire are often subject to sniffing by an attacker. Are the credentials re-usable/re-playable? Are credentials included in a message? For example, sending a zip file with the password in the email. Use strong cryptography for the transmission of credentials. Use the OS libraries if at all possible, and consider cryptographic algorithm agility, rather than hardcoding a choice.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {
+              "flow is HTTPS": "yes",
+              "flow is IPsec": "yes"
+            },
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Weak Authentication Scheme",
+      "strideCategory": "INFORMATION_DISCLOSURE",
+      "descriptionTemplate": "Custom authentication schemes are susceptible to common weaknesses such as weak credential change management, credential equivalence, easily guessable credentials, null credentials, downgrade authentication or a weak credential change management system. Consider the impact and potential mitigations for your custom authentication scheme.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          },
+          {
+            "source": "",
+            "target": "",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Potential Excessive Resource Consumption for {source.Name} or {target.Name}",
+      "strideCategory": "DENIAL_OF_SERVICE",
+      "descriptionTemplate": "Does {source.Name} or {target.Name} take explicit steps to control resource consumption? Resource consumption attacks can be hard to deal with, and there are times that it makes sense to let the OS do the job. Be careful that your resource requests don\u0027t deadlock, and that they do timeout.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Potential Process Crash or Stop for {target.Name}",
+      "strideCategory": "DENIAL_OF_SERVICE",
+      "descriptionTemplate": "{target.Name} crashes, halts, stops or runs slowly; in all cases violating an availability metric.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Data Flow {flow.Name} Is Potentially Interrupted",
+      "strideCategory": "DENIAL_OF_SERVICE",
+      "descriptionTemplate": "An external agent interrupts data flowing across a trust boundary in either direction.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Data Store Inaccessible",
+      "strideCategory": "DENIAL_OF_SERVICE",
+      "descriptionTemplate": "An external agent prevents access to a data store on the other side of the trust boundary.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Data Store",
+            "target": "Data Store",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Weakness in SSO Authorization",
+      "strideCategory": "ELEVATION_OF_PRIVILEGE",
+      "descriptionTemplate": "Common SSO implementations such as OAUTH2 and OAUTH Wrap are vulnerable to MitM attacks.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Weakness in SSO Authorization",
+            "target": "",
+            "requiresTrustBoundaryIntersection": false
+          },
+          {
+            "source": "",
+            "target": "",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Elevation Using Impersonation",
+      "strideCategory": "ELEVATION_OF_PRIVILEGE",
+      "descriptionTemplate": "{target.Name} may be able to impersonate the context of {source.Name} in order to gain additional privilege.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "External Entity",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          },
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": false
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "{target.Name} May be Subject to Elevation of Privilege Using Remote Code Execution",
+      "strideCategory": "ELEVATION_OF_PRIVILEGE",
+      "descriptionTemplate": "{source.Name} may be able to remotely execute code for {target.Name}.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Procses",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Elevation by Changing the Execution Flow in {target.Name}",
+      "strideCategory": "ELEVATION_OF_PRIVILEGE",
+      "descriptionTemplate": "An attacker may pass data into {target.Name} in order to change the flow of program execution within {target.Name} to the attacker\u0027s choosing.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    },
+    {
+      "titleTemplate": "Cross Site Request Forgery",
+      "strideCategory": "ELEVATION_OF_PRIVILEGE",
+      "descriptionTemplate": "Cross-site request forgery (CSRF or XSRF) is a type of attack in which an attacker forces a user\u0027s browser to make a forged request to a vulnerable site by exploiting an existing trust relationship between the browser and the vulnerable web site.  In a simple scenario, a user is logged in to web site A using a cookie as a credential.  The other browses to web site B.  Web site B returns a page with a hidden form that posts to web site A.  Since the browser will carry the user\u0027s cookie to web site A, web site B now can take any action on web site A, for example, adding an admin to an account.  The attack can be used to exploit any requests that the browser automatically authenticates, e.g. by session cookie, integrated authentication, IP whitelisting.  The attack can be carried out in many ways such as by luring the victim to a site under control of the attacker, getting the user to click a link in a phishing email, or hacking a reputable web site that the victim will visit. The issue can only be resolved on the server side by requiring that all authenticated state-changing requests include an additional piece of secret payload (canary or CSRF token) which is known only to the legitimate web site and the browser and which is protected in transit through SSL/TLS. See the Forgery Protection property on the flow stencil for a list of mitigations.",
+      "inclusions": {
+        "loadedInclusions": [
+          {
+            "source": "Process",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          },
+          {
+            "source": "External Entity",
+            "target": "Process",
+            "requiresTrustBoundaryIntersection": true
+          }
+        ]
+      },
+      "exclusions": {
+        "loadedExclusions": [
+          {
+            "source": "",
+            "target": "",
+            "sourceExclusionAttributes": {},
+            "flowExclusionAttributes": {},
+            "targetExclusionAttributes": {}
+          }
+        ]
+      }
+    }
+  ]
+}

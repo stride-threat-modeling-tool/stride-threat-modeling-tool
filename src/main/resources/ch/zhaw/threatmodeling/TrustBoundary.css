@@ -1,0 +1,28 @@
+.trust-boundary-joint {
+    -fx-background-color: rgba(208, 255, 180, 0.5);
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-stroke-type: inside;
+}
+
+.trust-boundary-joint:hover, .trust-boundary-joint:pressed, .trust-boundary-joint:selected, .trust-boundary-joint:selected:pressed {
+    -fx-font-weight: bold;
+}
+
+.trust-boundary-node:hover, .trust-boundary-node:pressed, .trust-boundary-node:selected {
+    -fx-stroke: black;
+    -fx-stroke-width: 1;
+    -fx-fill: white;
+    -fx-opacity: 0.6;
+    -fx-effect: dropshadow(one-pass-box, rgba(180, 180, 180), 5, 0, 1, 1);
+    -fx-background-color: derive(white, -4%);
+}
+
+.trust-boundary-connection {
+    -fx-stroke: red;
+    -fx-stroke-dash-array: 6 6;
+}
+
+.trust-boundary-connection:selected, .trust-boundary-connection:hover, .trust-boundary-connection:pressed {
+    -fx-stroke-width: 3;
+}
