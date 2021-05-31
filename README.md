@@ -17,7 +17,11 @@ jars (with shifts pressed:
 4. Plugins -> javafx -> javafx:run
 
 
+## How to package
 
+### Packaging under windows:
+run lifecycle install, navigate to target and start the msi.
+-free [WiX Toolset](https://wixtoolset.org/) is required.
 
 # README OF MAVEN JPACKAGE PLUGIN
 
