@@ -460,6 +460,8 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     public void clearAll() {
         Commands.clear(model);
+        currentElement.set(null);
+        threatGenerator.getThreats().clear();
         doController.flushCommandStack();
     }
 

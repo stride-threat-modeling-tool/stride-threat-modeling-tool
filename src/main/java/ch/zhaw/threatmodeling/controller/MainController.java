@@ -341,6 +341,7 @@ public class MainController {
 
     @FXML
     public void clearAll() {
+        currentThreat.set(null);
         dfdSkinController.clearAll();
         dfdSkinController.getThreatGenerator().getThreats().clear();
     }

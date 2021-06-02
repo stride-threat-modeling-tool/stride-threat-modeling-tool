@@ -14,11 +14,11 @@ public class Threats {
     private final ObjectProperty<ObservableList<Threat>> threatList = new SimpleObjectProperty<>();
 
     public Threats() {
-       clear();
+        threatList.set(FXCollections.observableArrayList());
     }
 
     public void clear(){
-        threatList.set(FXCollections.observableArrayList());
+        threatList.get().clear();
     }
 
     public ObjectProperty<ObservableList<Threat>> getListProperty() {

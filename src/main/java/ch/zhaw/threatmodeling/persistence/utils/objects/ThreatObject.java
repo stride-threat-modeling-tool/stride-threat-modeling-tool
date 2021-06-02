@@ -5,18 +5,20 @@ import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.model.enums.ThreatPriority;
 
 public class ThreatObject {
-    private final int id;
-    private final State state;
-    private final String title;
-    private final String titleTemplate;
-    private final String descriptionTemplate;
-    private final String description;
-    private final STRIDECategory category;
-    private final String justification;
-    private final ThreatPriority priority;
-    private final int connectionIndex;
-    private final int nodeName1Index;
-    private final int nodeName2Index;
+    private int id;
+    private State state;
+    private String title;
+    private String titleTemplate;
+    private String descriptionTemplate;
+    private String description;
+    private STRIDECategory category;
+    private String justification;
+    private ThreatPriority priority;
+    private int connectionIndex;
+    private int nodeName1Index;
+    private int nodeName2Index;
+
+    public ThreatObject(){}
 
     public ThreatObject(
             int id,

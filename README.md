@@ -4,24 +4,27 @@ if you cannot start the app because a NullPointerException
 2. Add ";!?*.css;!?*.fxml" to the resource pattern
 3. Right Click on ProjectName -> Open Module Settings -> Libraries -> + -> Java
 jars (with shifts pressed: 
-    - lib/graph-editor-api-11.0.7.jar
-    - lib/graph-editor-api-11.0.7-javadoc.jar
-    - lib/graph-editor-api-11.0.7-sources.jar
+    - graph-editor-api-11.0.7.jar
+    - graph-editor-api-11.0.7-javadoc.jar
+    - graph-editor-api-11.0.7-sources.jar
     - Ok
     - Ok
 4. repeat for core and model jars.
 ## How to run
 1. View -> Tool Windows -> Maven
 2. Lifecycle -> clean
-3. Plugins -> javafx -> javafx:compile
-4. Plugins -> javafx -> javafx:run
+3. Plugins -> javafx -> javafx:run
 
 
 ## How to package
+-requires JDK 16
 
 ### Packaging under windows:
 run lifecycle install, navigate to target and start the msi.
 -free [WiX Toolset](https://wixtoolset.org/) is required.
+
+### Packaging under linux:
+requires maven >=3.8.1, this is not the standard.
 
 # README OF MAVEN JPACKAGE PLUGIN
 
