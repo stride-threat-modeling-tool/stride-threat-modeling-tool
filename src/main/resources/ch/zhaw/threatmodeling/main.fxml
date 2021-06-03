@@ -131,7 +131,7 @@
                                   minHeight="250.0" spacing="10.0">
                                 <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                     <children>
-                                        <Label prefWidth="75.0" text="State"/>
+                                        <Label prefWidth="75.0" text="State:"/>
                                         <ChoiceBox fx:id="stateChoiceBox" prefWidth="150.0"/>
                                     </children>
                                 </HBox>
@@ -143,7 +143,7 @@
                                 </HBox>
                                 <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                     <children>
-                                        <Label prefWidth="75.0" text="Category"/>
+                                        <Label prefWidth="75.0" text="Category:"/>
                                         <ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0"/>
                                     </children>
                                 </HBox>
@@ -161,7 +161,7 @@
                                 </HBox>
                                 <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                     <children>
-                                        <Label prefWidth="75.0" text="Priority"/>
+                                        <Label prefWidth="75.0" text="Priority:"/>
                                         <ChoiceBox fx:id="priorityChoiceBox" prefWidth="150.0"/>
                                     </children>
                                 </HBox>

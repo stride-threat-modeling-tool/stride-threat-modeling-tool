@@ -26,6 +26,17 @@ run lifecycle install, navigate to target and start the msi.
 ### Packaging under linux:
 requires maven >=3.8.1, this is not the standard.
 
+# Known Issues
+
+## debian
+-  E: Package 'libffi7' has no installation candidate
+   -  https://packages.debian.org/sid/amd64/libffi7/download download from here
+   -  sudo dpkg -i <deb file>
+    
+- No protocol or cannot access Display
+    - do not launch as root
+
+
 # README OF MAVEN JPACKAGE PLUGIN
 
 
