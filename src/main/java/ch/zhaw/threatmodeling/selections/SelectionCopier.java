@@ -173,10 +173,10 @@ public class SelectionCopier {
      * </p>
      *
      * @param consumer a consumer to allow custom commands to be appended to the paste command
+     * @param deleteCommandToTypeTextMapping
      * @return the list of new {@link GNode} instances created by the paste operation
      */
-    public List<GNode> paste(final BiConsumer<List<GNode>, CompoundCommand> consumer) {
-
+    public int paste(final BiConsumer<List<GNode>, CompoundCommand> consumer, Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping) {
         selectionManager.clearSelection();
 
         final List<GNode> pastedNodes = new ArrayList<>();
@@ -185,7 +185,7 @@ public class SelectionCopier {
             preparePastedElements(pastedNodes, pastedConnections);
             addPasteOffset(pastedNodes, pastedConnections);
             checkWithinBounds(pastedNodes, pastedConnections);
-            addPastedElements(pastedNodes, pastedConnections);
+            addPastedElements(pastedNodes, pastedConnections, deleteCommandToTypeTextMapping);
 
             for (final GNode pastedNode : pastedNodes) {
                 selectionManager.select(pastedNode);
@@ -198,7 +198,7 @@ public class SelectionCopier {
             }
             clearMemory();
         }
-        return pastedNodes;
+        return pastedNodes.size() + pastedConnections.size();
     }
 
     /**
@@ -308,12 +308,12 @@ public class SelectionCopier {
 
     /**
      * Adds the pasted elements to the graph editor via a single EMF command.
-     *
-     * @param pastedNodes       the pasted nodes to be added
+     *  @param pastedNodes       the pasted nodes to be added
      * @param pastedConnections the pasted connections to be added
+     * @param deleteCommandToTypeTextMapping
      */
-    private void addPastedElements(final List<GNode> pastedNodes, final List<GConnection> pastedConnections
-    ) {
+    private void addPastedElements(final List<GNode> pastedNodes, final List<GConnection> pastedConnections,
+                                   Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping) {
 
         final EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
         Command command;
@@ -323,7 +323,7 @@ public class SelectionCopier {
             if (command.canExecute()) {
                 editingDomain.getCommandStack().execute(command);
                 setNodeText(pastedNode);
-
+                deleteCommandToTypeTextMapping.put(command, DataFlowNodeCommands.getTypeAndTextOfNode(pastedNode, skinLookup));
             } else {
                 LOGGER.warning("Could not paste node of type" + pastedNode.getType());
             }
@@ -335,6 +335,7 @@ public class SelectionCopier {
             if (command.canExecute()) {
                 editingDomain.getCommandStack().execute(command);
                 setConnectionText(pastedConnection);
+                deleteCommandToTypeTextMapping.put(command, DataFlowConnectionCommands.getTypeAndJointLabel(pastedConnection, skinLookup));
             } else {
                 LOGGER.warning("Could not paste connection of type" + pastedConnection.getType());
             }

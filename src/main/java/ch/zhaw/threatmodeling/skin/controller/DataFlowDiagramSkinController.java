@@ -382,7 +382,10 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void paste() {
-        selectionCopier.paste(null);
+        int pastedCount = selectionCopier.paste(null, doController.getDeleteCommandToTypeTextMapping());
+        if(pastedCount > 1) {
+            doController.stackDeletedCount(pastedCount);
+        }
         setDataFlowSkinFactories();
     }
 
