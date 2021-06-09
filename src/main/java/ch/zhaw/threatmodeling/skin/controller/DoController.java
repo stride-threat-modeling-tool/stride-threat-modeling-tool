@@ -19,8 +19,8 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class DoController {
-    private final Deque<Integer> lastCommandDeletedCount = new ArrayDeque<>();
-    private final Deque<Integer> lastCommandUndoCount = new ArrayDeque<>();
+    private final Deque<Pair<Integer, Boolean>> lastCommandDeletedCount = new ArrayDeque<>();
+    private final Deque<Pair<Integer, Boolean>> lastCommandUndoCount = new ArrayDeque<>();
     private final Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping = new HashMap<>();
     private final Map<Command, Pair<String, String>> createCommandToTypeTextMapping = new HashMap<>();
     private final GModel model;
@@ -47,15 +47,20 @@ public class DoController {
         boolean isRemoveCommand;
         boolean isAddCommand;
         int toUndoCount = -1;
+        Pair<Integer, Boolean> commandsToUndoAndRedoAllowedPair = null;
         do {
             if (commandStack.canUndo()) {
                 Command currentCommand = commandStack.getUndoCommand();
                 isRemoveCommand = undoSingleCommand(currentCommand, commandStack);
                 isAddCommand = currentCommand instanceof AddCommand;
 
-                if ((isRemoveCommand || isAddCommand) && toUndoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand)) {
-                    toUndoCount = lastCommandDeletedCount.pop();
-                    lastCommandUndoCount.push(toUndoCount);
+                if ((isRemoveCommand || isAddCommand) &&
+                        toUndoCount == -1 &&
+                        null != deleteCommandToTypeTextMapping.get(currentCommand) &&
+                        commandsToUndoAndRedoAllowedPair == null) {
+                    commandsToUndoAndRedoAllowedPair = lastCommandDeletedCount.pop();
+                    toUndoCount = commandsToUndoAndRedoAllowedPair.getKey();
+                    lastCommandUndoCount.push(commandsToUndoAndRedoAllowedPair);
                 }
             }
             toUndoCount = toUndoCount - 1;
@@ -66,18 +71,29 @@ public class DoController {
 
     public void redo() {
         int toRedoCount = -1;
+        Pair<Integer, Boolean> commandsToRedoAndRedoAllowedPair = null;
         do {
             if (commandStack.canRedo()) {
                 Command currentCommand = commandStack.getRedoCommand();
-                redoSingleCommand(currentCommand, commandStack);
 
-                if (toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand) && !lastCommandUndoCount.isEmpty()) {
-                    toRedoCount = lastCommandUndoCount.pop();
-                    lastCommandDeletedCount.push(toRedoCount);
+                if (toRedoCount == -1 && null != deleteCommandToTypeTextMapping.get(currentCommand) && !lastCommandUndoCount.isEmpty() && commandsToRedoAndRedoAllowedPair == null) {
+                    commandsToRedoAndRedoAllowedPair = lastCommandUndoCount.pop();
+                    toRedoCount = commandsToRedoAndRedoAllowedPair.getKey();
+                    lastCommandDeletedCount.push(commandsToRedoAndRedoAllowedPair);
+                }
+                if(commandsToRedoAndRedoAllowedPair == null || !commandsToRedoAndRedoAllowedPair.getValue()){
+                    redoSingleCommand(currentCommand, commandStack);
+                } else {
+                    LOGGER.info("redone prevented, you tried to redo a paste with selection with data flows and trust boundaries, this cannot be handled");
+
                 }
             }
             toRedoCount = toRedoCount - 1;
         } while (toRedoCount > 0);
+
+        if(commandsToRedoAndRedoAllowedPair != null && commandsToRedoAndRedoAllowedPair.getValue()){
+            lastCommandUndoCount.push(lastCommandDeletedCount.pop());
+        }
     }
 
     private void redoSingleCommand(Command command, CommandStack stack) {
@@ -135,7 +151,7 @@ public class DoController {
         }
     }
 
-    public void stackDeletedCount(int count) {
+    public void stackDeletedCount(Pair<Integer, Boolean> count) {
         lastCommandDeletedCount.push(count);
     }
 

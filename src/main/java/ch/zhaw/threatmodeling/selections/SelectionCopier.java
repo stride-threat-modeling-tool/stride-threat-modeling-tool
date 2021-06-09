@@ -2,6 +2,7 @@ package ch.zhaw.threatmodeling.selections;
 
 import ch.zhaw.threatmodeling.selections.utils.ConnectionMaps;
 import ch.zhaw.threatmodeling.skin.controller.DataFlowDiagramSkinController;
+import ch.zhaw.threatmodeling.skin.joint.DataFlowJointSkin;
 import ch.zhaw.threatmodeling.skin.joint.TrustBoundaryJointSkin;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
 import ch.zhaw.threatmodeling.skin.utils.DataFlowConnectionCommands;
@@ -165,27 +166,17 @@ public class SelectionCopier {
         selectionManager.select(targetConnector.getParent());
     }
 
-    /**
-     * Pastes the most-recently-copied selection.
-     *
-     * <p>
-     * After the paste operation, the newly-pasted elements will be selected.
-     * </p>
-     *
-     * @param consumer a consumer to allow custom commands to be appended to the paste command
-     * @param deleteCommandToTypeTextMapping
-     * @return the list of new {@link GNode} instances created by the paste operation
-     */
-    public int paste(final BiConsumer<List<GNode>, CompoundCommand> consumer, Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping) {
+    public Pair<Integer, Boolean> paste(final BiConsumer<List<GNode>, CompoundCommand> consumer, Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping) {
         selectionManager.clearSelection();
 
         final List<GNode> pastedNodes = new ArrayList<>();
         final List<GConnection> pastedConnections = new ArrayList<>();
+        boolean pastedBoth = false;
         if (!copiedNodes.isEmpty()) {
             preparePastedElements(pastedNodes, pastedConnections);
             addPasteOffset(pastedNodes, pastedConnections);
             checkWithinBounds(pastedNodes, pastedConnections);
-            addPastedElements(pastedNodes, pastedConnections, deleteCommandToTypeTextMapping);
+            pastedBoth = addPastedElements(pastedNodes, pastedConnections, deleteCommandToTypeTextMapping);
 
             for (final GNode pastedNode : pastedNodes) {
                 selectionManager.select(pastedNode);
@@ -198,7 +189,7 @@ public class SelectionCopier {
             }
             clearMemory();
         }
-        return pastedNodes.size() + pastedConnections.size();
+        return new Pair<>(pastedNodes.size() + pastedConnections.size(), pastedBoth);
     }
 
     /**
@@ -306,16 +297,13 @@ public class SelectionCopier {
         }
     }
 
-    /**
-     * Adds the pasted elements to the graph editor via a single EMF command.
-     *  @param pastedNodes       the pasted nodes to be added
-     * @param pastedConnections the pasted connections to be added
-     * @param deleteCommandToTypeTextMapping
-     */
-    private void addPastedElements(final List<GNode> pastedNodes, final List<GConnection> pastedConnections,
+    private boolean addPastedElements(final List<GNode> pastedNodes, final List<GConnection> pastedConnections,
                                    Map<Command, Pair<String, String>> deleteCommandToTypeTextMapping) {
 
         final EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(model);
+        boolean pastedTrustBoundary = false;
+        boolean pastedDataFlow = false;
+        boolean pastedTrustBoundaryAndDataFlow = false;
         Command command;
         for (final GNode pastedNode : pastedNodes) {
             controller.activateCorrespondingNodeFactory(nodeToClassMapping.get(pastedNode).getKey());
@@ -336,11 +324,15 @@ public class SelectionCopier {
                 editingDomain.getCommandStack().execute(command);
                 setConnectionText(pastedConnection);
                 deleteCommandToTypeTextMapping.put(command, DataFlowConnectionCommands.getTypeAndJointLabel(pastedConnection, skinLookup));
+                String type = DataFlowConnectionCommands.getType(pastedConnection, skinLookup);
+                pastedDataFlow = pastedDataFlow || type.equals(DataFlowJointSkin.ELEMENT_TYPE);
+                pastedTrustBoundary = pastedTrustBoundary ||  type.equals(TrustBoundaryJointSkin.ELEMENT_TYPE);
             } else {
                 LOGGER.warning("Could not paste connection of type" + pastedConnection.getType());
             }
         }
-
+        pastedTrustBoundaryAndDataFlow = pastedDataFlow && pastedTrustBoundary;
+        return pastedTrustBoundaryAndDataFlow;
     }
 
     private void setNodeText(GNode node) {

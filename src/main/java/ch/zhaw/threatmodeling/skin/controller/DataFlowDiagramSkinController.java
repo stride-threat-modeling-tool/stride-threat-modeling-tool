@@ -36,6 +36,7 @@ import javafx.geometry.Side;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
+import javafx.util.Pair;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EObject;
@@ -382,9 +383,9 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     public void paste() {
-        int pastedCount = selectionCopier.paste(null, doController.getDeleteCommandToTypeTextMapping());
-        if(pastedCount > 1) {
-            doController.stackDeletedCount(pastedCount);
+       Pair<Integer, Boolean> pastedCountPastedBothPair = selectionCopier.paste(null, doController.getDeleteCommandToTypeTextMapping());
+        if(pastedCountPastedBothPair.getKey() > 1) {
+            doController.stackDeletedCount(pastedCountPastedBothPair);
         }
         setDataFlowSkinFactories();
     }
@@ -396,12 +397,12 @@ public class DataFlowDiagramSkinController implements SkinController {
         ObservableSet<EObject> selectedItems = getSelectionManager().getSelectedItems();
 
         addMissingItemsToSelection(selectedItems, skinLookup);
-        doController.stackDeletedCount(DataFlowCommands.orderedRemove(
+        doController.stackDeletedCount(new Pair<>(DataFlowCommands.orderedRemove(
                 doController.getDeleteCommandToTypeTextMapping(),
                 skinLookup,
                 selectedItems,
                 AdapterFactoryEditingDomain.getEditingDomainFor(model),
-                model));
+                model), false));
     }
 
     private void addMissingItemsToSelection(ObservableSet<EObject> selectedItems, SkinLookup skinLookup) {
