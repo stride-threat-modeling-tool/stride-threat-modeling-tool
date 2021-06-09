@@ -28,6 +28,7 @@ public class DataFlowSkinConstants {
     public static final String DFD_TRUST_BOUNDARY_CONNECTION = "dfd-trust-boundary-connection";
     public static final String DFD_TRUST_BOUNDARY_JOINT = "dfd-trust-boundary-joint";
     public static final double DFD_JOINT_SPAWN_OFFSET = 22.5;
+    public static final double DFD_CIRCLE_DIAMETER = 120.0;
 
     public static final PseudoClass PSEUDO_CLASS_ALLOWED = PseudoClass.getPseudoClass("allowed");
     public static final PseudoClass PSEUDO_CLASS_FORBIDDEN = PseudoClass.getPseudoClass("forbidden");

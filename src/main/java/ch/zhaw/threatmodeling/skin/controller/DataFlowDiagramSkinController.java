@@ -93,10 +93,19 @@ public class DataFlowDiagramSkinController implements SkinController {
 
     @Override
     public void addNode(double currentZoomFactor, String type) {
-        executeAddNodeCommand(initNode(currentZoomFactor, type), type);
+        executeAddNodeCommand(initNode(currentZoomFactor, type), type, false);
     }
 
-    private void executeAddNodeCommand(GNode node, String type) {
+    public void addNewNode(double currentZoomFactor, String type) {
+        executeAddNodeCommand(initNode(currentZoomFactor, type), type, true);
+    }
+
+    private void executeAddNodeCommand(GNode node, String type, boolean newNode) {
+        // Make Process / Multiple Proess NodeSkins circular at the start when they are new nodes
+        if (newNode) {
+            node.setWidth(DataFlowSkinConstants.DFD_CIRCLE_DIAMETER);
+            node.setHeight(DataFlowSkinConstants.DFD_CIRCLE_DIAMETER);
+        }
         Commands.addNode(model, node);
         final Command mostRecent = doController.getMostRecentCommand();
         doController.mapCreateCommand(mostRecent, type, type);
@@ -163,14 +172,14 @@ public class DataFlowDiagramSkinController implements SkinController {
     public void addProcess(double currentZoomFactor) {
         setNodeSkinFactory(this::createProcessSkin);
         setDataFlowSkinFactories();
-        addNode(currentZoomFactor, ProcessNodeSkin.TITLE_TEXT);
+        addNewNode(currentZoomFactor, ProcessNodeSkin.TITLE_TEXT);
 
     }
 
     public void addMultipleProcess(double currentZoomFactor) {
         setNodeSkinFactory(this::createMultipleProcessSkin);
         setDataFlowSkinFactories();
-        addNode(currentZoomFactor, MultipleProcessNodeSkin.TITLE_TEXT);
+        addNewNode(currentZoomFactor, MultipleProcessNodeSkin.TITLE_TEXT);
 
     }
 
@@ -584,7 +593,7 @@ public class DataFlowDiagramSkinController implements SkinController {
         newNode.setY(nodeObject.getY());
         newNode.setHeight(nodeObject.getHeight());
         newNode.setWidth(nodeObject.getWidth());
-        executeAddNodeCommand(newNode, type);
+        executeAddNodeCommand(newNode, type, false);
 
         GenericNodeSkin skin = (GenericNodeSkin) graphEditor.getSkinLookup().lookupNode(newNode);
         if (null != text) {
