@@ -3,9 +3,12 @@ package ch.zhaw.threatmodeling.model.threats.patterns;
 import ch.zhaw.threatmodeling.model.enums.STRIDECategory;
 import ch.zhaw.threatmodeling.model.enums.State;
 import ch.zhaw.threatmodeling.model.threats.Threat;
+
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.nodes.generic.GenericNodeSkin;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import de.tesis.dynaware.grapheditor.model.GConnection;
 
 import java.util.Map;

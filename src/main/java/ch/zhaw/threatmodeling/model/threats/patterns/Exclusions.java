@@ -2,7 +2,12 @@ package ch.zhaw.threatmodeling.model.threats.patterns;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class Exclusions {
     @JsonProperty
@@ -12,7 +17,6 @@ public class Exclusions {
         this.loadedExclusions = Objects.requireNonNullElse(loadedExclusions, Collections.emptyList());
 
     }
-
     public Exclusions(){
         this.loadedExclusions = new ArrayList<>();
     }

@@ -32,6 +32,7 @@ If you don't do this, maven will not be able to download the graph-editor depend
 3. Import the project with IntelliJ IDEA or a different IDE.
 
 ## How to run
+
 1. View -> Tool Windows -> Maven
 2. Lifecycle -> clean
 3. Plugins -> javafx -> javafx:run

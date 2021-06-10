@@ -1,6 +1,7 @@
 package ch.zhaw.threatmodeling.persistence;
 
 import ch.zhaw.threatmodeling.model.threats.patterns.ThreatPatterns;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;

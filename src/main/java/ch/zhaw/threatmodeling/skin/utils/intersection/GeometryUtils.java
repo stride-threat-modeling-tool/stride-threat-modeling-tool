@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class GeometryUtils {
 
+    private GeometryUtils(){}
+
     /**
      *  Return True if and only of the triangle A1, B1, C1 intersects
      *  the triangle A2, B2, C2.  NOTE: This may wrongly return False
@@ -140,8 +142,8 @@ public class GeometryUtils {
      */
     public static boolean trianglesIntersect(Vector2D a1, Vector2D b1, Vector2D c1, Vector2D a2, Vector2D b2, Vector2D c2) {
         // Will probably not be used.
-        RealMatrix boundingBox1 = boundingBox(Arrays.asList(new Vector2D[]{a1, b1, c1}));
-        RealMatrix boundingBox2 = boundingBox(Arrays.asList(new Vector2D[]{a2, b2, c2}));
+        RealMatrix boundingBox1 = boundingBox(Arrays.asList(a1, b1, c1));
+        RealMatrix boundingBox2 = boundingBox(Arrays.asList(a2, b2, c2));
 
         return separateBoundingBoxes(boundingBox1, boundingBox2) &&
                 ((intersectLineSegment(a1, b1, a2, b2) != null) ||

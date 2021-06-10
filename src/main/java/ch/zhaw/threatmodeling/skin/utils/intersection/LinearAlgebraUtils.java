@@ -8,6 +8,8 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  * Date: 2021
  */
 public class LinearAlgebraUtils {
+
+    private LinearAlgebraUtils(){}
     /**
      * Return the cosine of the angle ABC.
      * @param a Point a

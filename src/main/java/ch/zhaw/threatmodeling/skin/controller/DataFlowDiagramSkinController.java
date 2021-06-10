@@ -2,7 +2,11 @@ package ch.zhaw.threatmodeling.skin.controller;
 
 import ch.zhaw.threatmodeling.model.threats.Threat;
 import ch.zhaw.threatmodeling.model.threats.ThreatGenerator;
-import ch.zhaw.threatmodeling.persistence.utils.objects.*;
+import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowConnectionObject;
+import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowNodeObject;
+import ch.zhaw.threatmodeling.persistence.utils.objects.DataFlowPositionedObject;
+import ch.zhaw.threatmodeling.persistence.utils.objects.STRIDEModel;
+import ch.zhaw.threatmodeling.persistence.utils.objects.ThreatObject;
 import ch.zhaw.threatmodeling.selections.SelectionCopier;
 import ch.zhaw.threatmodeling.skin.DataFlowElement;
 import ch.zhaw.threatmodeling.skin.DataFlowGraphEditor;
@@ -42,7 +46,11 @@ import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.OptionalInt;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class DataFlowDiagramSkinController implements SkinController {
@@ -173,7 +181,6 @@ public class DataFlowDiagramSkinController implements SkinController {
         setNodeSkinFactory(this::createProcessSkin);
         setDataFlowSkinFactories();
         addNewNode(currentZoomFactor, ProcessNodeSkin.TITLE_TEXT);
-
     }
 
     public void addMultipleProcess(double currentZoomFactor) {
@@ -358,7 +365,6 @@ public class DataFlowDiagramSkinController implements SkinController {
     private GConnectionSkin createTrustBoundaryConnectionSkin(GConnection gConnection) {
         return new TrustBoundaryConnectionSkin(gConnection);
     }
-
 
     public void resetNodeAndConnectionNames(String text, List<GNode> oldNodes, List<GConnection> oldConnections) {
         model.getConnections().forEach(connection -> {
@@ -582,7 +588,6 @@ public class DataFlowDiagramSkinController implements SkinController {
         joint.setY(jointObject.getY());
         return joint;
     }
-
 
     private void restoreNode(DataFlowNodeObject nodeObject, double currentZoomFactor) {
         String type = nodeObject.getType();

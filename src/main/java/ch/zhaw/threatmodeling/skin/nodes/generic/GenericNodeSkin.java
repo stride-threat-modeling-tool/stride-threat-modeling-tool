@@ -35,6 +35,7 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
     protected static final double MIN_WIDTH = 81;
     protected static final double MIN_HEIGHT = 81;
     protected static final double LABEL_MAX_WIDTH_OFFSET = 20.0;
+
     private static final Logger LOGGER = Logger.getLogger("Generic node");
     protected final List<GConnectorSkin> topConnectorSkins = new ArrayList<>();
     protected final List<GConnectorSkin> rightConnectorSkins = new ArrayList<>();

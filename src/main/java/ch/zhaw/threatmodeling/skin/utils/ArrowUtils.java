@@ -8,6 +8,8 @@ import javafx.geometry.Point2D;
  */
 public class ArrowUtils {
 
+    private ArrowUtils(){}
+
     /**
      * Draws the given arrow from the start to end points with the given offset from either end.
      *

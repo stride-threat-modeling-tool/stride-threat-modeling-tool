@@ -33,7 +33,6 @@ public class ThreatGenerator {
         this.model = model;
         this.threatPatterns = ThreatPatternPersistence.loadThreatPatterns();
         threats = new Threats();
-       // LOGGER.info("loaded threats " + threatPatterns.size());
 
     }
 

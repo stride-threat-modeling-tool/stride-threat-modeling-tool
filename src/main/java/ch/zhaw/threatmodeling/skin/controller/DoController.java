@@ -15,7 +15,12 @@ import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class DoController {
@@ -53,7 +58,6 @@ public class DoController {
                 Command currentCommand = commandStack.getUndoCommand();
                 isRemoveCommand = undoSingleCommand(currentCommand, commandStack);
                 isAddCommand = currentCommand instanceof AddCommand;
-
                 if ((isRemoveCommand || isAddCommand) &&
                         toUndoCount == -1 &&
                         null != deleteCommandToTypeTextMapping.get(currentCommand) &&
@@ -85,12 +89,10 @@ public class DoController {
                     redoSingleCommand(currentCommand, commandStack);
                 } else {
                     LOGGER.info("redone prevented, you tried to redo a paste with selection with data flows and trust boundaries, this cannot be handled");
-
                 }
             }
             toRedoCount = toRedoCount - 1;
         } while (toRedoCount > 0);
-
         if(commandsToRedoAndRedoAllowedPair != null && commandsToRedoAndRedoAllowedPair.getValue()){
             lastCommandUndoCount.push(lastCommandDeletedCount.pop());
         }

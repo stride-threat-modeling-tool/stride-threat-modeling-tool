@@ -59,6 +59,7 @@ public class GeometryUtilsTest extends ApplicationTest {
         RealMatrix boundingBox1 = new Array2DRowRealMatrix(new double[][]{{-1,-2},{1,2}});
         RealMatrix boundingBox2 = new Array2DRowRealMatrix(new double[][]{{-1,-1},{1,1}});
         assertFalse(GeometryUtils.separateBoundingBoxes(boundingBox1, boundingBox2));
+        assertEquals(false, GeometryUtils.separateBoundingBoxes(boundingBox1, boundingBox2));
 
         // Two separate bounding boxes
         boundingBox1 = new Array2DRowRealMatrix(new double[][]{{-1,-2},{1,2}});

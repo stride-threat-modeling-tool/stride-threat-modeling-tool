@@ -18,10 +18,13 @@ import java.util.logging.Logger;
  * Date: 2021
  */
 public class QuadraticSplineUtils {
+
+    private QuadraticSplineUtils(){}
+
     //Maximum angle change between line segments in a spline is at most this # number of degrees.
     private static final double ANGLE_EPS = 5.0;
 
-    private final static Logger LOGGER =  Logger.getLogger("Quadratic Spline Utils");
+    private static final Logger LOGGER =  Logger.getLogger("Quadratic Spline Utils");
 
     /**
      * Subdivide the spline with control points A, B, and C into line

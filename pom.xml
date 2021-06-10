@@ -111,9 +111,9 @@
             <version>3.6.1</version>
         </dependency>
         <dependency>
-           <groupId>com.fasterxml.jackson.core</groupId>
-           <artifactId>jackson-core</artifactId>
-           <version>2.12.3</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.12.3</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -246,7 +246,6 @@
                     are found the /src/packaging directory. These files are copied into the target directory by
                     the Maven resources plugin, which does the filtering to replace the original values with
                     the actual Maven properties.
-
                     https://github.com/wiverson/jtoolprovider-plugin/blob/main/java-tool-doc.md
                     -->
                     <execution>

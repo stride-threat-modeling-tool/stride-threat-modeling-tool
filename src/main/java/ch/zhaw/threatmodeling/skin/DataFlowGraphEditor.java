@@ -3,26 +3,39 @@
  */
 package ch.zhaw.threatmodeling.skin;
 
-import de.tesis.dynaware.grapheditor.*;
 import de.tesis.dynaware.grapheditor.core.GraphEditorController;
 import de.tesis.dynaware.grapheditor.core.ModelEditingManager;
+import java.util.Collection;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.ecore.EObject;
+
+import de.tesis.dynaware.grapheditor.GConnectionSkin;
+import de.tesis.dynaware.grapheditor.GConnectorSkin;
+import de.tesis.dynaware.grapheditor.GConnectorValidator;
+import de.tesis.dynaware.grapheditor.GJointSkin;
+import de.tesis.dynaware.grapheditor.GNodeSkin;
+import de.tesis.dynaware.grapheditor.GTailSkin;
+import de.tesis.dynaware.grapheditor.GraphEditor;
+import de.tesis.dynaware.grapheditor.SelectionManager;
+import de.tesis.dynaware.grapheditor.SkinLookup;
 import de.tesis.dynaware.grapheditor.core.connections.ConnectionEventManager;
 import de.tesis.dynaware.grapheditor.core.skins.GraphEditorSkinManager;
 import de.tesis.dynaware.grapheditor.core.view.ConnectionLayouter;
 import de.tesis.dynaware.grapheditor.core.view.GraphEditorView;
-import de.tesis.dynaware.grapheditor.model.*;
+import de.tesis.dynaware.grapheditor.model.GConnection;
+import de.tesis.dynaware.grapheditor.model.GConnector;
+import de.tesis.dynaware.grapheditor.model.GJoint;
+import de.tesis.dynaware.grapheditor.model.GModel;
+import de.tesis.dynaware.grapheditor.model.GNode;
 import de.tesis.dynaware.grapheditor.utils.GraphEditorProperties;
 import de.tesis.dynaware.grapheditor.utils.RemoveContext;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
 import javafx.scene.layout.Region;
 import javafx.util.Callback;
-import org.eclipse.emf.common.command.Command;
-import org.eclipse.emf.ecore.EObject;
-
-import java.util.Collection;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 
 /**

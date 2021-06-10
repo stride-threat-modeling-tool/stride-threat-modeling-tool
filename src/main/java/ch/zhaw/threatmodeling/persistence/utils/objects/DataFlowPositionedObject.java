@@ -8,6 +8,7 @@ public class DataFlowPositionedObject extends DataFlowObject {
     private  double y;
     private  String text;
 
+
     public DataFlowPositionedObject(String type, String text, double x, double y) {
         super(type);
         this.text = text;

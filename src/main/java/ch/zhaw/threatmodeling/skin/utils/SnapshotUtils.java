@@ -7,6 +7,7 @@ import de.tesis.dynaware.grapheditor.model.GConnection;
 import de.tesis.dynaware.grapheditor.model.GJoint;
 import de.tesis.dynaware.grapheditor.model.GNode;
 import javafx.embed.swing.SwingFXUtils;
+
 import javafx.geometry.BoundingBox;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -26,7 +27,9 @@ import java.util.logging.Logger;
 public class SnapshotUtils {
     private static final Logger LOGGER = Logger.getLogger("Snapshot Utils");
 
-     private static final double BOUNDING_BOX_OFFSET = 50.0;
+    private static final double BOUNDING_BOX_OFFSET = 50.0;
+
+    private SnapshotUtils(){}
 
     private static WritableImage cropImage(WritableImage image, int x, int y, int width, int height) {
        PixelReader reader = image.getPixelReader();

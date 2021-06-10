@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2005 - 2014 by TESIS DYNAware GmbH
- */
 package ch.zhaw.threatmodeling.skin.utils;
 
 import ch.zhaw.threatmodeling.skin.DataFlowSkinConstants;
@@ -28,12 +25,10 @@ public class DataFlowConnectionCommands {
     public static String getJointLabel(GConnection connection, SkinLookup skinLookup) {
         String result = "";
         GJointSkin skin = skinLookup.lookupJoint(connection.getJoints().get(0));
-        if (skin instanceof DataFlowJointSkin) {
-            DataFlowJointSkin jointSkin = (DataFlowJointSkin) skin;
+        if (skin instanceof DataFlowJointSkin jointSkin) {
             result = jointSkin.getText();
         }
-        if (skin instanceof TrustBoundaryJointSkin) {
-            TrustBoundaryJointSkin jointSkin = (TrustBoundaryJointSkin) skin;
+        if (skin instanceof TrustBoundaryJointSkin jointSkin) {
             result = jointSkin.getText();
         }
         return result;
