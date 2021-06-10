@@ -12,12 +12,14 @@ import javafx.beans.property.StringProperty;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
     protected static final double HALO_CORNER_SIZE = 10;
     protected static final double MIN_WIDTH = 81;
     protected static final double MIN_HEIGHT = 81;
+    protected static final double LABEL_MAX_WIDTH_OFFSET = 20.0;
     private static final Logger LOGGER = Logger.getLogger("Generic node");
     protected final List<GConnectorSkin> topConnectorSkins = new ArrayList<>();
     protected final List<GConnectorSkin> rightConnectorSkins = new ArrayList<>();
@@ -204,6 +207,10 @@ public abstract class GenericNodeSkin extends GNodeSkin implements DataFlowEleme
 
     protected Label createBoundLabel() {
         Label label = new Label(getText());
+        label.setWrapText(true);
+        label.setAlignment(Pos.CENTER);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.maxWidthProperty().bind(getRoot().widthProperty().subtract(LABEL_MAX_WIDTH_OFFSET));
         label.textProperty().bindBidirectional(textProperty());
         return label;
     }
