@@ -101,7 +101,7 @@ public class DataFlowDiagramSkinController implements SkinController {
     }
 
     private void executeAddNodeCommand(GNode node, String type, boolean newNode) {
-        // Make Process / Multiple Proess NodeSkins circular at the start when they are new nodes
+        // Make Process / Multiple Process NodeSkins circular at the start when they are new nodes
         if (newNode) {
             node.setWidth(DataFlowSkinConstants.DFD_CIRCLE_DIAMETER);
             node.setHeight(DataFlowSkinConstants.DFD_CIRCLE_DIAMETER);
