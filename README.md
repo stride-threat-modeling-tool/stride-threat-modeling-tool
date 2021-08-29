@@ -37,6 +37,12 @@ If you don't do this, maven will not be able to download the graph-editor depend
 2. Lifecycle -> clean
 3. Plugins -> javafx -> javafx:run
 
+## How to debug
+**Intellij**:
+1. Add a new Run Configuration with the command line value `javafx:run@debug -f pom.xml`.
+2. Running this config will automatically run the debug config defined under `javafx-maven-plugin` in the pom.xml and 
+   allows attaching the IntelliJ debugger to the process.
+
 ## How to package
 - Requires JDK 16 and Maven
 - Refer to the `MAVEN JPACKAGE PLUGIN` extract further down the README.
